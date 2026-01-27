@@ -1,0 +1,750 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Seaforth Environmental Dispatch Dashboard</title>
+  <link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=IBM+Plex+Mono:wght@400;600&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --deep-navy: #0a1628;
+      --ocean-dark: #0d2137;
+      --ocean-mid: #143654;
+      --teal-accent: #00d4aa;
+      --teal-glow: #00ffcc;
+      --amber-warning: #ffaa00;
+      --coral-alert: #ff6b6b;
+      --ice-white: #e8f4f8;
+      --mist-gray: #94a3b8;
+      --foam-white: #f0f9ff;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'IBM Plex Mono', monospace;
+      background: var(--deep-navy);
+      color: var(--ice-white);
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    .ocean-bg {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: -1;
+      background: 
+        radial-gradient(ellipse at 30% 20%, rgba(0, 212, 170, 0.08) 0%, transparent 50%),
+        radial-gradient(ellipse at 70% 80%, rgba(20, 54, 84, 0.4) 0%, transparent 50%),
+        linear-gradient(180deg, var(--deep-navy) 0%, var(--ocean-dark) 50%, var(--deep-navy) 100%);
+    }
+
+    .wave-pattern {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      width: 200%;
+      height: 200px;
+      opacity: 0.03;
+      background: repeating-linear-gradient(90deg, transparent, transparent 50px, var(--teal-accent) 50px, var(--teal-accent) 51px);
+      animation: waveScroll 30s linear infinite;
+    }
+
+    @keyframes waveScroll {
+      0% { transform: translateX(0); }
+      100% { transform: translateX(-50%); }
+    }
+
+    .loading {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      flex-direction: column;
+      gap: 1.5rem;
+    }
+
+    .loading-spinner {
+      width: 60px;
+      height: 60px;
+      border: 3px solid var(--ocean-mid);
+      border-top-color: var(--teal-accent);
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+    }
+
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    .loading-text {
+      font-size: 0.85rem;
+      color: var(--mist-gray);
+      letter-spacing: 0.1em;
+    }
+
+    .header {
+      padding: 2rem 3rem;
+      border-bottom: 1px solid rgba(0, 212, 170, 0.2);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: rgba(10, 22, 40, 0.8);
+      backdrop-filter: blur(10px);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+
+    .logo-section {
+      display: flex;
+      align-items: center;
+      gap: 1.5rem;
+    }
+
+    .logo-icon {
+      width: 56px;
+      height: 56px;
+      background: linear-gradient(135deg, var(--teal-accent), var(--ocean-mid));
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.8rem;
+      box-shadow: 0 4px 20px rgba(0, 212, 170, 0.3);
+    }
+
+    .logo-text h1 {
+      font-family: 'Archivo Black', sans-serif;
+      font-size: 1.6rem;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      background: linear-gradient(90deg, var(--ice-white), var(--teal-accent));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .logo-text span {
+      font-size: 0.7rem;
+      color: var(--mist-gray);
+      letter-spacing: 0.3em;
+      text-transform: uppercase;
+    }
+
+    .header-info { text-align: right; }
+
+    .location {
+      font-family: 'Source Serif 4', serif;
+      font-size: 1.1rem;
+      color: var(--foam-white);
+    }
+
+    .coordinates {
+      font-size: 0.75rem;
+      color: var(--teal-accent);
+      margin-top: 0.25rem;
+    }
+
+    .last-update {
+      font-size: 0.7rem;
+      color: var(--mist-gray);
+      margin-top: 0.5rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      justify-content: flex-end;
+    }
+
+    .live-indicator {
+      width: 8px;
+      height: 8px;
+      background: var(--teal-accent);
+      border-radius: 50%;
+      animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; box-shadow: 0 0 0 0 rgba(0, 212, 170, 0.5); }
+      50% { opacity: 0.7; box-shadow: 0 0 0 6px rgba(0, 212, 170, 0); }
+    }
+
+    .main-content {
+      padding: 2rem 3rem;
+      max-width: 1800px;
+      margin: 0 auto;
+      display: none;
+    }
+
+    .main-content.loaded { display: block; }
+
+    .current-hero {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 1.5rem;
+      margin-bottom: 2rem;
+    }
+
+    .hero-card {
+      background: linear-gradient(135deg, rgba(20, 54, 84, 0.6), rgba(13, 33, 55, 0.8));
+      border: 1px solid rgba(0, 212, 170, 0.15);
+      border-radius: 16px;
+      padding: 2rem;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 3px;
+      background: linear-gradient(90deg, transparent, var(--teal-accent), transparent);
+    }
+
+    .hero-card.temp-card::before { background: linear-gradient(90deg, transparent, var(--amber-warning), transparent); }
+    .hero-card.conditions-card::before { background: linear-gradient(90deg, transparent, var(--foam-white), transparent); }
+
+    .card-label {
+      font-size: 0.65rem;
+      text-transform: uppercase;
+      letter-spacing: 0.2em;
+      color: var(--mist-gray);
+      margin-bottom: 0.5rem;
+    }
+
+    .card-value {
+      font-family: 'Archivo Black', sans-serif;
+      font-size: 3.5rem;
+      line-height: 1;
+      margin-bottom: 0.5rem;
+    }
+
+    .wind-card .card-value { color: var(--teal-accent); }
+    .temp-card .card-value { color: var(--amber-warning); }
+
+    .conditions-card .card-value {
+      font-size: 1.8rem;
+      color: var(--foam-white);
+      font-family: 'Source Serif 4', serif;
+      font-weight: 600;
+    }
+
+    .card-unit {
+      font-size: 1.2rem;
+      color: var(--mist-gray);
+      font-weight: 400;
+    }
+
+    .card-detail {
+      font-size: 0.8rem;
+      color: var(--mist-gray);
+      margin-top: 0.5rem;
+    }
+
+    .wind-direction {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      margin-top: 0.75rem;
+    }
+
+    .compass {
+      width: 44px;
+      height: 44px;
+      border: 2px solid var(--teal-accent);
+      border-radius: 50%;
+      position: relative;
+    }
+
+    .compass-needle {
+      width: 4px;
+      height: 18px;
+      background: linear-gradient(to top, var(--coral-alert), var(--teal-accent));
+      border-radius: 2px;
+      transform-origin: center bottom;
+      position: absolute;
+      top: 11px;
+      left: 50%;
+      margin-left: -2px;
+      transition: transform 0.5s ease;
+    }
+
+    .compass::after {
+      content: 'N';
+      position: absolute;
+      top: -18px;
+      left: 50%;
+      transform: translateX(-50%);
+      font-size: 0.55rem;
+      color: var(--mist-gray);
+    }
+
+    .section-title {
+      font-family: 'Archivo Black', sans-serif;
+      font-size: 0.9rem;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--mist-gray);
+      margin-bottom: 1rem;
+      padding-bottom: 0.5rem;
+      border-bottom: 1px solid rgba(0, 212, 170, 0.2);
+    }
+
+    .forecast-section { margin-bottom: 2.5rem; }
+
+    .marine-alert {
+      background: linear-gradient(90deg, rgba(0, 212, 170, 0.1), transparent);
+      border-left: 4px solid var(--teal-accent);
+      padding: 1rem 1.5rem;
+      margin-bottom: 1.5rem;
+      border-radius: 0 8px 8px 0;
+    }
+
+    .marine-alert a { color: var(--teal-accent); text-decoration: none; }
+    .marine-alert a:hover { text-decoration: underline; }
+
+    .alert-title {
+      font-weight: 600;
+      color: var(--teal-accent);
+      font-size: 0.85rem;
+      margin-bottom: 0.5rem;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+    }
+
+    .alert-text {
+      font-family: 'Source Serif 4', serif;
+      font-size: 0.95rem;
+      color: var(--foam-white);
+      line-height: 1.6;
+    }
+
+    .forecast-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(90px, 1fr));
+      gap: 0.4rem;
+      background: rgba(13, 33, 55, 0.5);
+      border-radius: 12px;
+      padding: 1rem;
+      border: 1px solid rgba(0, 212, 170, 0.1);
+    }
+
+    .forecast-hour {
+      background: rgba(20, 54, 84, 0.4);
+      border-radius: 8px;
+      padding: 0.6rem;
+      text-align: center;
+      transition: all 0.3s ease;
+      border: 1px solid transparent;
+    }
+
+    .forecast-hour:hover {
+      background: rgba(20, 54, 84, 0.8);
+      border-color: var(--teal-accent);
+      transform: translateY(-2px);
+    }
+
+    .forecast-hour.current {
+      background: rgba(0, 212, 170, 0.15);
+      border-color: var(--teal-accent);
+    }
+
+    .forecast-hour.day-break { border-left: 2px solid var(--teal-accent); }
+
+    .hour-time { font-size: 0.6rem; color: var(--mist-gray); margin-bottom: 0.15rem; }
+    .hour-day { font-size: 0.5rem; color: var(--teal-accent); text-transform: uppercase; letter-spacing: 0.1em; font-weight: 600; }
+    .hour-wind { font-family: 'Archivo Black', sans-serif; font-size: 1.3rem; color: var(--teal-accent); margin: 0.35rem 0; }
+    .hour-wind.light { color: #64b5f6; }
+    .hour-wind.moderate { color: var(--teal-accent); }
+    .hour-wind.fresh { color: var(--amber-warning); }
+    .hour-wind.strong { color: var(--coral-alert); }
+    .hour-gust { font-size: 0.55rem; color: var(--mist-gray); }
+    .hour-dir { font-size: 0.6rem; color: var(--foam-white); margin-top: 0.2rem; }
+    .hour-temp { font-size: 0.7rem; color: var(--amber-warning); margin-top: 0.35rem; }
+    .hour-precip { font-size: 0.55rem; color: #64b5f6; margin-top: 0.2rem; }
+
+    .tide-section { margin-bottom: 2.5rem; }
+
+    .tide-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 1rem;
+    }
+
+    .tide-card {
+      background: rgba(20, 54, 84, 0.4);
+      border-radius: 12px;
+      padding: 1.25rem;
+      border: 1px solid rgba(0, 212, 170, 0.1);
+    }
+
+    .tide-time { font-size: 0.7rem; color: var(--mist-gray); text-transform: uppercase; letter-spacing: 0.1em; }
+    .tide-type { font-family: 'Archivo Black', sans-serif; font-size: 1rem; margin: 0.5rem 0; }
+    .tide-type.high { color: var(--teal-accent); }
+    .tide-type.low { color: var(--coral-alert); }
+    .tide-height { font-size: 1.8rem; font-weight: 600; color: var(--foam-white); }
+
+    .extended-section { margin-bottom: 2.5rem; }
+
+    .extended-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+      gap: 1rem;
+    }
+
+    .extended-day {
+      background: linear-gradient(180deg, rgba(20, 54, 84, 0.4), rgba(13, 33, 55, 0.6));
+      border-radius: 12px;
+      padding: 1.25rem;
+      text-align: center;
+      border: 1px solid rgba(0, 212, 170, 0.1);
+    }
+
+    .day-name { font-family: 'Archivo Black', sans-serif; font-size: 0.8rem; color: var(--foam-white); margin-bottom: 0.75rem; text-transform: uppercase; letter-spacing: 0.1em; }
+    .day-icon { font-size: 1.8rem; margin-bottom: 0.4rem; }
+    .day-wind-range { font-size: 1rem; color: var(--teal-accent); font-weight: 600; margin-bottom: 0.4rem; }
+    .day-temp-range { font-size: 0.8rem; color: var(--amber-warning); }
+    .day-precip { font-size: 0.7rem; color: #64b5f6; margin-top: 0.5rem; }
+
+    .footer {
+      padding: 2rem 3rem;
+      border-top: 1px solid rgba(0, 212, 170, 0.1);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 0.7rem;
+      color: var(--mist-gray);
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+
+    .data-sources { display: flex; gap: 2rem; flex-wrap: wrap; }
+    .data-source { display: flex; align-items: center; gap: 0.5rem; }
+    .source-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--teal-accent); animation: pulse 2s infinite; }
+    .refresh-info { font-size: 0.65rem; color: var(--mist-gray); cursor: pointer; }
+    .refresh-info:hover { color: var(--teal-accent); }
+
+    @media (max-width: 1200px) { .current-hero { grid-template-columns: 1fr 1fr; } }
+
+    @media (max-width: 768px) {
+      .header { flex-direction: column; gap: 1rem; padding: 1.5rem; }
+      .header-info { text-align: center; }
+      .last-update { justify-content: center; }
+      .current-hero { grid-template-columns: 1fr; }
+      .main-content { padding: 1.5rem; }
+      .card-value { font-size: 2.5rem; }
+      .forecast-grid { grid-template-columns: repeat(auto-fill, minmax(75px, 1fr)); }
+    }
+
+    .error-message {
+      background: linear-gradient(90deg, rgba(255, 107, 107, 0.15), transparent);
+      border-left: 4px solid var(--coral-alert);
+      padding: 1.5rem;
+      margin: 2rem 3rem;
+      border-radius: 0 8px 8px 0;
+      color: var(--foam-white);
+    }
+
+    .error-message h3 { color: var(--coral-alert); margin-bottom: 0.5rem; font-family: 'Archivo Black', sans-serif; font-size: 1rem; }
+    .error-message a { color: var(--teal-accent); }
+
+    .retry-btn {
+      margin-top: 1rem;
+      padding: 0.75rem 1.5rem;
+      background: var(--teal-accent);
+      color: var(--deep-navy);
+      border: none;
+      border-radius: 8px;
+      font-family: 'IBM Plex Mono', monospace;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .retry-btn:hover { background: var(--teal-glow); transform: translateY(-2px); }
+  </style>
+</head>
+<body>
+  <div class="ocean-bg"></div>
+  <div class="wave-pattern"></div>
+
+  <div class="loading" id="loadingState">
+    <div class="loading-spinner"></div>
+    <div class="loading-text">ACQUIRING ENVIRONMENTAL DATA...</div>
+  </div>
+
+  <div id="errorState" style="display: none;"></div>
+
+  <header class="header">
+    <div class="logo-section">
+      <div class="logo-icon">⚓</div>
+      <div class="logo-text">
+        <h1>Seaforth</h1>
+        <span>Environmental Dispatch Dashboard</span>
+      </div>
+    </div>
+    <div class="header-info">
+      <div class="location">Vancouver Harbour, British Columbia</div>
+      <div class="coordinates">49.30°N · 123.11°W</div>
+      <div class="last-update">
+        <span class="live-indicator"></span>
+        <span>Last updated: <span id="updateTime">—</span></span>
+      </div>
+    </div>
+  </header>
+
+  <main class="main-content" id="mainContent">
+    <section class="current-hero">
+      <div class="hero-card wind-card">
+        <div class="card-label">Current Wind</div>
+        <div class="card-value"><span id="currentWind">—</span> <span class="card-unit">kts</span></div>
+        <div class="wind-direction">
+          <div class="compass"><div class="compass-needle" id="compassNeedle"></div></div>
+          <span id="windDirText">—</span>
+        </div>
+        <div class="card-detail">Gusts to <span id="currentGust">—</span> kts</div>
+      </div>
+      <div class="hero-card temp-card">
+        <div class="card-label">Temperature</div>
+        <div class="card-value"><span id="currentTemp">—</span><span class="card-unit">°C</span></div>
+        <div class="card-detail">Humidity: <span id="currentHumidity">—</span>%</div>
+        <div class="card-detail">Feels like: <span id="feelsLike">—</span>°C</div>
+      </div>
+      <div class="hero-card conditions-card">
+        <div class="card-label">Conditions</div>
+        <div class="card-value" id="currentConditions">—</div>
+        <div class="card-detail">Cloud Cover: <span id="cloudCover">—</span>%</div>
+        <div class="card-detail">Barometer: <span id="pressure">—</span> hPa</div>
+      </div>
+    </section>
+
+    <section class="forecast-section">
+      <div class="marine-alert">
+        <div class="alert-title">📡 Live Data Feed</div>
+        <div class="alert-text">
+          Weather data from Open-Meteo (GFS/ICON models), updated hourly. 
+          For official marine warnings: <a href="https://weather.gc.ca/marine/forecast_e.html?mapID=02&siteID=14305" target="_blank">Environment Canada Marine Forecasts</a>
+        </div>
+      </div>
+    </section>
+
+    <section class="forecast-section">
+      <h2 class="section-title">72-Hour Forecast — Hourly Wind & Weather</h2>
+      <div class="forecast-grid" id="forecastGrid"></div>
+    </section>
+
+    <section class="tide-section">
+      <h2 class="section-title">Tides — Vancouver Harbour (Next 48 Hours)</h2>
+      <div class="tide-grid" id="tideGrid"></div>
+    </section>
+
+    <section class="extended-section">
+      <h2 class="section-title">7-Day Marine Outlook</h2>
+      <div class="extended-grid" id="extendedGrid"></div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="data-sources">
+      <div class="data-source"><span class="source-dot"></span><span>Open-Meteo API</span></div>
+      <div class="data-source"><span class="source-dot"></span><span>GFS / ICON Models</span></div>
+      <div class="data-source"><span class="source-dot"></span><span>Harmonic Tide Calc</span></div>
+    </div>
+    <div>
+      <div>Seaforth Environmental Dispatch Dashboard © 2026</div>
+      <div class="refresh-info" id="refreshBtn">🔄 Click to refresh | Auto-refresh: 30 min</div>
+    </div>
+  </footer>
+
+  <script>
+    const CONFIG = { lat: 49.30, lon: -123.11, refreshInterval: 30 * 60 * 1000 };
+
+    const weatherCodes = {
+      0: 'Clear Sky', 1: 'Mainly Clear', 2: 'Partly Cloudy', 3: 'Overcast',
+      45: 'Foggy', 48: 'Rime Fog', 51: 'Light Drizzle', 53: 'Drizzle', 55: 'Dense Drizzle',
+      61: 'Slight Rain', 63: 'Moderate Rain', 65: 'Heavy Rain', 66: 'Freezing Rain', 67: 'Heavy Freezing Rain',
+      71: 'Slight Snow', 73: 'Moderate Snow', 75: 'Heavy Snow', 77: 'Snow Grains',
+      80: 'Rain Showers', 81: 'Moderate Showers', 82: 'Heavy Showers', 85: 'Snow Showers', 86: 'Heavy Snow Showers',
+      95: 'Thunderstorm', 96: 'Thunderstorm + Hail', 99: 'Severe Thunderstorm'
+    };
+
+    const weatherIcons = {
+      0: '☀️', 1: '🌤️', 2: '⛅', 3: '☁️', 45: '🌫️', 48: '🌫️',
+      51: '🌦️', 53: '🌦️', 55: '🌧️', 61: '🌧️', 63: '🌧️', 65: '🌧️', 66: '🌨️', 67: '🌨️',
+      71: '🌨️', 73: '🌨️', 75: '❄️', 77: '🌨️', 80: '🌦️', 81: '🌧️', 82: '⛈️',
+      85: '🌨️', 86: '🌨️', 95: '⛈️', 96: '⛈️', 99: '⛈️'
+    };
+
+    const msToKnots = ms => Math.round(ms * 1.944);
+    const getWindDirection = deg => ['N','NNE','NE','ENE','E','ESE','SE','SSE','S','SSW','SW','WSW','W','WNW','NW','NNW'][Math.round(deg / 22.5) % 16];
+    const getWindClass = kts => kts < 5 ? 'light' : kts < 12 ? 'moderate' : kts < 20 ? 'fresh' : 'strong';
+    const formatTime = d => d.toLocaleTimeString('en-CA', { hour: '2-digit', minute: '2-digit', hour12: false });
+    const formatDay = d => d.toLocaleDateString('en-CA', { weekday: 'short' });
+    const formatDateTime = d => d.toLocaleString('en-CA', { day: '2-digit', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit', timeZoneName: 'short' });
+
+    function showError(msg) {
+      document.getElementById('loadingState').style.display = 'none';
+      document.getElementById('mainContent').classList.remove('loaded');
+      const err = document.getElementById('errorState');
+      err.style.display = 'block';
+      err.innerHTML = `
+        <div class="error-message">
+          <h3>⚠️ Unable to Load Weather Data</h3>
+          <p>${msg}</p>
+          <p style="margin-top:1rem;font-size:0.85rem">This is often caused by browser security when opening the file directly (file:// protocol).</p>
+          <p style="margin-top:0.75rem;font-size:0.85rem"><strong>Quick fixes:</strong></p>
+          <ul style="margin:0.5rem 0 0 1.5rem;font-size:0.85rem;line-height:1.8">
+            <li>Upload this file to any web hosting (GitHub Pages, Netlify, etc.)</li>
+            <li>Run a local server: <code style="background:var(--ocean-mid);padding:2px 6px;border-radius:4px">python -m http.server 8000</code></li>
+            <li>Or use these direct links for current data:</li>
+          </ul>
+          <p style="margin-top:1rem">
+            <a href="https://www.windfinder.com/forecast/vancouver_harbour" target="_blank">→ Windfinder Vancouver Harbour</a><br>
+            <a href="https://weather.gc.ca/marine/forecast_e.html?mapID=02&siteID=14305" target="_blank">→ Environment Canada Marine</a><br>
+            <a href="https://tides.gc.ca/en/stations/7735" target="_blank">→ Canadian Tides - Point Atkinson</a>
+          </p>
+          <button class="retry-btn" onclick="initialize()">Try Again</button>
+        </div>`;
+    }
+
+    async function fetchWeatherData() {
+      const url = `https://api.open-meteo.com/v1/forecast?latitude=${CONFIG.lat}&longitude=${CONFIG.lon}&current=temperature_2m,relative_humidity_2m,apparent_temperature,weather_code,cloud_cover,pressure_msl,wind_speed_10m,wind_direction_10m,wind_gusts_10m&hourly=temperature_2m,weather_code,wind_speed_10m,wind_direction_10m,wind_gusts_10m,precipitation&daily=weather_code,temperature_2m_max,temperature_2m_min,wind_speed_10m_max,wind_gusts_10m_max,precipitation_sum&timezone=America/Vancouver&forecast_days=7`;
+      const res = await fetch(url);
+      if (!res.ok) throw new Error(`API returned ${res.status}`);
+      return res.json();
+    }
+
+    function calculateTides() {
+      const tides = [];
+      const now = new Date();
+      const base = new Date(now); base.setMinutes(0,0,0);
+      
+      const M2_period = 12.42 * 3600000;
+      const meanLevel = 3.1, M2_amp = 1.2, S2_amp = 0.35, K1_amp = 0.9;
+      const S2_period = 12 * 3600000, K1_period = 23.93 * 3600000;
+      const interval = 15 * 60000, duration = 48 * 3600000;
+      
+      let prevH = null, prevS = null;
+      
+      for (let t = 0; t < duration; t += interval) {
+        const time = new Date(base.getTime() + t);
+        const h = meanLevel + M2_amp * Math.cos(2 * Math.PI * t / M2_period) 
+                           + S2_amp * Math.cos(2 * Math.PI * t / S2_period)
+                           + K1_amp * Math.cos(2 * Math.PI * t / K1_period);
+        
+        if (prevH !== null) {
+          const s = h - prevH;
+          if (prevS !== null) {
+            if (prevS > 0 && s <= 0) tides.push({ time: new Date(time.getTime() - interval/2), height: prevH.toFixed(1), type: 'high' });
+            else if (prevS < 0 && s >= 0) tides.push({ time: new Date(time.getTime() - interval/2), height: prevH.toFixed(1), type: 'low' });
+          }
+          prevS = s;
+        }
+        prevH = h;
+      }
+      return tides.slice(0, 8);
+    }
+
+    function updateCurrent(d) {
+      const c = d.current;
+      const wKts = msToKnots(c.wind_speed_10m), gKts = msToKnots(c.wind_gusts_10m), wDir = c.wind_direction_10m;
+      
+      document.getElementById('currentWind').textContent = wKts;
+      document.getElementById('currentGust').textContent = gKts;
+      document.getElementById('windDirText').textContent = `${getWindDirection(wDir)} (${Math.round(wDir)}°)`;
+      document.getElementById('compassNeedle').style.transform = `rotate(${wDir}deg)`;
+      document.getElementById('currentTemp').textContent = Math.round(c.temperature_2m);
+      document.getElementById('currentHumidity').textContent = c.relative_humidity_2m;
+      document.getElementById('feelsLike').textContent = Math.round(c.apparent_temperature);
+      document.getElementById('currentConditions').textContent = weatherCodes[c.weather_code] || 'Unknown';
+      document.getElementById('cloudCover').textContent = c.cloud_cover;
+      document.getElementById('pressure').textContent = Math.round(c.pressure_msl);
+      document.getElementById('updateTime').textContent = formatDateTime(new Date());
+    }
+
+    function buildForecast(d) {
+      const g = document.getElementById('forecastGrid'); g.innerHTML = '';
+      const h = d.hourly, now = new Date();
+      let start = h.time.findIndex(t => new Date(t) >= now);
+      if (start < 0) start = 0;
+      
+      let lastDay = '';
+      for (let i = start; i < Math.min(start + 72, h.time.length); i++) {
+        const t = new Date(h.time[i]), day = formatDay(t), isNew = day !== lastDay;
+        lastDay = day;
+        const wK = msToKnots(h.wind_speed_10m[i]), gK = msToKnots(h.wind_gusts_10m[i]);
+        const div = document.createElement('div');
+        div.className = `forecast-hour ${i === start ? 'current' : ''} ${isNew && i !== start ? 'day-break' : ''}`;
+        div.innerHTML = `<div class="hour-time">${formatTime(t)}</div><div class="hour-day">${day}</div>
+          <div class="hour-wind ${getWindClass(wK)}">${wK}</div><div class="hour-gust">G${gK}</div>
+          <div class="hour-dir">${getWindDirection(h.wind_direction_10m[i])}</div>
+          <div class="hour-temp">${Math.round(h.temperature_2m[i])}°</div>
+          ${h.precipitation[i] > 0.1 ? `<div class="hour-precip">💧${h.precipitation[i].toFixed(1)}</div>` : ''}`;
+        g.appendChild(div);
+      }
+    }
+
+    function buildTides(tides) {
+      const g = document.getElementById('tideGrid'); g.innerHTML = '';
+      tides.forEach(t => {
+        const c = document.createElement('div'); c.className = 'tide-card';
+        c.innerHTML = `<div class="tide-time">${formatDay(t.time)} ${formatTime(t.time)}</div>
+          <div class="tide-type ${t.type}">${t.type === 'high' ? '▲ High Tide' : '▼ Low Tide'}</div>
+          <div class="tide-height">${t.height} m</div>`;
+        g.appendChild(c);
+      });
+      const n = document.createElement('div');
+      n.style.cssText = 'grid-column:1/-1;font-size:0.7rem;color:var(--mist-gray);padding:0.5rem;text-align:center';
+      n.innerHTML = 'Calculated approximations. Official data: <a href="https://tides.gc.ca/en/stations/7735" target="_blank" style="color:var(--teal-accent)">CHS</a>';
+      g.appendChild(n);
+    }
+
+    function buildExtended(d) {
+      const g = document.getElementById('extendedGrid'); g.innerHTML = '';
+      const dy = d.daily;
+      for (let i = 0; i < dy.time.length; i++) {
+        const dt = new Date(dy.time[i]);
+        const div = document.createElement('div'); div.className = 'extended-day';
+        div.innerHTML = `<div class="day-name">${i === 0 ? 'Today' : dt.toLocaleDateString('en-CA', {weekday:'long'})}</div>
+          <div class="day-icon">${weatherIcons[dy.weather_code[i]] || '🌤️'}</div>
+          <div class="day-wind-range">${msToKnots(dy.wind_speed_10m_max[i])} kts (G${msToKnots(dy.wind_gusts_10m_max[i])})</div>
+          <div class="day-temp-range">${Math.round(dy.temperature_2m_min[i])}° / ${Math.round(dy.temperature_2m_max[i])}°</div>
+          ${dy.precipitation_sum[i] > 0.5 ? `<div class="day-precip">💧 ${dy.precipitation_sum[i].toFixed(1)} mm</div>` : ''}`;
+        g.appendChild(div);
+      }
+    }
+
+    async function initialize() {
+      document.getElementById('loadingState').style.display = 'flex';
+      document.getElementById('errorState').style.display = 'none';
+      document.getElementById('mainContent').classList.remove('loaded');
+      
+      try {
+        const weather = await fetchWeatherData();
+        const tides = calculateTides();
+        updateCurrent(weather);
+        buildForecast(weather);
+        buildTides(tides);
+        buildExtended(weather);
+        document.getElementById('loadingState').style.display = 'none';
+        document.getElementById('mainContent').classList.add('loaded');
+      } catch (e) {
+        console.error('Error:', e);
+        showError(e.message);
+      }
+    }
+
+    initialize();
+    setInterval(initialize, CONFIG.refreshInterval);
+    document.getElementById('refreshBtn').addEventListener('click', initialize);
+  </script>
+</body>
+</html>
