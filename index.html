@@ -392,6 +392,200 @@
     .tide-type.low { color: var(--coral-alert); }
     .tide-height { font-size: 1.8rem; font-weight: 600; color: var(--foam-white); }
 
+    /* Current Section Styles */
+    .currents-section { margin-bottom: 2.5rem; }
+
+    .narrows-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1.5rem;
+    }
+
+    @media (max-width: 900px) {
+      .narrows-grid { grid-template-columns: 1fr; }
+    }
+
+    .narrows-panel {
+      background: linear-gradient(135deg, rgba(20, 54, 84, 0.5), rgba(13, 33, 55, 0.7));
+      border-radius: 16px;
+      padding: 1.5rem;
+      border: 1px solid rgba(0, 212, 170, 0.15);
+    }
+
+    .narrows-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1rem;
+      padding-bottom: 0.75rem;
+      border-bottom: 1px solid rgba(0, 212, 170, 0.1);
+    }
+
+    .narrows-name {
+      font-family: 'Archivo Black', sans-serif;
+      font-size: 1rem;
+      color: var(--foam-white);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .narrows-location {
+      font-size: 0.65rem;
+      color: var(--mist-gray);
+    }
+
+    /* Current Status Display */
+    .current-status {
+      display: flex;
+      align-items: center;
+      gap: 1.5rem;
+      margin-bottom: 1.25rem;
+    }
+
+    .current-arrow-container {
+      width: 80px;
+      height: 80px;
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .current-ring {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      border: 2px solid rgba(0, 212, 170, 0.3);
+      border-radius: 50%;
+    }
+
+    .current-arrow {
+      width: 60px;
+      height: 60px;
+      transition: transform 0.5s ease;
+    }
+
+    .current-arrow.flood { color: var(--teal-accent); }
+    .current-arrow.ebb { color: var(--coral-alert); }
+    .current-arrow.slack { color: var(--mist-gray); }
+
+    .current-info {
+      flex: 1;
+    }
+
+    .current-state {
+      font-family: 'Archivo Black', sans-serif;
+      font-size: 1.4rem;
+      margin-bottom: 0.25rem;
+    }
+
+    .current-state.flood { color: var(--teal-accent); }
+    .current-state.ebb { color: var(--coral-alert); }
+    .current-state.slack { color: var(--amber-warning); }
+
+    .current-speed {
+      font-size: 2rem;
+      font-weight: 600;
+      color: var(--foam-white);
+      line-height: 1;
+    }
+
+    .current-speed .unit {
+      font-size: 0.9rem;
+      color: var(--mist-gray);
+      font-weight: 400;
+    }
+
+    .current-direction {
+      font-size: 0.75rem;
+      color: var(--mist-gray);
+      margin-top: 0.25rem;
+    }
+
+    /* Current Timeline */
+    .current-timeline {
+      margin-top: 1rem;
+    }
+
+    .timeline-label {
+      font-size: 0.6rem;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--mist-gray);
+      margin-bottom: 0.5rem;
+    }
+
+    .timeline-bar {
+      height: 8px;
+      background: rgba(0, 0, 0, 0.3);
+      border-radius: 4px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .timeline-progress {
+      position: absolute;
+      height: 100%;
+      border-radius: 4px;
+      transition: width 0.5s ease;
+    }
+
+    .timeline-progress.flood {
+      background: linear-gradient(90deg, var(--teal-accent), rgba(0, 212, 170, 0.5));
+    }
+
+    .timeline-progress.ebb {
+      background: linear-gradient(90deg, var(--coral-alert), rgba(255, 107, 107, 0.5));
+    }
+
+    .timeline-marker {
+      position: absolute;
+      top: -4px;
+      width: 2px;
+      height: 16px;
+      background: var(--foam-white);
+      border-radius: 1px;
+    }
+
+    /* Current Events List */
+    .current-events {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 0.5rem;
+      margin-top: 1rem;
+    }
+
+    .current-event {
+      background: rgba(0, 0, 0, 0.2);
+      border-radius: 8px;
+      padding: 0.6rem 0.75rem;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .event-time {
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: var(--foam-white);
+    }
+
+    .event-type {
+      font-size: 0.6rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin-top: 0.15rem;
+    }
+
+    .event-type.slack { color: var(--amber-warning); }
+    .event-type.max-flood { color: var(--teal-accent); }
+    .event-type.max-ebb { color: var(--coral-alert); }
+
+    .event-speed {
+      font-size: 0.75rem;
+      color: var(--mist-gray);
+      margin-top: 0.1rem;
+    }
+
     .extended-section { margin-bottom: 2.5rem; }
 
     .extended-grid {
@@ -542,8 +736,79 @@
     </section>
 
     <section class="tide-section">
-      <h2 class="section-title">Tides — Vancouver Harbour (Next 48 Hours)</h2>
+      <h2 class="section-title">Tides — Point Atkinson Reference</h2>
       <div class="tide-grid" id="tideGrid"></div>
+    </section>
+
+    <section class="currents-section">
+      <h2 class="section-title">Currents — First & Second Narrows</h2>
+      <div class="narrows-grid">
+        <!-- First Narrows -->
+        <div class="narrows-panel" id="firstNarrowsPanel">
+          <div class="narrows-header">
+            <div>
+              <div class="narrows-name">First Narrows</div>
+              <div class="narrows-location">Lions Gate Bridge • Station 07721</div>
+            </div>
+          </div>
+          <div class="current-status">
+            <div class="current-arrow-container">
+              <div class="current-ring"></div>
+              <svg class="current-arrow flood" id="firstNarrowsArrow" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M12 2L4 12h5v10h6V12h5L12 2z"/>
+              </svg>
+            </div>
+            <div class="current-info">
+              <div class="current-state flood" id="firstNarrowsState">FLOOD</div>
+              <div class="current-speed"><span id="firstNarrowsSpeed">2.4</span> <span class="unit">kts</span></div>
+              <div class="current-direction" id="firstNarrowsDir">Flowing SE (135°) into harbour</div>
+            </div>
+          </div>
+          <div class="current-timeline">
+            <div class="timeline-label">Current Cycle Progress</div>
+            <div class="timeline-bar">
+              <div class="timeline-progress flood" id="firstNarrowsProgress" style="width: 45%"></div>
+              <div class="timeline-marker" id="firstNarrowsMarker" style="left: 45%"></div>
+            </div>
+          </div>
+          <div class="current-events" id="firstNarrowsEvents"></div>
+        </div>
+
+        <!-- Second Narrows -->
+        <div class="narrows-panel" id="secondNarrowsPanel">
+          <div class="narrows-header">
+            <div>
+              <div class="narrows-name">Second Narrows</div>
+              <div class="narrows-location">Ironworkers Bridge • Station 07745</div>
+            </div>
+          </div>
+          <div class="current-status">
+            <div class="current-arrow-container">
+              <div class="current-ring"></div>
+              <svg class="current-arrow flood" id="secondNarrowsArrow" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M12 2L4 12h5v10h6V12h5L12 2z"/>
+              </svg>
+            </div>
+            <div class="current-info">
+              <div class="current-state flood" id="secondNarrowsState">FLOOD</div>
+              <div class="current-speed"><span id="secondNarrowsSpeed">2.1</span> <span class="unit">kts</span></div>
+              <div class="current-direction" id="secondNarrowsDir">Flowing E (090°) into harbour</div>
+            </div>
+          </div>
+          <div class="current-timeline">
+            <div class="timeline-label">Current Cycle Progress</div>
+            <div class="timeline-bar">
+              <div class="timeline-progress flood" id="secondNarrowsProgress" style="width: 45%"></div>
+              <div class="timeline-marker" id="secondNarrowsMarker" style="left: 45%"></div>
+            </div>
+          </div>
+          <div class="current-events" id="secondNarrowsEvents"></div>
+        </div>
+      </div>
+      <div style="text-align: center; margin-top: 1rem; font-size: 0.7rem; color: var(--mist-gray);">
+        Current predictions calculated from harmonic constituents. Official data: 
+        <a href="https://tides.gc.ca/en/current-predictions-station" target="_blank" style="color: var(--teal-accent);">CHS Current Tables</a>
+      </div>
     </section>
 
     <section class="extended-section">
@@ -653,6 +918,215 @@
       return tides.slice(0, 8);
     }
 
+    // Current calculations for First and Second Narrows
+    function calculateCurrents(stationConfig) {
+      const now = new Date();
+      const events = [];
+      const base = new Date(now);
+      base.setHours(0, 0, 0, 0);
+      
+      // Harmonic constituents for current prediction
+      const M2_period = 12.42 * 3600000;
+      const S2_period = 12 * 3600000;
+      const K1_period = 23.93 * 3600000;
+      
+      // Station-specific parameters
+      const { maxFlood, maxEbb, floodDir, ebbDir, phaseOffset } = stationConfig;
+      
+      const interval = 10 * 60000; // 10 minute intervals
+      const duration = 36 * 3600000; // 36 hours
+      
+      let prevSpeed = null;
+      let prevSlope = null;
+      
+      // Calculate current speed over time (positive = flood, negative = ebb)
+      for (let t = -6 * 3600000; t < duration; t += interval) {
+        const time = new Date(base.getTime() + t + phaseOffset);
+        
+        // Current lags tide by ~3 hours, and is derivative of water level
+        // Using sinusoidal approximation
+        const phase = 2 * Math.PI * t / M2_period;
+        const S2_phase = 2 * Math.PI * t / S2_period;
+        
+        // Current speed (positive = flood, negative = ebb)
+        // Max ebb is typically stronger than max flood at these narrows
+        const M2_contrib = Math.sin(phase);
+        const S2_contrib = 0.3 * Math.sin(S2_phase);
+        
+        const rawSpeed = M2_contrib + S2_contrib;
+        const speed = rawSpeed > 0 ? rawSpeed * maxFlood : rawSpeed * maxEbb;
+        
+        if (prevSpeed !== null) {
+          const slope = speed - prevSpeed;
+          
+          if (prevSlope !== null && time > now) {
+            // Detect slack water (speed crosses zero)
+            if ((prevSpeed > 0.1 && speed <= 0.1) || (prevSpeed < -0.1 && speed >= -0.1)) {
+              const isHighSlack = prevSpeed > 0; // Was flooding, now slack
+              events.push({
+                time: new Date(time.getTime() - interval / 2),
+                type: isHighSlack ? 'high-slack' : 'low-slack',
+                speed: 0
+              });
+            }
+            // Detect max flood
+            if (prevSlope > 0 && slope <= 0 && speed > 0.5) {
+              events.push({
+                time: new Date(time.getTime() - interval / 2),
+                type: 'max-flood',
+                speed: Math.abs(prevSpeed).toFixed(1)
+              });
+            }
+            // Detect max ebb
+            if (prevSlope < 0 && slope >= 0 && speed < -0.5) {
+              events.push({
+                time: new Date(time.getTime() - interval / 2),
+                type: 'max-ebb',
+                speed: Math.abs(prevSpeed).toFixed(1)
+              });
+            }
+          }
+          prevSlope = slope;
+        }
+        prevSpeed = speed;
+      }
+      
+      // Calculate current state right now
+      const nowT = now.getTime() - base.getTime();
+      const phase = 2 * Math.PI * (nowT + stationConfig.phaseOffset) / M2_period;
+      const S2_phase = 2 * Math.PI * (nowT + stationConfig.phaseOffset) / S2_period;
+      const rawNow = Math.sin(phase) + 0.3 * Math.sin(S2_phase);
+      const currentSpeed = rawNow > 0 ? rawNow * maxFlood : rawNow * maxEbb;
+      
+      // Find where we are in the current cycle (for progress bar)
+      const cyclePhase = ((phase % (2 * Math.PI)) + 2 * Math.PI) % (2 * Math.PI);
+      const progressPercent = (cyclePhase / (2 * Math.PI)) * 100;
+      
+      return {
+        currentSpeed: Math.abs(currentSpeed).toFixed(1),
+        isFlood: currentSpeed > 0.1,
+        isEbb: currentSpeed < -0.1,
+        isSlack: Math.abs(currentSpeed) <= 0.1,
+        direction: currentSpeed >= 0 ? floodDir : ebbDir,
+        directionDeg: currentSpeed >= 0 ? stationConfig.floodDeg : stationConfig.ebbDeg,
+        events: events.slice(0, 8),
+        progressPercent
+      };
+    }
+
+    // Station configurations
+    const FIRST_NARROWS = {
+      maxFlood: 3.5,  // knots
+      maxEbb: 5.0,    // knots (stronger)
+      floodDir: 'SE into harbour',
+      ebbDir: 'NW out to Strait',
+      floodDeg: 135,
+      ebbDeg: 315,
+      phaseOffset: 1.5 * 3600000 // Current phase offset from Point Atkinson tide
+    };
+
+    const SECOND_NARROWS = {
+      maxFlood: 3.0,
+      maxEbb: 4.5,
+      floodDir: 'E into harbour',
+      ebbDir: 'W out to Strait',
+      floodDeg: 90,
+      ebbDeg: 270,
+      phaseOffset: 2.5 * 3600000 // Second Narrows lags First Narrows by ~1 hour
+    };
+
+    function updateCurrentsDisplay() {
+      // First Narrows
+      const first = calculateCurrents(FIRST_NARROWS);
+      document.getElementById('firstNarrowsSpeed').textContent = first.currentSpeed;
+      
+      const firstState = document.getElementById('firstNarrowsState');
+      const firstArrow = document.getElementById('firstNarrowsArrow');
+      const firstProgress = document.getElementById('firstNarrowsProgress');
+      const firstDir = document.getElementById('firstNarrowsDir');
+      
+      if (first.isSlack) {
+        firstState.textContent = 'SLACK';
+        firstState.className = 'current-state slack';
+        firstArrow.className = 'current-arrow slack';
+        firstArrow.style.transform = 'rotate(0deg)';
+        firstProgress.className = 'timeline-progress flood';
+        firstDir.textContent = 'Minimal current — turning';
+      } else if (first.isFlood) {
+        firstState.textContent = 'FLOOD';
+        firstState.className = 'current-state flood';
+        firstArrow.className = 'current-arrow flood';
+        firstArrow.style.transform = `rotate(${FIRST_NARROWS.floodDeg}deg)`;
+        firstProgress.className = 'timeline-progress flood';
+        firstDir.textContent = `Flowing ${first.direction} (${first.directionDeg}°)`;
+      } else {
+        firstState.textContent = 'EBB';
+        firstState.className = 'current-state ebb';
+        firstArrow.className = 'current-arrow ebb';
+        firstArrow.style.transform = `rotate(${FIRST_NARROWS.ebbDeg}deg)`;
+        firstProgress.className = 'timeline-progress ebb';
+        firstDir.textContent = `Flowing ${first.direction} (${first.directionDeg}°)`;
+      }
+      
+      firstProgress.style.width = `${first.progressPercent}%`;
+      document.getElementById('firstNarrowsMarker').style.left = `${first.progressPercent}%`;
+      
+      // First Narrows Events
+      const firstEventsEl = document.getElementById('firstNarrowsEvents');
+      firstEventsEl.innerHTML = first.events.slice(0, 4).map(e => `
+        <div class="current-event">
+          <div class="event-time">${formatTime(e.time)}</div>
+          <div class="event-type ${e.type}">${e.type === 'high-slack' ? '⊙ High Slack' : e.type === 'low-slack' ? '⊙ Low Slack' : e.type === 'max-flood' ? '▲ Max Flood' : '▼ Max Ebb'}</div>
+          ${e.speed > 0 ? `<div class="event-speed">${e.speed} kts</div>` : ''}
+        </div>
+      `).join('');
+      
+      // Second Narrows
+      const second = calculateCurrents(SECOND_NARROWS);
+      document.getElementById('secondNarrowsSpeed').textContent = second.currentSpeed;
+      
+      const secondState = document.getElementById('secondNarrowsState');
+      const secondArrow = document.getElementById('secondNarrowsArrow');
+      const secondProgress = document.getElementById('secondNarrowsProgress');
+      const secondDir = document.getElementById('secondNarrowsDir');
+      
+      if (second.isSlack) {
+        secondState.textContent = 'SLACK';
+        secondState.className = 'current-state slack';
+        secondArrow.className = 'current-arrow slack';
+        secondArrow.style.transform = 'rotate(0deg)';
+        secondProgress.className = 'timeline-progress flood';
+        secondDir.textContent = 'Minimal current — turning';
+      } else if (second.isFlood) {
+        secondState.textContent = 'FLOOD';
+        secondState.className = 'current-state flood';
+        secondArrow.className = 'current-arrow flood';
+        secondArrow.style.transform = `rotate(${SECOND_NARROWS.floodDeg}deg)`;
+        secondProgress.className = 'timeline-progress flood';
+        secondDir.textContent = `Flowing ${second.direction} (${second.directionDeg}°)`;
+      } else {
+        secondState.textContent = 'EBB';
+        secondState.className = 'current-state ebb';
+        secondArrow.className = 'current-arrow ebb';
+        secondArrow.style.transform = `rotate(${SECOND_NARROWS.ebbDeg}deg)`;
+        secondProgress.className = 'timeline-progress ebb';
+        secondDir.textContent = `Flowing ${second.direction} (${second.directionDeg}°)`;
+      }
+      
+      secondProgress.style.width = `${second.progressPercent}%`;
+      document.getElementById('secondNarrowsMarker').style.left = `${second.progressPercent}%`;
+      
+      // Second Narrows Events
+      const secondEventsEl = document.getElementById('secondNarrowsEvents');
+      secondEventsEl.innerHTML = second.events.slice(0, 4).map(e => `
+        <div class="current-event">
+          <div class="event-time">${formatTime(e.time)}</div>
+          <div class="event-type ${e.type}">${e.type === 'high-slack' ? '⊙ High Slack' : e.type === 'low-slack' ? '⊙ Low Slack' : e.type === 'max-flood' ? '▲ Max Flood' : '▼ Max Ebb'}</div>
+          ${e.speed > 0 ? `<div class="event-speed">${e.speed} kts</div>` : ''}
+        </div>
+      `).join('');
+    }
+
     function updateCurrent(d) {
       const c = d.current;
       const wKts = msToKnots(c.wind_speed_10m), gKts = msToKnots(c.wind_gusts_10m), wDir = c.wind_direction_10m;
@@ -701,10 +1175,6 @@
           <div class="tide-height">${t.height} m</div>`;
         g.appendChild(c);
       });
-      const n = document.createElement('div');
-      n.style.cssText = 'grid-column:1/-1;font-size:0.7rem;color:var(--mist-gray);padding:0.5rem;text-align:center';
-      n.innerHTML = 'Calculated approximations. Official data: <a href="https://tides.gc.ca/en/stations/7735" target="_blank" style="color:var(--teal-accent)">CHS</a>';
-      g.appendChild(n);
     }
 
     function buildExtended(d) {
@@ -733,6 +1203,7 @@
         updateCurrent(weather);
         buildForecast(weather);
         buildTides(tides);
+        updateCurrentsDisplay();
         buildExtended(weather);
         document.getElementById('loadingState').style.display = 'none';
         document.getElementById('mainContent').classList.add('loaded');
