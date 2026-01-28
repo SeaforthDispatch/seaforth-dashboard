@@ -586,6 +586,187 @@
       margin-top: 0.1rem;
     }
 
+    /* Slack Window Visual Timeline */
+    .slack-windows {
+      margin-top: 1.25rem;
+      padding-top: 1rem;
+      border-top: 1px solid rgba(0, 212, 170, 0.1);
+    }
+
+    .slack-windows-title {
+      font-size: 0.65rem;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--mist-gray);
+      margin-bottom: 0.75rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .slack-windows-title::before {
+      content: '◈';
+      color: var(--amber-warning);
+    }
+
+    .window-card {
+      background: rgba(0, 0, 0, 0.25);
+      border-radius: 10px;
+      padding: 0.85rem;
+      margin-bottom: 0.6rem;
+      border-left: 3px solid var(--amber-warning);
+    }
+
+    .window-card.active {
+      background: rgba(255, 170, 0, 0.15);
+      border-left-color: var(--teal-glow);
+    }
+
+    .window-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 0.5rem;
+    }
+
+    .window-type {
+      font-family: 'Archivo Black', sans-serif;
+      font-size: 0.75rem;
+      color: var(--amber-warning);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .window-card.active .window-type {
+      color: var(--teal-glow);
+    }
+
+    .window-badge {
+      font-size: 0.55rem;
+      padding: 0.2rem 0.5rem;
+      border-radius: 4px;
+      background: rgba(0, 212, 170, 0.2);
+      color: var(--teal-accent);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .window-card.active .window-badge {
+      background: var(--teal-accent);
+      color: var(--deep-navy);
+      font-weight: 600;
+    }
+
+    .window-visual {
+      position: relative;
+      height: 32px;
+      background: rgba(0, 0, 0, 0.3);
+      border-radius: 6px;
+      margin: 0.5rem 0;
+      overflow: hidden;
+    }
+
+    .window-safe-zone {
+      position: absolute;
+      height: 100%;
+      background: linear-gradient(90deg, 
+        rgba(255, 170, 0, 0.1), 
+        rgba(255, 170, 0, 0.3), 
+        rgba(255, 170, 0, 0.3),
+        rgba(255, 170, 0, 0.1)
+      );
+      border-left: 2px solid var(--amber-warning);
+      border-right: 2px solid var(--amber-warning);
+    }
+
+    .window-slack-marker {
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      width: 3px;
+      background: var(--foam-white);
+      box-shadow: 0 0 8px rgba(255, 255, 255, 0.5);
+    }
+
+    .window-now-marker {
+      position: absolute;
+      top: -4px;
+      bottom: -4px;
+      width: 2px;
+      background: var(--teal-glow);
+      box-shadow: 0 0 10px var(--teal-glow);
+      z-index: 10;
+    }
+
+    .window-now-marker::before {
+      content: 'NOW';
+      position: absolute;
+      top: -14px;
+      left: 50%;
+      transform: translateX(-50%);
+      font-size: 0.45rem;
+      color: var(--teal-glow);
+      font-weight: 600;
+      letter-spacing: 0.05em;
+    }
+
+    .window-flood-zone {
+      position: absolute;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(0, 212, 170, 0.15));
+    }
+
+    .window-ebb-zone {
+      position: absolute;
+      height: 100%;
+      background: linear-gradient(90deg, rgba(255, 107, 107, 0.15), transparent);
+    }
+
+    .window-times {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      font-size: 0.7rem;
+      margin-top: 0.4rem;
+    }
+
+    .window-time-block {
+      text-align: center;
+    }
+
+    .window-time-block.center {
+      flex: 1;
+    }
+
+    .window-time-label {
+      font-size: 0.5rem;
+      color: var(--mist-gray);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .window-time-value {
+      font-weight: 600;
+      color: var(--foam-white);
+      font-size: 0.85rem;
+    }
+
+    .window-time-value.slack {
+      color: var(--amber-warning);
+    }
+
+    .window-duration {
+      font-size: 0.6rem;
+      color: var(--mist-gray);
+      text-align: center;
+      margin-top: 0.3rem;
+    }
+
+    .window-duration strong {
+      color: var(--amber-warning);
+      font-weight: 600;
+    }
+
     .extended-section { margin-bottom: 2.5rem; }
 
     .extended-grid {
@@ -772,6 +953,7 @@
             </div>
           </div>
           <div class="current-events" id="firstNarrowsEvents"></div>
+          <div class="slack-windows" id="firstNarrowsWindows"></div>
         </div>
 
         <!-- Second Narrows -->
@@ -803,6 +985,7 @@
             </div>
           </div>
           <div class="current-events" id="secondNarrowsEvents"></div>
+          <div class="slack-windows" id="secondNarrowsWindows"></div>
         </div>
       </div>
       <div style="text-align: center; margin-top: 1rem; font-size: 0.7rem; color: var(--mist-gray);">
@@ -922,6 +1105,7 @@
     function calculateCurrents(stationConfig) {
       const now = new Date();
       const events = [];
+      const slackWindows = [];
       const base = new Date(now);
       base.setHours(0, 0, 0, 0);
       
@@ -933,28 +1117,29 @@
       // Station-specific parameters
       const { maxFlood, maxEbb, floodDir, ebbDir, phaseOffset } = stationConfig;
       
-      const interval = 10 * 60000; // 10 minute intervals
+      const interval = 5 * 60000; // 5 minute intervals for better precision
       const duration = 36 * 3600000; // 36 hours
       
       let prevSpeed = null;
       let prevSlope = null;
       
+      // Store all speed data points for window calculation
+      const speedData = [];
+      
       // Calculate current speed over time (positive = flood, negative = ebb)
       for (let t = -6 * 3600000; t < duration; t += interval) {
         const time = new Date(base.getTime() + t + phaseOffset);
         
-        // Current lags tide by ~3 hours, and is derivative of water level
-        // Using sinusoidal approximation
         const phase = 2 * Math.PI * t / M2_period;
         const S2_phase = 2 * Math.PI * t / S2_period;
         
-        // Current speed (positive = flood, negative = ebb)
-        // Max ebb is typically stronger than max flood at these narrows
         const M2_contrib = Math.sin(phase);
         const S2_contrib = 0.3 * Math.sin(S2_phase);
         
         const rawSpeed = M2_contrib + S2_contrib;
         const speed = rawSpeed > 0 ? rawSpeed * maxFlood : rawSpeed * maxEbb;
+        
+        speedData.push({ time, speed, t });
         
         if (prevSpeed !== null) {
           const slope = speed - prevSpeed;
@@ -962,7 +1147,7 @@
           if (prevSlope !== null && time > now) {
             // Detect slack water (speed crosses zero)
             if ((prevSpeed > 0.1 && speed <= 0.1) || (prevSpeed < -0.1 && speed >= -0.1)) {
-              const isHighSlack = prevSpeed > 0; // Was flooding, now slack
+              const isHighSlack = prevSpeed > 0;
               events.push({
                 time: new Date(time.getTime() - interval / 2),
                 type: isHighSlack ? 'high-slack' : 'low-slack',
@@ -991,6 +1176,52 @@
         prevSpeed = speed;
       }
       
+      // Calculate 1-knot windows around each slack
+      // Find slack times and then find when current drops below/rises above 1 knot
+      let inWindow = false;
+      let windowStart = null;
+      let windowSlack = null;
+      let windowType = null;
+      let wasPositive = null;
+      
+      for (let i = 0; i < speedData.length; i++) {
+        const { time, speed } = speedData[i];
+        const absSpeed = Math.abs(speed);
+        
+        // Entering 1-knot window
+        if (!inWindow && absSpeed <= 1.0 && time > new Date(now.getTime() - 2 * 3600000)) {
+          inWindow = true;
+          windowStart = time;
+          wasPositive = speed > 0;
+        }
+        
+        // At slack (crossing zero)
+        if (inWindow && wasPositive !== null) {
+          if ((wasPositive && speed <= 0) || (!wasPositive && speed > 0)) {
+            windowSlack = time;
+            windowType = wasPositive ? 'high-slack' : 'low-slack';
+            wasPositive = speed > 0;
+          }
+        }
+        
+        // Exiting 1-knot window
+        if (inWindow && absSpeed > 1.0) {
+          if (windowSlack && windowStart) {
+            slackWindows.push({
+              start: windowStart,
+              slack: windowSlack,
+              end: time,
+              type: windowType,
+              nextDirection: speed > 0 ? 'flood' : 'ebb'
+            });
+          }
+          inWindow = false;
+          windowStart = null;
+          windowSlack = null;
+          windowType = null;
+        }
+      }
+      
       // Calculate current state right now
       const nowT = now.getTime() - base.getTime();
       const phase = 2 * Math.PI * (nowT + stationConfig.phaseOffset) / M2_period;
@@ -1007,9 +1238,11 @@
         isFlood: currentSpeed > 0.1,
         isEbb: currentSpeed < -0.1,
         isSlack: Math.abs(currentSpeed) <= 0.1,
+        inOneKnotWindow: Math.abs(currentSpeed) <= 1.0,
         direction: currentSpeed >= 0 ? floodDir : ebbDir,
         directionDeg: currentSpeed >= 0 ? stationConfig.floodDeg : stationConfig.ebbDeg,
         events: events.slice(0, 8),
+        slackWindows: slackWindows.filter(w => w.end > now).slice(0, 3),
         progressPercent
       };
     }
@@ -1081,6 +1314,9 @@
         </div>
       `).join('');
       
+      // First Narrows Slack Windows
+      renderSlackWindows('firstNarrowsWindows', first.slackWindows, first.inOneKnotWindow);
+      
       // Second Narrows
       const second = calculateCurrents(SECOND_NARROWS);
       document.getElementById('secondNarrowsSpeed').textContent = second.currentSpeed;
@@ -1125,6 +1361,75 @@
           ${e.speed > 0 ? `<div class="event-speed">${e.speed} kts</div>` : ''}
         </div>
       `).join('');
+      
+      // Second Narrows Slack Windows
+      renderSlackWindows('secondNarrowsWindows', second.slackWindows, second.inOneKnotWindow);
+    }
+    
+    // Render slack windows visual
+    function renderSlackWindows(elementId, windows, currentlyInWindow) {
+      const container = document.getElementById(elementId);
+      const now = new Date();
+      
+      if (windows.length === 0) {
+        container.innerHTML = '<div class="slack-windows-title">1-Knot Safe Passage Windows</div><div style="color: var(--mist-gray); font-size: 0.75rem;">Calculating windows...</div>';
+        return;
+      }
+      
+      let html = '<div class="slack-windows-title">1-Knot Safe Passage Windows</div>';
+      
+      windows.forEach((w, idx) => {
+        const duration = Math.round((w.end - w.start) / 60000); // minutes
+        const isActive = now >= w.start && now <= w.end;
+        const isPast = now > w.end;
+        
+        if (isPast) return;
+        
+        // Calculate positions for the visual bar (as percentage)
+        const totalSpan = w.end - w.start;
+        const slackPos = ((w.slack - w.start) / totalSpan) * 100;
+        const nowPos = isActive ? ((now - w.start) / totalSpan) * 100 : -1;
+        
+        // Determine what comes before and after slack
+        const beforeSlack = w.type === 'high-slack' ? 'flood' : 'ebb';
+        const afterSlack = w.nextDirection;
+        
+        html += `
+          <div class="window-card ${isActive ? 'active' : ''}">
+            <div class="window-header">
+              <div class="window-type">${w.type === 'high-slack' ? 'High Slack' : 'Low Slack'} Window</div>
+              ${isActive ? '<div class="window-badge">● NOW IN WINDOW</div>' : idx === 0 ? '<div class="window-badge">Next</div>' : ''}
+            </div>
+            <div class="window-visual">
+              <div class="window-${beforeSlack}-zone" style="left: 0; width: ${slackPos}%"></div>
+              <div class="window-${afterSlack}-zone" style="left: ${slackPos}%; width: ${100 - slackPos}%"></div>
+              <div class="window-safe-zone" style="left: 0; width: 100%"></div>
+              <div class="window-slack-marker" style="left: ${slackPos}%"></div>
+              ${isActive ? `<div class="window-now-marker" style="left: ${nowPos}%"></div>` : ''}
+            </div>
+            <div class="window-times">
+              <div class="window-time-block">
+                <div class="window-time-label">Window Opens</div>
+                <div class="window-time-value">${formatTime(w.start)}</div>
+              </div>
+              <div class="window-time-block center">
+                <div class="window-time-label">Slack</div>
+                <div class="window-time-value slack">${formatTime(w.slack)}</div>
+              </div>
+              <div class="window-time-block" style="text-align: right">
+                <div class="window-time-label">Window Closes</div>
+                <div class="window-time-value">${formatTime(w.end)}</div>
+              </div>
+            </div>
+            <div class="window-duration">
+              Window duration: <strong>${duration} minutes</strong> 
+              ${isActive ? ` • ${Math.round((w.end - now) / 60000)} min remaining` : ''}
+            </div>
+          </div>
+        `;
+      });
+      
+      container.innerHTML = html;
     }
 
     function updateCurrent(d) {
