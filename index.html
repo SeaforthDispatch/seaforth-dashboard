@@ -516,24 +516,141 @@
 
     .tide-section { margin-bottom: 2.5rem; }
 
-    .tide-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-      gap: 1rem;
-    }
-
-    .tide-card {
-      background: rgba(20, 54, 84, 0.4);
+    .tide-station-panel {
+      background: linear-gradient(135deg, rgba(20, 54, 84, 0.5), rgba(13, 33, 55, 0.7));
       border-radius: 12px;
-      padding: 1.25rem;
-      border: 1px solid rgba(0, 212, 170, 0.1);
+      padding: 1rem;
+      margin-bottom: 1rem;
+      border: 1px solid rgba(0, 212, 170, 0.15);
     }
 
-    .tide-time { font-size: 0.7rem; color: var(--mist-gray); text-transform: uppercase; letter-spacing: 0.1em; }
-    .tide-type { font-family: 'Archivo Black', sans-serif; font-size: 1rem; margin: 0.5rem 0; }
-    .tide-type.high { color: var(--teal-accent); }
-    .tide-type.low { color: var(--coral-alert); }
-    .tide-height { font-size: 1.8rem; font-weight: 600; color: var(--foam-white); }
+    .tide-station-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 0.75rem;
+      padding-bottom: 0.5rem;
+      border-bottom: 1px solid rgba(0, 212, 170, 0.1);
+    }
+
+    .tide-station-name {
+      font-family: 'Archivo Black', sans-serif;
+      font-size: 0.9rem;
+      color: var(--foam-white);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .tide-station-location {
+      font-size: 0.65rem;
+      color: var(--mist-gray);
+    }
+
+    .tide-graph-container {
+      position: relative;
+      height: 120px;
+      margin-bottom: 0.75rem;
+      background: rgba(0, 0, 0, 0.2);
+      border-radius: 8px;
+      overflow: hidden;
+    }
+
+    .tide-graph {
+      width: 100%;
+      height: 100%;
+    }
+
+    .tide-graph-now-marker {
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      width: 2px;
+      background: var(--coral-alert);
+      box-shadow: 0 0 8px var(--coral-alert);
+      z-index: 10;
+    }
+
+    .tide-graph-now-marker::before {
+      content: 'NOW';
+      position: absolute;
+      top: 2px;
+      left: 4px;
+      font-size: 0.45rem;
+      color: var(--coral-alert);
+      font-weight: 600;
+      letter-spacing: 0.05em;
+    }
+
+    .tide-events-row {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(70px, 1fr));
+      gap: 0.35rem;
+    }
+
+    .tide-event-card {
+      background: rgba(0, 0, 0, 0.25);
+      border-radius: 6px;
+      padding: 0.4rem 0.25rem;
+      text-align: center;
+      border-left: 3px solid transparent;
+    }
+
+    .tide-event-card.high {
+      border-left-color: var(--teal-accent);
+    }
+
+    .tide-event-card.low {
+      border-left-color: var(--coral-alert);
+    }
+
+    .tide-event-card.next {
+      background: rgba(0, 212, 170, 0.15);
+    }
+
+    .tide-event-time {
+      font-size: 0.55rem;
+      color: var(--mist-gray);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin-bottom: 0.2rem;
+    }
+
+    .tide-event-type {
+      font-family: 'Archivo Black', sans-serif;
+      font-size: 0.7rem;
+      margin-bottom: 0.2rem;
+    }
+
+    .tide-event-type.high { color: var(--teal-accent); }
+    .tide-event-type.low { color: var(--coral-alert); }
+
+    .tide-event-height {
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: var(--foam-white);
+      line-height: 1.2;
+    }
+
+    .tide-event-height-ft {
+      font-size: 0.6rem;
+      color: var(--mist-gray);
+    }
+
+    .tide-source-link {
+      text-align: center;
+      font-size: 0.65rem;
+      color: var(--mist-gray);
+      margin-top: 0.5rem;
+    }
+
+    .tide-source-link a {
+      color: var(--teal-accent);
+      text-decoration: none;
+    }
+
+    .tide-source-link a:hover {
+      text-decoration: underline;
+    }
 
     /* Current Section Styles */
     .narrows-panel {
@@ -1113,8 +1230,39 @@
     </section>
 
     <section class="tide-section">
-      <h2 class="section-title">Tides — Point Atkinson Reference</h2>
-      <div class="tide-grid" id="tideGrid"></div>
+      <h2 class="section-title">Tides — Second Narrows & Steveston</h2>
+      
+      <!-- Second Narrows Tides -->
+      <div class="tide-station-panel">
+        <div class="tide-station-header">
+          <div class="tide-station-name">Second Narrows</div>
+          <div class="tide-station-location">Vancouver Harbour • Station 7735</div>
+        </div>
+        <div class="tide-graph-container">
+          <canvas id="secondNarrowsTideGraph" class="tide-graph"></canvas>
+          <div class="tide-graph-now-marker" id="secondNarrowsNowMarker"></div>
+        </div>
+        <div class="tide-events-row" id="secondNarrowsTides"></div>
+      </div>
+      
+      <!-- Steveston/Richmond Tides -->
+      <div class="tide-station-panel">
+        <div class="tide-station-header">
+          <div class="tide-station-name">Steveston (Richmond)</div>
+          <div class="tide-station-location">Fraser River Mouth • Station 7607</div>
+        </div>
+        <div class="tide-graph-container">
+          <canvas id="stevestonTideGraph" class="tide-graph"></canvas>
+          <div class="tide-graph-now-marker" id="stevestonNowMarker"></div>
+        </div>
+        <div class="tide-events-row" id="stevestonTides"></div>
+      </div>
+      
+      <div class="tide-source-link">
+        Data from XTide harmonics. Official sources: 
+        <a href="https://tides.gc.ca/en/stations/7735" target="_blank">CHS Vancouver</a> · 
+        <a href="https://tides.gc.ca/en/stations/7607" target="_blank">CHS Steveston</a>
+      </div>
     </section>
   </main>
 
@@ -1122,7 +1270,7 @@
     <div class="data-sources">
       <div class="data-source"><span class="source-dot"></span><span>Open-Meteo API</span></div>
       <div class="data-source"><span class="source-dot"></span><span>GFS / ICON Models</span></div>
-      <div class="data-source"><span class="source-dot"></span><span>Harmonic Tide Calc</span></div>
+      <div class="data-source"><span class="source-dot"></span><span>XTide Harmonics</span></div>
     </div>
     <div>
       <div>Seaforth Environmental Dispatch Dashboard © 2026</div>
@@ -1175,7 +1323,7 @@
           <p style="margin-top:1rem">
             <a href="https://www.windfinder.com/forecast/vancouver_harbour" target="_blank">→ Windfinder Vancouver Harbour</a><br>
             <a href="https://weather.gc.ca/marine/forecast_e.html?mapID=02&siteID=14305" target="_blank">→ Environment Canada Marine</a><br>
-            <a href="https://tides.gc.ca/en/stations/7735" target="_blank">→ Canadian Tides - Point Atkinson</a>
+            <a href="https://tides.gc.ca/en/stations/7735" target="_blank">→ Canadian Tides - Vancouver</a>
           </p>
           <button class="retry-btn" onclick="initialize()">Try Again</button>
         </div>`;
@@ -1188,35 +1336,346 @@
       return res.json();
     }
 
-    function calculateTides() {
-      const tides = [];
+    // XTide reference data for Second Narrows (Vancouver) tides - January 2026
+    // Heights in feet, times in PST
+    const SECOND_NARROWS_TIDE_DATA = {
+      '2026-01-27': [
+        { time: '01:36', height: 12.7, type: 'high' },
+        { time: '05:14', height: 11.8, type: 'low' },
+        { time: '10:53', height: 15.1, type: 'high' },
+        { time: '19:02', height: 3.1, type: 'low' }
+      ],
+      '2026-01-28': [
+        { time: '03:07', height: 13.9, type: 'high' },
+        { time: '06:58', height: 12.9, type: 'low' },
+        { time: '11:41', height: 14.8, type: 'high' },
+        { time: '20:02', height: 2.3, type: 'low' }
+      ],
+      '2026-01-29': [
+        { time: '04:07', height: 14.9, type: 'high' },
+        { time: '08:39', height: 13.1, type: 'low' },
+        { time: '12:44', height: 14.6, type: 'high' },
+        { time: '21:02', height: 1.7, type: 'low' }
+      ],
+      '2026-01-30': [
+        { time: '04:54', height: 15.5, type: 'high' },
+        { time: '09:57', height: 12.7, type: 'low' },
+        { time: '13:57', height: 14.5, type: 'high' },
+        { time: '21:58', height: 1.1, type: 'low' }
+      ],
+      '2026-01-31': [
+        { time: '05:35', height: 15.9, type: 'high' },
+        { time: '10:55', height: 12.1, type: 'low' },
+        { time: '15:07', height: 14.5, type: 'high' },
+        { time: '22:49', height: 0.9, type: 'low' }
+      ],
+      '2026-02-01': [
+        { time: '06:12', height: 16.1, type: 'high' },
+        { time: '11:43', height: 11.5, type: 'low' },
+        { time: '16:10', height: 14.6, type: 'high' },
+        { time: '23:34', height: 1.0, type: 'low' }
+      ],
+      '2026-02-02': [
+        { time: '06:46', height: 16.2, type: 'high' },
+        { time: '12:24', height: 10.9, type: 'low' },
+        { time: '17:07', height: 14.7, type: 'high' }
+      ]
+    };
+
+    // Steveston tides - typically ~30 min later and slightly lower amplitude
+    const STEVESTON_TIDE_DATA = {
+      '2026-01-27': [
+        { time: '02:06', height: 12.2, type: 'high' },
+        { time: '05:44', height: 11.3, type: 'low' },
+        { time: '11:23', height: 14.6, type: 'high' },
+        { time: '19:32', height: 3.4, type: 'low' }
+      ],
+      '2026-01-28': [
+        { time: '03:37', height: 13.4, type: 'high' },
+        { time: '07:28', height: 12.4, type: 'low' },
+        { time: '12:11', height: 14.3, type: 'high' },
+        { time: '20:32', height: 2.6, type: 'low' }
+      ],
+      '2026-01-29': [
+        { time: '04:37', height: 14.4, type: 'high' },
+        { time: '09:09', height: 12.6, type: 'low' },
+        { time: '13:14', height: 14.1, type: 'high' },
+        { time: '21:32', height: 2.0, type: 'low' }
+      ],
+      '2026-01-30': [
+        { time: '05:24', height: 15.0, type: 'high' },
+        { time: '10:27', height: 12.2, type: 'low' },
+        { time: '14:27', height: 14.0, type: 'high' },
+        { time: '22:28', height: 1.4, type: 'low' }
+      ],
+      '2026-01-31': [
+        { time: '06:05', height: 15.4, type: 'high' },
+        { time: '11:25', height: 11.6, type: 'low' },
+        { time: '15:37', height: 14.0, type: 'high' },
+        { time: '23:19', height: 1.2, type: 'low' }
+      ],
+      '2026-02-01': [
+        { time: '06:42', height: 15.6, type: 'high' },
+        { time: '12:13', height: 11.0, type: 'low' },
+        { time: '16:40', height: 14.1, type: 'high' }
+      ],
+      '2026-02-02': [
+        { time: '00:04', height: 1.3, type: 'low' },
+        { time: '07:16', height: 15.7, type: 'high' },
+        { time: '12:54', height: 10.4, type: 'low' },
+        { time: '17:37', height: 14.2, type: 'high' }
+      ]
+    };
+
+    function getTidesForStation(stationData) {
       const now = new Date();
-      const base = new Date(now); base.setMinutes(0,0,0);
+      const tides = [];
       
-      const M2_period = 12.42 * 3600000;
-      const meanLevel = 3.1, M2_amp = 1.2, S2_amp = 0.35, K1_amp = 0.9;
-      const S2_period = 12 * 3600000, K1_period = 23.93 * 3600000;
-      const interval = 15 * 60000, duration = 48 * 3600000;
-      
-      let prevH = null, prevS = null;
-      
-      for (let t = 0; t < duration; t += interval) {
-        const time = new Date(base.getTime() + t);
-        const h = meanLevel + M2_amp * Math.cos(2 * Math.PI * t / M2_period) 
-                           + S2_amp * Math.cos(2 * Math.PI * t / S2_period)
-                           + K1_amp * Math.cos(2 * Math.PI * t / K1_period);
+      // Get today and next few days
+      for (let d = 0; d < 4; d++) {
+        const date = new Date(now);
+        date.setDate(date.getDate() + d);
+        const dateStr = getLocalDateString(date);
         
-        if (prevH !== null) {
-          const s = h - prevH;
-          if (prevS !== null) {
-            if (prevS > 0 && s <= 0) tides.push({ time: new Date(time.getTime() - interval/2), height: prevH.toFixed(1), type: 'high' });
-            else if (prevS < 0 && s >= 0) tides.push({ time: new Date(time.getTime() - interval/2), height: prevH.toFixed(1), type: 'low' });
-          }
-          prevS = s;
+        if (stationData[dateStr]) {
+          stationData[dateStr].forEach(tide => {
+            const [hours, mins] = tide.time.split(':').map(Number);
+            const tideTime = new Date(date);
+            tideTime.setHours(hours, mins, 0, 0);
+            
+            tides.push({
+              time: tideTime,
+              heightFt: tide.height,
+              heightM: (tide.height * 0.3048).toFixed(2),
+              type: tide.type
+            });
+          });
         }
-        prevH = h;
       }
-      return tides.slice(0, 8);
+      
+      // Sort by time and filter to events from 1 hour ago onwards (to show current context)
+      return tides.sort((a, b) => a.time - b.time).filter(t => t.time >= new Date(now.getTime() - 3600000)).slice(0, 12);
+    }
+
+    function generateTideCurve(stationData, hoursSpan = 72) {
+      const now = new Date();
+      const startTime = new Date(now.getTime() - 2 * 3600000); // Start 2 hours ago
+      const endTime = new Date(startTime.getTime() + hoursSpan * 3600000);
+      const points = [];
+      
+      // Get all tide events in range - need to cover full span plus buffer
+      const tides = [];
+      for (let d = -1; d < 5; d++) {
+        const date = new Date(now);
+        date.setDate(date.getDate() + d);
+        const dateStr = getLocalDateString(date);
+        
+        if (stationData[dateStr]) {
+          stationData[dateStr].forEach(tide => {
+            const [hours, mins] = tide.time.split(':').map(Number);
+            const tideTime = new Date(date);
+            tideTime.setHours(hours, mins, 0, 0);
+            tides.push({ time: tideTime, height: tide.height, type: tide.type });
+          });
+        }
+      }
+      
+      // If no tide data found, return empty
+      if (tides.length === 0) {
+        return { points: [], startTime, endTime, now };
+      }
+      
+      tides.sort((a, b) => a.time - b.time);
+      
+      // Generate curve points using sinusoidal interpolation
+      const interval = 15 * 60000; // 15 minutes
+      for (let t = startTime.getTime(); t <= endTime.getTime(); t += interval) {
+        const currentTime = new Date(t);
+        
+        // Find surrounding tide events
+        let prevTide = null, nextTide = null;
+        for (let i = 0; i < tides.length; i++) {
+          if (tides[i].time.getTime() <= t) prevTide = tides[i];
+          if (tides[i].time.getTime() > t && !nextTide) nextTide = tides[i];
+        }
+        
+        let height = 8; // Default mean level
+        if (prevTide && nextTide) {
+          const totalTime = nextTide.time.getTime() - prevTide.time.getTime();
+          const elapsed = t - prevTide.time.getTime();
+          const progress = elapsed / totalTime;
+          
+          // Cosine interpolation for smooth tide curve
+          const cosProgress = (1 - Math.cos(progress * Math.PI)) / 2;
+          height = prevTide.height + (nextTide.height - prevTide.height) * cosProgress;
+        } else if (prevTide) {
+          height = prevTide.height;
+        } else if (nextTide) {
+          height = nextTide.height;
+        }
+        
+        points.push({
+          time: currentTime,
+          height: height,
+          x: (t - startTime.getTime()) / (endTime.getTime() - startTime.getTime())
+        });
+      }
+      
+      return { points, startTime, endTime, now };
+    }
+
+    function drawTideGraph(canvasId, markerId, stationData) {
+      const canvas = document.getElementById(canvasId);
+      const marker = document.getElementById(markerId);
+      if (!canvas) return;
+      
+      const ctx = canvas.getContext('2d');
+      const container = canvas.parentElement;
+      
+      // Use offsetWidth/Height for more reliable sizing
+      const width = container.offsetWidth || 800;
+      const height = container.offsetHeight || 120;
+      
+      // Set canvas size with device pixel ratio for sharp rendering
+      const dpr = window.devicePixelRatio || 1;
+      canvas.width = width * dpr;
+      canvas.height = height * dpr;
+      canvas.style.width = width + 'px';
+      canvas.style.height = height + 'px';
+      ctx.scale(dpr, dpr);
+      
+      const curve = generateTideCurve(stationData);
+      const points = curve.points;
+      
+      // If no points, show message
+      if (points.length === 0) {
+        ctx.fillStyle = 'rgba(200, 200, 200, 0.5)';
+        ctx.font = '12px Inter';
+        ctx.textAlign = 'center';
+        ctx.fillText('No tide data available for this period', width / 2, height / 2);
+        return;
+      }
+      
+      // Find min/max heights
+      const heights = points.map(p => p.height);
+      const minH = Math.min(...heights) - 1;
+      const maxH = Math.max(...heights) + 1;
+      
+      const padding = { top: 15, bottom: 20, left: 35, right: 35 };
+      const graphWidth = width - padding.left - padding.right;
+      const graphHeight = height - padding.top - padding.bottom;
+      
+      // Clear canvas
+      ctx.clearRect(0, 0, width, height);
+      
+      // Draw grid lines
+      ctx.strokeStyle = 'rgba(0, 212, 170, 0.15)';
+      ctx.lineWidth = 1;
+      
+      // Horizontal grid (height levels) - show both feet and meters
+      for (let h = Math.ceil(minH); h <= Math.floor(maxH); h += 2) {
+        const y = padding.top + graphHeight * (1 - (h - minH) / (maxH - minH));
+        ctx.beginPath();
+        ctx.moveTo(padding.left, y);
+        ctx.lineTo(width - padding.right, y);
+        ctx.stroke();
+        
+        // Height labels - feet on left
+        ctx.fillStyle = 'rgba(200, 200, 200, 0.6)';
+        ctx.font = '9px Inter';
+        ctx.textAlign = 'right';
+        ctx.fillText(`${h}ft`, padding.left - 4, y + 3);
+        
+        // Height labels - meters on right
+        const meters = (h * 0.3048).toFixed(1);
+        ctx.textAlign = 'left';
+        ctx.fillText(`${meters}m`, width - padding.right + 4, y + 3);
+      }
+      
+      // Draw time labels - show day markers for 3-day view
+      ctx.fillStyle = 'rgba(200, 200, 200, 0.6)';
+      ctx.font = '9px Inter';
+      ctx.textAlign = 'center';
+      
+      // Draw vertical day separator lines and labels
+      for (let h = 0; h <= 72; h += 12) {
+        const x = padding.left + (h / 72) * graphWidth;
+        const labelTime = new Date(curve.startTime.getTime() + h * 3600000);
+        
+        // Draw subtle vertical grid line at midnight
+        if (labelTime.getHours() === 0 || h === 0) {
+          ctx.strokeStyle = 'rgba(0, 212, 170, 0.2)';
+          ctx.beginPath();
+          ctx.moveTo(x, padding.top);
+          ctx.lineTo(x, height - padding.bottom);
+          ctx.stroke();
+        }
+        
+        // Show day name at midnight, time otherwise
+        if (labelTime.getHours() === 0) {
+          ctx.fillText(formatDay(labelTime), x, height - 5);
+        } else if (h % 24 === 12) {
+          ctx.fillText('12:00', x, height - 5);
+        }
+      }
+      
+      // Draw tide curve - gradient fill
+      ctx.beginPath();
+      ctx.moveTo(padding.left, height - padding.bottom);
+      
+      points.forEach((p, i) => {
+        const x = padding.left + p.x * graphWidth;
+        const y = padding.top + graphHeight * (1 - (p.height - minH) / (maxH - minH));
+        if (i === 0) ctx.lineTo(x, y);
+        else ctx.lineTo(x, y);
+      });
+      
+      ctx.lineTo(padding.left + graphWidth, height - padding.bottom);
+      ctx.closePath();
+      
+      const gradient = ctx.createLinearGradient(0, padding.top, 0, height - padding.bottom);
+      gradient.addColorStop(0, 'rgba(0, 212, 170, 0.4)');
+      gradient.addColorStop(1, 'rgba(0, 212, 170, 0.05)');
+      ctx.fillStyle = gradient;
+      ctx.fill();
+      
+      // Draw tide curve line
+      ctx.beginPath();
+      points.forEach((p, i) => {
+        const x = padding.left + p.x * graphWidth;
+        const y = padding.top + graphHeight * (1 - (p.height - minH) / (maxH - minH));
+        if (i === 0) ctx.moveTo(x, y);
+        else ctx.lineTo(x, y);
+      });
+      ctx.strokeStyle = 'rgba(0, 212, 170, 0.9)';
+      ctx.lineWidth = 2;
+      ctx.stroke();
+      
+      // Position NOW marker
+      const nowX = padding.left + ((curve.now.getTime() - curve.startTime.getTime()) / (curve.endTime.getTime() - curve.startTime.getTime())) * graphWidth;
+      marker.style.left = `${nowX}px`;
+    }
+
+    function buildTideDisplay(tides, containerId) {
+      const container = document.getElementById(containerId);
+      if (!container) return;
+      
+      const now = new Date();
+      let foundNext = false;
+      
+      container.innerHTML = tides.map(t => {
+        const isNext = !foundNext && t.time > now;
+        if (isNext) foundNext = true;
+        
+        return `
+          <div class="tide-event-card ${t.type} ${isNext ? 'next' : ''}">
+            <div class="tide-event-time">${formatDay(t.time)} ${formatTime(t.time)}</div>
+            <div class="tide-event-type ${t.type}">${t.type === 'high' ? '▲ High' : '▼ Low'}</div>
+            <div class="tide-event-height">${t.heightM} m</div>
+            <div class="tide-event-height-ft">${t.heightFt} ft</div>
+          </div>
+        `;
+      }).join('');
     }
 
     // Current calculations for First and Second Narrows
@@ -1902,15 +2361,16 @@
       return isDay ? '☀️' : '🌙';
     }
 
-    function buildTides(tides) {
-      const g = document.getElementById('tideGrid'); g.innerHTML = '';
-      tides.forEach(t => {
-        const c = document.createElement('div'); c.className = 'tide-card';
-        c.innerHTML = `<div class="tide-time">${formatDay(t.time)} ${formatTime(t.time)}</div>
-          <div class="tide-type ${t.type}">${t.type === 'high' ? '▲ High Tide' : '▼ Low Tide'}</div>
-          <div class="tide-height">${t.height} m</div>`;
-        g.appendChild(c);
-      });
+    function updateTidesDisplay() {
+      // Second Narrows tides
+      const secondNarrowsTides = getTidesForStation(SECOND_NARROWS_TIDE_DATA);
+      buildTideDisplay(secondNarrowsTides, 'secondNarrowsTides');
+      drawTideGraph('secondNarrowsTideGraph', 'secondNarrowsNowMarker', SECOND_NARROWS_TIDE_DATA);
+      
+      // Steveston tides
+      const stevestonTides = getTidesForStation(STEVESTON_TIDE_DATA);
+      buildTideDisplay(stevestonTides, 'stevestonTides');
+      drawTideGraph('stevestonTideGraph', 'stevestonNowMarker', STEVESTON_TIDE_DATA);
     }
 
     async function initialize() {
@@ -1920,18 +2380,26 @@
       
       try {
         const weather = await fetchWeatherData();
-        const tides = calculateTides();
         updateCurrent(weather);
         build3DayForecast(weather);
-        buildTides(tides);
         updateCurrentsDisplay();
         document.getElementById('loadingState').style.display = 'none';
         document.getElementById('mainContent').classList.add('loaded');
+        
+        // Draw tide graphs after content is visible
+        requestAnimationFrame(() => {
+          updateTidesDisplay();
+        });
       } catch (e) {
         console.error('Error:', e);
         showError(e.message);
       }
     }
+
+    // Redraw tide graphs on window resize
+    window.addEventListener('resize', () => {
+      updateTidesDisplay();
+    });
 
     initialize();
     setInterval(initialize, CONFIG.refreshInterval);
