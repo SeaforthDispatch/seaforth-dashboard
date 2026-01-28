@@ -1273,12 +1273,19 @@
       return result;
     }
 
+    function getLocalDateString(date) {
+      const year = date.getFullYear();
+      const month = String(date.getMonth() + 1).padStart(2, '0');
+      const day = String(date.getDate()).padStart(2, '0');
+      return `${year}-${month}-${day}`;
+    }
+
     function calculateCurrents(stationConfig, referenceData) {
       const now = new Date();
-      const today = now.toISOString().split('T')[0];
+      const today = getLocalDateString(now);
       const tomorrow = new Date(now);
       tomorrow.setDate(tomorrow.getDate() + 1);
-      const tomorrowStr = tomorrow.toISOString().split('T')[0];
+      const tomorrowStr = getLocalDateString(tomorrow);
       
       const { maxFlood, maxEbb, floodDir, ebbDir } = stationConfig;
       
@@ -1396,61 +1403,88 @@
           inOneKnotWindow = Math.abs(currentSpeed) <= 1.0;
         }
         
-        // Calculate slack windows (1-knot windows)
-        const allSlacks = todayData.slacks.map(s => parseTimeToday(s, todayBase));
-        const allMaxes = todayData.maxes.map(m => ({ ...m, time: parseTimeToday(m.time, todayBase) }));
+        // Calculate slack windows (1-knot windows) for today and future days
+        // A 1-knot window is roughly when current is within ~15-20 minutes of slack for typical max currents
         
-        allSlacks.forEach((slackTime, idx) => {
-          if (slackTime < new Date(now.getTime() - 2 * 3600000)) return; // Skip past slacks
+        // Helper function to calculate windows for a given day's data
+        const calculateWindowsForDay = (dayData, dayBase) => {
+          const daySlacks = dayData.slacks.map(s => parseTimeToday(s, dayBase));
+          const dayMaxes = dayData.maxes.map(m => ({ ...m, time: parseTimeToday(m.time, dayBase) }));
           
-          // Find the max before and after this slack
-          const maxBefore = allMaxes.filter(m => m.time < slackTime).pop();
-          const maxAfter = allMaxes.find(m => m.time > slackTime);
-          
-          if (maxBefore && maxAfter) {
-            // Estimate window based on sinusoidal current profile
-            // Time to reach 1 knot from max: when sin(t) = 1/max
-            const beforePeak = Math.abs(maxBefore.speed);
-            const afterPeak = Math.abs(maxAfter.speed);
+          daySlacks.forEach((slackTime) => {
+            if (slackTime < new Date(now.getTime() - 2 * 3600000)) return; // Skip past slacks
             
-            // Duration from max to slack (approximate as 3 hours typical)
-            const timeToSlackBefore = slackTime - maxBefore.time;
-            const timeFromSlackAfter = maxAfter.time - slackTime;
+            // Find the max before and after this slack
+            const maxBefore = dayMaxes.filter(m => m.time < slackTime).pop();
+            const maxAfter = dayMaxes.find(m => m.time > slackTime);
             
-            // 1-knot threshold as fraction of cycle
-            const thresholdBefore = beforePeak > 1 ? Math.asin(1 / beforePeak) / (Math.PI / 2) : 1;
-            const thresholdAfter = afterPeak > 1 ? Math.asin(1 / afterPeak) / (Math.PI / 2) : 1;
-            
-            const windowStart = new Date(slackTime.getTime() - timeToSlackBefore * (1 - thresholdBefore));
-            const windowEnd = new Date(slackTime.getTime() + timeFromSlackAfter * (1 - thresholdAfter));
-            
-            if (windowEnd > now) {
-              slackWindows.push({
-                start: windowStart,
-                slack: slackTime,
-                end: windowEnd,
-                type: maxBefore.speed > 0 ? 'high-slack' : 'low-slack',
-                nextDirection: maxAfter.speed > 0 ? 'flood' : 'ebb'
-              });
+            if (maxBefore || maxAfter) {
+              let windowStart = slackTime;
+              let windowEnd = slackTime;
+              
+              if (maxBefore) {
+                const beforePeak = Math.abs(maxBefore.speed);
+                const timeFromMaxToSlack = slackTime - maxBefore.time;
+                
+                if (beforePeak > 1) {
+                  const fraction = Math.asin(1 / beforePeak) / (Math.PI / 2);
+                  const timeBeforeSlack = timeFromMaxToSlack * fraction;
+                  windowStart = new Date(slackTime.getTime() - timeBeforeSlack);
+                } else {
+                  windowStart = maxBefore.time;
+                }
+              }
+              
+              if (maxAfter) {
+                const afterPeak = Math.abs(maxAfter.speed);
+                const timeFromSlackToMax = maxAfter.time - slackTime;
+                
+                if (afterPeak > 1) {
+                  const fraction = Math.asin(1 / afterPeak) / (Math.PI / 2);
+                  const timeAfterSlack = timeFromSlackToMax * fraction;
+                  windowEnd = new Date(slackTime.getTime() + timeAfterSlack);
+                } else {
+                  windowEnd = maxAfter.time;
+                }
+              }
+              
+              if (windowEnd > now) {
+                slackWindows.push({
+                  start: windowStart,
+                  slack: slackTime,
+                  end: windowEnd,
+                  type: maxBefore && maxBefore.speed > 0 ? 'high-slack' : 'low-slack',
+                  nextDirection: maxAfter && maxAfter.speed > 0 ? 'flood' : 'ebb'
+                });
+              }
             }
-          }
-        });
+          });
+        };
         
-        // Add tomorrow's first slack window if available
+        // Calculate windows for today
+        calculateWindowsForDay(todayData, todayBase);
+        
+        // Calculate windows for tomorrow and beyond
         if (tomorrowData) {
           const tomorrowBase = new Date(tomorrow);
           tomorrowBase.setHours(0, 0, 0, 0);
-          const firstSlack = parseTimeToday(tomorrowData.slacks[0], tomorrowBase);
-          
-          // Simple estimate for tomorrow
-          slackWindows.push({
-            start: new Date(firstSlack.getTime() - 45 * 60000),
-            slack: firstSlack,
-            end: new Date(firstSlack.getTime() + 45 * 60000),
-            type: 'low-slack',
-            nextDirection: 'flood'
-          });
+          calculateWindowsForDay(tomorrowData, tomorrowBase);
         }
+        
+        // Check for day after tomorrow
+        const dayAfterTomorrow = new Date(tomorrow);
+        dayAfterTomorrow.setDate(dayAfterTomorrow.getDate() + 1);
+        const dayAfterTomorrowStr = getLocalDateString(dayAfterTomorrow);
+        const dayAfterTomorrowData = referenceData[dayAfterTomorrowStr];
+        
+        if (dayAfterTomorrowData) {
+          const dayAfterBase = new Date(dayAfterTomorrow);
+          dayAfterBase.setHours(0, 0, 0, 0);
+          calculateWindowsForDay(dayAfterTomorrowData, dayAfterBase);
+        }
+        
+        // Sort windows by slack time
+        slackWindows.sort((a, b) => a.slack - b.slack);
         
         return {
           currentSpeed: Math.abs(currentSpeed).toFixed(1),
@@ -1461,7 +1495,7 @@
           direction: isFlood || (!isFlood && !isEbb && currentSpeed >= 0) ? floodDir : ebbDir,
           directionDeg: isFlood || (!isFlood && !isEbb && currentSpeed >= 0) ? stationConfig.floodDeg : stationConfig.ebbDeg,
           events: events.slice(0, 8),
-          slackWindows: slackWindows.filter(w => w.end > now).slice(0, 3),
+          slackWindows: slackWindows.filter(w => w.end > now).slice(0, 5),
           progressPercent: 50,
           hasReferenceData: true
         };
@@ -1557,9 +1591,11 @@
       firstProgress.style.width = `${first.progressPercent}%`;
       document.getElementById('firstNarrowsMarker').style.left = `${first.progressPercent}%`;
       
-      // First Narrows Events - only show max flood and max ebb
+      // First Narrows Events - only show next max flood and next max ebb
       const firstEventsEl = document.getElementById('firstNarrowsEvents');
-      const firstMaxEvents = first.events.filter(e => e.type === 'max-flood' || e.type === 'max-ebb').slice(0, 4);
+      const firstNextFlood = first.events.find(e => e.type === 'max-flood');
+      const firstNextEbb = first.events.find(e => e.type === 'max-ebb');
+      const firstMaxEvents = [firstNextFlood, firstNextEbb].filter(Boolean);
       firstEventsEl.innerHTML = firstMaxEvents.map(e => `
         <div class="current-event">
           <div class="event-time">${formatTime(e.time)}</div>
@@ -1606,9 +1642,11 @@
       secondProgress.style.width = `${second.progressPercent}%`;
       document.getElementById('secondNarrowsMarker').style.left = `${second.progressPercent}%`;
       
-      // Second Narrows Events - only show max flood and max ebb
+      // Second Narrows Events - only show next max flood and next max ebb
       const secondEventsEl = document.getElementById('secondNarrowsEvents');
-      const secondMaxEvents = second.events.filter(e => e.type === 'max-flood' || e.type === 'max-ebb').slice(0, 4);
+      const secondNextFlood = second.events.find(e => e.type === 'max-flood');
+      const secondNextEbb = second.events.find(e => e.type === 'max-ebb');
+      const secondMaxEvents = [secondNextFlood, secondNextEbb].filter(Boolean);
       secondEventsEl.innerHTML = secondMaxEvents.map(e => `
         <div class="current-event">
           <div class="event-time">${formatTime(e.time)}</div>
@@ -1625,9 +1663,10 @@
     function renderSlackWindows(elementId, windows, currentlyInWindow) {
       const container = document.getElementById(elementId);
       const now = new Date();
+      const todayStr = getLocalDateString(now);
       
       if (windows.length === 0) {
-        container.innerHTML = '<div class="slack-windows-title">1-Knot Safe Passage Windows</div><div style="color: var(--mist-gray); font-size: 0.75rem;">Calculating windows...</div>';
+        container.innerHTML = '<div class="slack-windows-title">1-Knot Safe Passage Windows</div><div style="color: var(--mist-gray); font-size: 0.75rem;">No upcoming windows in reference data</div>';
         return;
       }
       
@@ -1639,6 +1678,11 @@
         const isPast = now > w.end;
         
         if (isPast) return;
+        
+        // Check if this is today or a future day
+        const windowDateStr = getLocalDateString(w.slack);
+        const isToday = windowDateStr === todayStr;
+        const dayLabel = isToday ? '' : w.slack.toLocaleDateString('en-CA', { weekday: 'short', month: 'short', day: 'numeric' }) + ' — ';
         
         // Calculate positions for the visual bar (as percentage)
         const totalSpan = w.end - w.start;
@@ -1652,7 +1696,7 @@
         html += `
           <div class="window-card ${isActive ? 'active' : ''}">
             <div class="window-header">
-              <div class="window-type">${w.type === 'high-slack' ? 'High Slack' : 'Low Slack'} Window</div>
+              <div class="window-type">${dayLabel}${w.type === 'high-slack' ? 'High Slack' : 'Low Slack'} Window</div>
               ${isActive ? '<div class="window-badge">● NOW IN WINDOW</div>' : idx === 0 ? '<div class="window-badge">Next</div>' : ''}
             </div>
             <div class="window-visual">
