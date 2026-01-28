@@ -128,13 +128,16 @@
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
       background-clip: text;
+      line-height: 1.1;
     }
 
-    .logo-text span {
-      font-size: 0.7rem;
+    .logo-text h1 span {
+      display: block;
+      font-size: 0.9rem;
+      letter-spacing: 0.15em;
+      background: none;
+      -webkit-text-fill-color: var(--mist-gray);
       color: var(--mist-gray);
-      letter-spacing: 0.3em;
-      text-transform: uppercase;
     }
 
     .header-info { text-align: right; }
@@ -327,49 +330,134 @@
       line-height: 1.6;
     }
 
-    .forecast-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(90px, 1fr));
-      gap: 0.4rem;
-      background: rgba(13, 33, 55, 0.5);
-      border-radius: 12px;
-      padding: 1rem;
-      border: 1px solid rgba(0, 212, 170, 0.1);
+    /* 3-Day Marine Forecast Styles */
+    .marine-forecast-container {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
     }
 
-    .forecast-hour {
+    .forecast-day-panel {
+      background: rgba(13, 33, 55, 0.5);
+      border-radius: 12px;
+      border: 1px solid rgba(0, 212, 170, 0.1);
+      overflow: hidden;
+    }
+
+    .forecast-day-header {
+      background: rgba(0, 212, 170, 0.1);
+      padding: 0.75rem 1rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid rgba(0, 212, 170, 0.1);
+    }
+
+    .forecast-day-name {
+      font-family: 'Archivo Black', sans-serif;
+      font-size: 0.85rem;
+      color: var(--foam-white);
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+    }
+
+    .forecast-day-summary {
+      font-size: 0.7rem;
+      color: var(--mist-gray);
+    }
+
+    .forecast-hours-scroll {
+      overflow-x: auto;
+      padding: 0.75rem;
+      scrollbar-width: thin;
+      scrollbar-color: var(--ocean-mid) transparent;
+    }
+
+    .forecast-hours-scroll::-webkit-scrollbar {
+      height: 6px;
+    }
+
+    .forecast-hours-scroll::-webkit-scrollbar-track {
+      background: transparent;
+    }
+
+    .forecast-hours-scroll::-webkit-scrollbar-thumb {
+      background: var(--ocean-mid);
+      border-radius: 3px;
+    }
+
+    .forecast-hours-row {
+      display: flex;
+      gap: 0.35rem;
+      min-width: max-content;
+    }
+
+    .forecast-hour-cell {
+      width: 58px;
+      min-width: 58px;
       background: rgba(20, 54, 84, 0.4);
       border-radius: 8px;
-      padding: 0.6rem;
+      padding: 0.5rem 0.35rem;
       text-align: center;
-      transition: all 0.3s ease;
+      transition: all 0.2s ease;
       border: 1px solid transparent;
     }
 
-    .forecast-hour:hover {
-      background: rgba(20, 54, 84, 0.8);
-      border-color: var(--teal-accent);
-      transform: translateY(-2px);
+    .forecast-hour-cell:hover {
+      background: rgba(20, 54, 84, 0.7);
+      border-color: rgba(0, 212, 170, 0.3);
     }
 
-    .forecast-hour.current {
+    .forecast-hour-cell.current {
       background: rgba(0, 212, 170, 0.15);
       border-color: var(--teal-accent);
     }
 
-    .forecast-hour.day-break { border-left: 2px solid var(--teal-accent); }
+    .hour-cell-time {
+      font-size: 0.6rem;
+      font-weight: 600;
+      color: var(--mist-gray);
+      margin-bottom: 0.3rem;
+    }
 
-    .hour-time { font-size: 0.6rem; color: var(--mist-gray); margin-bottom: 0.15rem; }
-    .hour-day { font-size: 0.5rem; color: var(--teal-accent); text-transform: uppercase; letter-spacing: 0.1em; font-weight: 600; }
-    .hour-wind { font-family: 'Archivo Black', sans-serif; font-size: 1.3rem; color: var(--teal-accent); margin: 0.35rem 0; }
-    .hour-wind.light { color: #64b5f6; }
-    .hour-wind.moderate { color: var(--teal-accent); }
-    .hour-wind.fresh { color: var(--amber-warning); }
-    .hour-wind.strong { color: var(--coral-alert); }
-    .hour-gust { font-size: 0.55rem; color: var(--mist-gray); }
-    .hour-dir { font-size: 0.6rem; color: var(--foam-white); margin-top: 0.2rem; }
-    .hour-temp { font-size: 0.7rem; color: var(--amber-warning); margin-top: 0.35rem; }
-    .hour-precip { font-size: 0.55rem; color: #64b5f6; margin-top: 0.2rem; }
+    .hour-cell-icon {
+      font-size: 1.4rem;
+      line-height: 1;
+      margin-bottom: 0.25rem;
+    }
+
+    .hour-cell-temp {
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: var(--amber-warning);
+      margin-bottom: 0.2rem;
+    }
+
+    .hour-cell-wind {
+      font-size: 0.7rem;
+      font-weight: 600;
+      margin-bottom: 0.15rem;
+    }
+
+    .hour-cell-wind.light { color: #64b5f6; }
+    .hour-cell-wind.moderate { color: var(--teal-accent); }
+    .hour-cell-wind.fresh { color: var(--amber-warning); }
+    .hour-cell-wind.strong { color: var(--coral-alert); }
+
+    .hour-cell-wind-dir {
+      font-size: 0.5rem;
+      color: var(--mist-gray);
+      margin-bottom: 0.2rem;
+    }
+
+    .hour-cell-rain {
+      font-size: 0.55rem;
+      color: #64b5f6;
+    }
+
+    .hour-cell-rain.none {
+      color: var(--ocean-mid);
+    }
 
     .tide-section { margin-bottom: 2.5rem; }
 
@@ -767,28 +855,6 @@
       font-weight: 600;
     }
 
-    .extended-section { margin-bottom: 2.5rem; }
-
-    .extended-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
-      gap: 1rem;
-    }
-
-    .extended-day {
-      background: linear-gradient(180deg, rgba(20, 54, 84, 0.4), rgba(13, 33, 55, 0.6));
-      border-radius: 12px;
-      padding: 1.25rem;
-      text-align: center;
-      border: 1px solid rgba(0, 212, 170, 0.1);
-    }
-
-    .day-name { font-family: 'Archivo Black', sans-serif; font-size: 0.8rem; color: var(--foam-white); margin-bottom: 0.75rem; text-transform: uppercase; letter-spacing: 0.1em; }
-    .day-icon { font-size: 1.8rem; margin-bottom: 0.4rem; }
-    .day-wind-range { font-size: 1rem; color: var(--teal-accent); font-weight: 600; margin-bottom: 0.4rem; }
-    .day-temp-range { font-size: 0.8rem; color: var(--amber-warning); }
-    .day-precip { font-size: 0.7rem; color: #64b5f6; margin-top: 0.5rem; }
-
     .footer {
       padding: 2rem 3rem;
       border-top: 1px solid rgba(0, 212, 170, 0.1);
@@ -862,12 +928,11 @@
     <div class="logo-section">
       <div class="logo-icon">⚓</div>
       <div class="logo-text">
-        <h1>Seaforth</h1>
-        <span>Environmental Dispatch Dashboard</span>
+        <h1>Seaforth Environmental<span>Dispatch Dashboard</span></h1>
       </div>
     </div>
     <div class="header-info">
-      <div class="location">Vancouver Harbour, British Columbia</div>
+      <div class="location">Vancouver, British Columbia</div>
       <div class="coordinates">49.30°N · 123.11°W</div>
       <div class="last-update">
         <span class="live-indicator"></span>
@@ -911,9 +976,12 @@
       </div>
     </section>
 
+    <!-- 3-Day Marine Forecast -->
     <section class="forecast-section">
-      <h2 class="section-title">72-Hour Forecast — Hourly Wind & Weather</h2>
-      <div class="forecast-grid" id="forecastGrid"></div>
+      <h2 class="section-title">3-Day Marine Forecast — Hourly</h2>
+      <div class="marine-forecast-container" id="marineForecastContainer">
+        <!-- Populated by JavaScript -->
+      </div>
     </section>
 
     <section class="tide-section">
@@ -992,11 +1060,6 @@
         Current predictions calculated from harmonic constituents. Official data: 
         <a href="https://tides.gc.ca/en/current-predictions-station" target="_blank" style="color: var(--teal-accent);">CHS Current Tables</a>
       </div>
-    </section>
-
-    <section class="extended-section">
-      <h2 class="section-title">7-Day Marine Outlook</h2>
-      <div class="extended-grid" id="extendedGrid"></div>
     </section>
   </main>
 
@@ -1449,26 +1512,107 @@
       document.getElementById('updateTime').textContent = formatDateTime(new Date());
     }
 
-    function buildForecast(d) {
-      const g = document.getElementById('forecastGrid'); g.innerHTML = '';
-      const h = d.hourly, now = new Date();
+    function build3DayForecast(d) {
+      const container = document.getElementById('marineForecastContainer');
+      container.innerHTML = '';
+      const h = d.hourly;
+      const now = new Date();
+      
+      // Group hours by day
+      const days = {};
       let start = h.time.findIndex(t => new Date(t) >= now);
       if (start < 0) start = 0;
       
-      let lastDay = '';
       for (let i = start; i < Math.min(start + 72, h.time.length); i++) {
-        const t = new Date(h.time[i]), day = formatDay(t), isNew = day !== lastDay;
-        lastDay = day;
-        const wK = msToKnots(h.wind_speed_10m[i]), gK = msToKnots(h.wind_gusts_10m[i]);
-        const div = document.createElement('div');
-        div.className = `forecast-hour ${i === start ? 'current' : ''} ${isNew && i !== start ? 'day-break' : ''}`;
-        div.innerHTML = `<div class="hour-time">${formatTime(t)}</div><div class="hour-day">${day}</div>
-          <div class="hour-wind ${getWindClass(wK)}">${wK}</div><div class="hour-gust">G${gK}</div>
-          <div class="hour-dir">${getWindDirection(h.wind_direction_10m[i])}</div>
-          <div class="hour-temp">${Math.round(h.temperature_2m[i])}°</div>
-          ${h.precipitation[i] > 0.1 ? `<div class="hour-precip">💧${h.precipitation[i].toFixed(1)}</div>` : ''}`;
-        g.appendChild(div);
+        const t = new Date(h.time[i]);
+        const dayKey = t.toDateString();
+        if (!days[dayKey]) {
+          days[dayKey] = {
+            date: t,
+            hours: []
+          };
+        }
+        days[dayKey].hours.push({
+          time: t,
+          temp: Math.round(h.temperature_2m[i]),
+          windSpeed: msToKnots(h.wind_speed_10m[i]),
+          windDir: getWindDirection(h.wind_direction_10m[i]),
+          windDirDeg: h.wind_direction_10m[i],
+          precipitation: h.precipitation[i],
+          weatherCode: h.weather_code ? h.weather_code[i] : 0,
+          cloudCover: h.cloud_cover ? h.cloud_cover[i] : 0,
+          index: i
+        });
       }
+      
+      // Only show 3 days
+      const dayKeys = Object.keys(days).slice(0, 3);
+      
+      dayKeys.forEach((dayKey, dayIndex) => {
+        const day = days[dayKey];
+        const panel = document.createElement('div');
+        panel.className = 'forecast-day-panel';
+        
+        // Day header
+        const dayName = dayIndex === 0 ? 'Today' : 
+                       dayIndex === 1 ? 'Tomorrow' : 
+                       day.date.toLocaleDateString('en-CA', { weekday: 'long' });
+        
+        const dateStr = day.date.toLocaleDateString('en-CA', { month: 'short', day: 'numeric' });
+        
+        // Calculate day summary
+        const maxWind = Math.max(...day.hours.map(h => h.windSpeed));
+        const totalPrecip = day.hours.reduce((sum, h) => sum + h.precipitation, 0);
+        
+        let summaryParts = [`Max wind ${maxWind} kts`];
+        if (totalPrecip > 0.5) {
+          summaryParts.push(`${totalPrecip.toFixed(1)} mm precip`);
+        }
+        
+        panel.innerHTML = `
+          <div class="forecast-day-header">
+            <div class="forecast-day-name">${dayName} · ${dateStr}</div>
+            <div class="forecast-day-summary">${summaryParts.join(' · ')}</div>
+          </div>
+          <div class="forecast-hours-scroll">
+            <div class="forecast-hours-row" id="forecastDay${dayIndex}"></div>
+          </div>
+        `;
+        
+        container.appendChild(panel);
+        
+        // Add hourly cells
+        const row = document.getElementById(`forecastDay${dayIndex}`);
+        day.hours.forEach((hour, hourIndex) => {
+          const isCurrent = dayIndex === 0 && hourIndex === 0;
+          const cell = document.createElement('div');
+          cell.className = `forecast-hour-cell ${isCurrent ? 'current' : ''}`;
+          
+          // Get weather icon based on weather code
+          const icon = weatherIcons[hour.weatherCode] || getSimpleWeatherIcon(hour);
+          
+          cell.innerHTML = `
+            <div class="hour-cell-time">${formatTime(hour.time)}</div>
+            <div class="hour-cell-icon">${icon}</div>
+            <div class="hour-cell-temp">${hour.temp}°C</div>
+            <div class="hour-cell-wind ${getWindClass(hour.windSpeed)}">${hour.windSpeed} kts</div>
+            <div class="hour-cell-wind-dir">${hour.windDir}</div>
+            <div class="hour-cell-rain ${hour.precipitation < 0.1 ? 'none' : ''}">${hour.precipitation >= 0.1 ? hour.precipitation.toFixed(1) + ' mm' : '—'}</div>
+          `;
+          
+          row.appendChild(cell);
+        });
+      });
+    }
+    
+    // Fallback simple weather icon based on conditions
+    function getSimpleWeatherIcon(hour) {
+      const isDay = hour.time.getHours() >= 6 && hour.time.getHours() < 20;
+      if (hour.precipitation > 1) return '🌧️';
+      if (hour.precipitation > 0.1) return '🌦️';
+      if (hour.cloudCover > 80) return '☁️';
+      if (hour.cloudCover > 40) return isDay ? '⛅' : '☁️';
+      return isDay ? '☀️' : '🌙';
     }
 
     function buildTides(tides) {
@@ -1482,21 +1626,6 @@
       });
     }
 
-    function buildExtended(d) {
-      const g = document.getElementById('extendedGrid'); g.innerHTML = '';
-      const dy = d.daily;
-      for (let i = 0; i < dy.time.length; i++) {
-        const dt = new Date(dy.time[i]);
-        const div = document.createElement('div'); div.className = 'extended-day';
-        div.innerHTML = `<div class="day-name">${i === 0 ? 'Today' : dt.toLocaleDateString('en-CA', {weekday:'long'})}</div>
-          <div class="day-icon">${weatherIcons[dy.weather_code[i]] || '🌤️'}</div>
-          <div class="day-wind-range">${msToKnots(dy.wind_speed_10m_max[i])} kts (G${msToKnots(dy.wind_gusts_10m_max[i])})</div>
-          <div class="day-temp-range">${Math.round(dy.temperature_2m_min[i])}° / ${Math.round(dy.temperature_2m_max[i])}°</div>
-          ${dy.precipitation_sum[i] > 0.5 ? `<div class="day-precip">💧 ${dy.precipitation_sum[i].toFixed(1)} mm</div>` : ''}`;
-        g.appendChild(div);
-      }
-    }
-
     async function initialize() {
       document.getElementById('loadingState').style.display = 'flex';
       document.getElementById('errorState').style.display = 'none';
@@ -1506,10 +1635,9 @@
         const weather = await fetchWeatherData();
         const tides = calculateTides();
         updateCurrent(weather);
-        buildForecast(weather);
+        build3DayForecast(weather);
         buildTides(tides);
         updateCurrentsDisplay();
-        buildExtended(weather);
         document.getElementById('loadingState').style.display = 'none';
         document.getElementById('mainContent').classList.add('loaded');
       } catch (e) {
