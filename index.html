@@ -1057,8 +1057,10 @@
         </div>
       </div>
       <div style="text-align: center; margin-top: 1rem; font-size: 0.7rem; color: var(--mist-gray);">
-        Current predictions calculated from harmonic constituents. Official data: 
-        <a href="https://tides.gc.ca/en/current-predictions-station" target="_blank" style="color: var(--teal-accent);">CHS Current Tables</a>
+        Current data from XTide harmonics database. Official sources: 
+        <a href="http://www.dairiki.org/tides/daily.php/fir" target="_blank" style="color: var(--teal-accent);">First Narrows</a> · 
+        <a href="http://www.dairiki.org/tides/daily.php/sec" target="_blank" style="color: var(--teal-accent);">Second Narrows</a> · 
+        <a href="https://tides.gc.ca/en/current-predictions-station" target="_blank" style="color: var(--teal-accent);">CHS Tables</a>
       </div>
     </section>
   </main>
@@ -1165,136 +1167,323 @@
     }
 
     // Current calculations for First and Second Narrows
-    function calculateCurrents(stationConfig) {
+    // Using XTide reference data for accurate predictions
+    
+    // Reference data from XTide (dairiki.org) for January-February 2026
+    // Format: [dayOfMonth, slackTimes[], maxTimes[], maxSpeeds[]] 
+    // Negative speed = Ebb, Positive = Flood
+    const FIRST_NARROWS_DATA = {
+      '2026-01-27': {
+        slacks: ['02:12', '11:16', '19:47'],
+        maxes: [
+          { time: '03:50', speed: -0.5 },
+          { time: '08:46', speed: 1.5 },
+          { time: '15:46', speed: -4.3 },
+          { time: '23:18', speed: 3.3 }
+        ]
+      },
+      '2026-01-28': {
+        slacks: ['03:59', '12:04', '20:49'],
+        maxes: [
+          { time: '05:33', speed: -0.5 },
+          { time: '09:59', speed: 1.0 },
+          { time: '16:53', speed: -4.5 },
+        ]
+      },
+      '2026-01-29': {
+        slacks: ['05:03', '09:13', '13:08', '21:47'],
+        maxes: [
+          { time: '00:29', speed: 4.0 },
+          { time: '06:57', speed: -0.8 },
+          { time: '11:21', speed: 0.8 },
+          { time: '18:00', speed: -4.8 }
+        ]
+      },
+      '2026-01-30': {
+        slacks: ['05:49', '10:36', '14:21', '22:41'],
+        maxes: [
+          { time: '01:28', speed: 4.6 },
+          { time: '07:59', speed: -1.3 },
+          { time: '12:36', speed: 0.9 },
+          { time: '19:01', speed: -5.0 }
+        ]
+      },
+      '2026-01-31': {
+        slacks: ['06:28', '11:35', '15:33', '23:30'],
+        maxes: [
+          { time: '02:19', speed: 5.0 },
+          { time: '08:48', speed: -1.8 },
+          { time: '13:40', speed: 1.2 },
+          { time: '19:56', speed: -5.2 }
+        ]
+      }
+    };
+    
+    const SECOND_NARROWS_DATA = {
+      '2026-01-27': {
+        slacks: ['01:53', '11:24', '19:35'],
+        maxes: [
+          { time: '03:42', speed: -0.7 },
+          { time: '08:49', speed: 1.6 },
+          { time: '15:42', speed: -4.0 },
+          { time: '23:06', speed: 3.4 }
+        ]
+      },
+      '2026-01-28': {
+        slacks: ['03:36', '12:16', '20:38'],
+        maxes: [
+          { time: '05:21', speed: -0.7 },
+          { time: '10:03', speed: 1.2 },
+          { time: '16:50', speed: -4.2 },
+        ]
+      },
+      '2026-01-29': {
+        slacks: ['04:43', '09:03', '13:23', '21:37'],
+        maxes: [
+          { time: '00:17', speed: 4.0 },
+          { time: '06:44', speed: -1.0 },
+          { time: '11:24', speed: 1.0 },
+          { time: '17:56', speed: -4.5 }
+        ]
+      },
+      '2026-01-30': {
+        slacks: ['05:32', '10:23', '14:34', '22:31'],
+        maxes: [
+          { time: '01:17', speed: 4.5 },
+          { time: '07:46', speed: -1.5 },
+          { time: '12:37', speed: 1.2 },
+          { time: '18:57', speed: -4.8 }
+        ]
+      },
+      '2026-01-31': {
+        slacks: ['06:13', '11:23', '15:43', '23:21'],
+        maxes: [
+          { time: '02:08', speed: 5.0 },
+          { time: '08:37', speed: -2.0 },
+          { time: '13:40', speed: 1.5 },
+          { time: '19:52', speed: -4.9 }
+        ]
+      }
+    };
+
+    function parseTimeToday(timeStr, baseDate) {
+      const [hours, minutes] = timeStr.split(':').map(Number);
+      const result = new Date(baseDate);
+      result.setHours(hours, minutes, 0, 0);
+      return result;
+    }
+
+    function calculateCurrents(stationConfig, referenceData) {
       const now = new Date();
+      const today = now.toISOString().split('T')[0];
+      const tomorrow = new Date(now);
+      tomorrow.setDate(tomorrow.getDate() + 1);
+      const tomorrowStr = tomorrow.toISOString().split('T')[0];
+      
+      const { maxFlood, maxEbb, floodDir, ebbDir } = stationConfig;
+      
+      // Check if we have reference data for today
+      const todayData = referenceData[today];
+      const tomorrowData = referenceData[tomorrowStr];
+      
       const events = [];
       const slackWindows = [];
+      
+      if (todayData) {
+        // Parse today's data
+        const todayBase = new Date(now);
+        todayBase.setHours(0, 0, 0, 0);
+        
+        // Add slack events
+        todayData.slacks.forEach(timeStr => {
+          const slackTime = parseTimeToday(timeStr, todayBase);
+          if (slackTime > now) {
+            // Determine if high or low slack based on surrounding max currents
+            const maxBefore = todayData.maxes.filter(m => parseTimeToday(m.time, todayBase) < slackTime).pop();
+            const isHighSlack = maxBefore && maxBefore.speed > 0;
+            events.push({
+              time: slackTime,
+              type: isHighSlack ? 'high-slack' : 'low-slack',
+              speed: 0
+            });
+          }
+        });
+        
+        // Add max current events
+        todayData.maxes.forEach(max => {
+          const maxTime = parseTimeToday(max.time, todayBase);
+          if (maxTime > now) {
+            events.push({
+              time: maxTime,
+              type: max.speed > 0 ? 'max-flood' : 'max-ebb',
+              speed: Math.abs(max.speed).toFixed(1)
+            });
+          }
+        });
+        
+        // Add tomorrow's early events if available
+        if (tomorrowData) {
+          const tomorrowBase = new Date(tomorrow);
+          tomorrowBase.setHours(0, 0, 0, 0);
+          
+          tomorrowData.slacks.slice(0, 2).forEach(timeStr => {
+            const slackTime = parseTimeToday(timeStr, tomorrowBase);
+            const maxBefore = tomorrowData.maxes.filter(m => parseTimeToday(m.time, tomorrowBase) < slackTime).pop();
+            const isHighSlack = maxBefore && maxBefore.speed > 0;
+            events.push({
+              time: slackTime,
+              type: isHighSlack ? 'high-slack' : 'low-slack',
+              speed: 0
+            });
+          });
+          
+          tomorrowData.maxes.slice(0, 2).forEach(max => {
+            const maxTime = parseTimeToday(max.time, tomorrowBase);
+            events.push({
+              time: maxTime,
+              type: max.speed > 0 ? 'max-flood' : 'max-ebb',
+              speed: Math.abs(max.speed).toFixed(1)
+            });
+          });
+        }
+        
+        // Sort events by time
+        events.sort((a, b) => a.time - b.time);
+        
+        // Calculate current state based on surrounding events
+        const pastMaxes = todayData.maxes
+          .map(m => ({ ...m, time: parseTimeToday(m.time, todayBase) }))
+          .filter(m => m.time <= now);
+        const futureMaxes = todayData.maxes
+          .map(m => ({ ...m, time: parseTimeToday(m.time, todayBase) }))
+          .filter(m => m.time > now);
+        
+        let currentSpeed = 0;
+        let isFlood = false;
+        let isEbb = false;
+        let inOneKnotWindow = false;
+        
+        if (pastMaxes.length > 0 && futureMaxes.length > 0) {
+          const lastMax = pastMaxes[pastMaxes.length - 1];
+          const nextMax = futureMaxes[0];
+          
+          // Find surrounding slacks
+          const slackTimes = todayData.slacks.map(s => parseTimeToday(s, todayBase));
+          const nextSlack = slackTimes.find(s => s > now);
+          const prevSlack = slackTimes.filter(s => s <= now).pop();
+          
+          // Interpolate current speed
+          if (prevSlack && nextSlack) {
+            // Between two slacks - calculate progress toward max
+            const totalTime = nextSlack - prevSlack;
+            const elapsed = now - prevSlack;
+            const progress = elapsed / totalTime;
+            
+            // Current follows sinusoidal pattern between slacks
+            const peakSpeed = lastMax.speed;
+            currentSpeed = peakSpeed * Math.sin(progress * Math.PI);
+          } else if (nextSlack) {
+            // Before first slack, after last max
+            const peakSpeed = lastMax.speed;
+            const timeToSlack = nextSlack - now;
+            const totalTime = nextSlack - lastMax.time;
+            const progress = 1 - (timeToSlack / totalTime);
+            currentSpeed = peakSpeed * Math.cos(progress * Math.PI / 2);
+          }
+          
+          isFlood = currentSpeed > 0.1;
+          isEbb = currentSpeed < -0.1;
+          inOneKnotWindow = Math.abs(currentSpeed) <= 1.0;
+        }
+        
+        // Calculate slack windows (1-knot windows)
+        const allSlacks = todayData.slacks.map(s => parseTimeToday(s, todayBase));
+        const allMaxes = todayData.maxes.map(m => ({ ...m, time: parseTimeToday(m.time, todayBase) }));
+        
+        allSlacks.forEach((slackTime, idx) => {
+          if (slackTime < new Date(now.getTime() - 2 * 3600000)) return; // Skip past slacks
+          
+          // Find the max before and after this slack
+          const maxBefore = allMaxes.filter(m => m.time < slackTime).pop();
+          const maxAfter = allMaxes.find(m => m.time > slackTime);
+          
+          if (maxBefore && maxAfter) {
+            // Estimate window based on sinusoidal current profile
+            // Time to reach 1 knot from max: when sin(t) = 1/max
+            const beforePeak = Math.abs(maxBefore.speed);
+            const afterPeak = Math.abs(maxAfter.speed);
+            
+            // Duration from max to slack (approximate as 3 hours typical)
+            const timeToSlackBefore = slackTime - maxBefore.time;
+            const timeFromSlackAfter = maxAfter.time - slackTime;
+            
+            // 1-knot threshold as fraction of cycle
+            const thresholdBefore = beforePeak > 1 ? Math.asin(1 / beforePeak) / (Math.PI / 2) : 1;
+            const thresholdAfter = afterPeak > 1 ? Math.asin(1 / afterPeak) / (Math.PI / 2) : 1;
+            
+            const windowStart = new Date(slackTime.getTime() - timeToSlackBefore * (1 - thresholdBefore));
+            const windowEnd = new Date(slackTime.getTime() + timeFromSlackAfter * (1 - thresholdAfter));
+            
+            if (windowEnd > now) {
+              slackWindows.push({
+                start: windowStart,
+                slack: slackTime,
+                end: windowEnd,
+                type: maxBefore.speed > 0 ? 'high-slack' : 'low-slack',
+                nextDirection: maxAfter.speed > 0 ? 'flood' : 'ebb'
+              });
+            }
+          }
+        });
+        
+        // Add tomorrow's first slack window if available
+        if (tomorrowData) {
+          const tomorrowBase = new Date(tomorrow);
+          tomorrowBase.setHours(0, 0, 0, 0);
+          const firstSlack = parseTimeToday(tomorrowData.slacks[0], tomorrowBase);
+          
+          // Simple estimate for tomorrow
+          slackWindows.push({
+            start: new Date(firstSlack.getTime() - 45 * 60000),
+            slack: firstSlack,
+            end: new Date(firstSlack.getTime() + 45 * 60000),
+            type: 'low-slack',
+            nextDirection: 'flood'
+          });
+        }
+        
+        return {
+          currentSpeed: Math.abs(currentSpeed).toFixed(1),
+          isFlood,
+          isEbb,
+          isSlack: !isFlood && !isEbb,
+          inOneKnotWindow,
+          direction: isFlood || (!isFlood && !isEbb && currentSpeed >= 0) ? floodDir : ebbDir,
+          directionDeg: isFlood || (!isFlood && !isEbb && currentSpeed >= 0) ? stationConfig.floodDeg : stationConfig.ebbDeg,
+          events: events.slice(0, 8),
+          slackWindows: slackWindows.filter(w => w.end > now).slice(0, 3),
+          progressPercent: 50,
+          hasReferenceData: true
+        };
+      }
+      
+      // Fallback to harmonic calculation if no reference data
+      return calculateCurrentsFallback(stationConfig);
+    }
+    
+    // Fallback harmonic calculation (less accurate)
+    function calculateCurrentsFallback(stationConfig) {
+      const now = new Date();
       const base = new Date(now);
       base.setHours(0, 0, 0, 0);
       
-      // Harmonic constituents for current prediction
       const M2_period = 12.42 * 3600000;
-      const S2_period = 12 * 3600000;
-      const K1_period = 23.93 * 3600000;
-      
-      // Station-specific parameters
       const { maxFlood, maxEbb, floodDir, ebbDir, phaseOffset } = stationConfig;
       
-      const interval = 5 * 60000; // 5 minute intervals for better precision
-      const duration = 36 * 3600000; // 36 hours
-      
-      let prevSpeed = null;
-      let prevSlope = null;
-      
-      // Store all speed data points for window calculation
-      const speedData = [];
-      
-      // Calculate current speed over time (positive = flood, negative = ebb)
-      for (let t = -6 * 3600000; t < duration; t += interval) {
-        const time = new Date(base.getTime() + t + phaseOffset);
-        
-        const phase = 2 * Math.PI * t / M2_period;
-        const S2_phase = 2 * Math.PI * t / S2_period;
-        
-        const M2_contrib = Math.sin(phase);
-        const S2_contrib = 0.3 * Math.sin(S2_phase);
-        
-        const rawSpeed = M2_contrib + S2_contrib;
-        const speed = rawSpeed > 0 ? rawSpeed * maxFlood : rawSpeed * maxEbb;
-        
-        speedData.push({ time, speed, t });
-        
-        if (prevSpeed !== null) {
-          const slope = speed - prevSpeed;
-          
-          if (prevSlope !== null && time > now) {
-            // Detect slack water (speed crosses zero)
-            if ((prevSpeed > 0.1 && speed <= 0.1) || (prevSpeed < -0.1 && speed >= -0.1)) {
-              const isHighSlack = prevSpeed > 0;
-              events.push({
-                time: new Date(time.getTime() - interval / 2),
-                type: isHighSlack ? 'high-slack' : 'low-slack',
-                speed: 0
-              });
-            }
-            // Detect max flood
-            if (prevSlope > 0 && slope <= 0 && speed > 0.5) {
-              events.push({
-                time: new Date(time.getTime() - interval / 2),
-                type: 'max-flood',
-                speed: Math.abs(prevSpeed).toFixed(1)
-              });
-            }
-            // Detect max ebb
-            if (prevSlope < 0 && slope >= 0 && speed < -0.5) {
-              events.push({
-                time: new Date(time.getTime() - interval / 2),
-                type: 'max-ebb',
-                speed: Math.abs(prevSpeed).toFixed(1)
-              });
-            }
-          }
-          prevSlope = slope;
-        }
-        prevSpeed = speed;
-      }
-      
-      // Calculate 1-knot windows around each slack
-      // Find slack times and then find when current drops below/rises above 1 knot
-      let inWindow = false;
-      let windowStart = null;
-      let windowSlack = null;
-      let windowType = null;
-      let wasPositive = null;
-      
-      for (let i = 0; i < speedData.length; i++) {
-        const { time, speed } = speedData[i];
-        const absSpeed = Math.abs(speed);
-        
-        // Entering 1-knot window
-        if (!inWindow && absSpeed <= 1.0 && time > new Date(now.getTime() - 2 * 3600000)) {
-          inWindow = true;
-          windowStart = time;
-          wasPositive = speed > 0;
-        }
-        
-        // At slack (crossing zero)
-        if (inWindow && wasPositive !== null) {
-          if ((wasPositive && speed <= 0) || (!wasPositive && speed > 0)) {
-            windowSlack = time;
-            windowType = wasPositive ? 'high-slack' : 'low-slack';
-            wasPositive = speed > 0;
-          }
-        }
-        
-        // Exiting 1-knot window
-        if (inWindow && absSpeed > 1.0) {
-          if (windowSlack && windowStart) {
-            slackWindows.push({
-              start: windowStart,
-              slack: windowSlack,
-              end: time,
-              type: windowType,
-              nextDirection: speed > 0 ? 'flood' : 'ebb'
-            });
-          }
-          inWindow = false;
-          windowStart = null;
-          windowSlack = null;
-          windowType = null;
-        }
-      }
-      
-      // Calculate current state right now
       const nowT = now.getTime() - base.getTime();
-      const phase = 2 * Math.PI * (nowT + stationConfig.phaseOffset) / M2_period;
-      const S2_phase = 2 * Math.PI * (nowT + stationConfig.phaseOffset) / S2_period;
-      const rawNow = Math.sin(phase) + 0.3 * Math.sin(S2_phase);
+      const phase = 2 * Math.PI * (nowT + phaseOffset) / M2_period;
+      const rawNow = Math.sin(phase);
       const currentSpeed = rawNow > 0 ? rawNow * maxFlood : rawNow * maxEbb;
-      
-      // Find where we are in the current cycle (for progress bar)
-      const cyclePhase = ((phase % (2 * Math.PI)) + 2 * Math.PI) % (2 * Math.PI);
-      const progressPercent = (cyclePhase / (2 * Math.PI)) * 100;
       
       return {
         currentSpeed: Math.abs(currentSpeed).toFixed(1),
@@ -1304,9 +1493,10 @@
         inOneKnotWindow: Math.abs(currentSpeed) <= 1.0,
         direction: currentSpeed >= 0 ? floodDir : ebbDir,
         directionDeg: currentSpeed >= 0 ? stationConfig.floodDeg : stationConfig.ebbDeg,
-        events: events.slice(0, 8),
-        slackWindows: slackWindows.filter(w => w.end > now).slice(0, 3),
-        progressPercent
+        events: [],
+        slackWindows: [],
+        progressPercent: 50,
+        hasReferenceData: false
       };
     }
 
@@ -1333,7 +1523,7 @@
 
     function updateCurrentsDisplay() {
       // First Narrows
-      const first = calculateCurrents(FIRST_NARROWS);
+      const first = calculateCurrents(FIRST_NARROWS, FIRST_NARROWS_DATA);
       document.getElementById('firstNarrowsSpeed').textContent = first.currentSpeed;
       
       const firstState = document.getElementById('firstNarrowsState');
@@ -1381,7 +1571,7 @@
       renderSlackWindows('firstNarrowsWindows', first.slackWindows, first.inOneKnotWindow);
       
       // Second Narrows
-      const second = calculateCurrents(SECOND_NARROWS);
+      const second = calculateCurrents(SECOND_NARROWS, SECOND_NARROWS_DATA);
       document.getElementById('secondNarrowsSpeed').textContent = second.currentSpeed;
       
       const secondState = document.getElementById('secondNarrowsState');
