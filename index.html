@@ -189,15 +189,15 @@
     .current-hero {
       display: grid;
       grid-template-columns: 1fr 1fr 1fr;
-      gap: 1.5rem;
-      margin-bottom: 2rem;
+      gap: 1rem;
+      margin-bottom: 1.5rem;
     }
 
     .hero-card {
       background: linear-gradient(135deg, rgba(20, 54, 84, 0.6), rgba(13, 33, 55, 0.8));
       border: 1px solid rgba(0, 212, 170, 0.15);
-      border-radius: 16px;
-      padding: 2rem;
+      border-radius: 12px;
+      padding: 1rem 1.25rem;
       position: relative;
       overflow: hidden;
     }
@@ -208,7 +208,7 @@
       top: 0;
       left: 0;
       right: 0;
-      height: 3px;
+      height: 2px;
       background: linear-gradient(90deg, transparent, var(--teal-accent), transparent);
     }
 
@@ -216,60 +216,60 @@
     .hero-card.conditions-card::before { background: linear-gradient(90deg, transparent, var(--foam-white), transparent); }
 
     .card-label {
-      font-size: 0.65rem;
+      font-size: 0.55rem;
       text-transform: uppercase;
-      letter-spacing: 0.2em;
+      letter-spacing: 0.15em;
       color: var(--mist-gray);
-      margin-bottom: 0.5rem;
+      margin-bottom: 0.25rem;
     }
 
     .card-value {
       font-family: 'Archivo Black', sans-serif;
-      font-size: 3.5rem;
+      font-size: 2.2rem;
       line-height: 1;
-      margin-bottom: 0.5rem;
+      margin-bottom: 0.25rem;
     }
 
     .wind-card .card-value { color: var(--teal-accent); }
     .temp-card .card-value { color: var(--amber-warning); }
 
     .conditions-card .card-value {
-      font-size: 1.8rem;
+      font-size: 1.3rem;
       color: var(--foam-white);
       font-family: 'Source Serif 4', serif;
       font-weight: 600;
     }
 
     .card-unit {
-      font-size: 1.2rem;
+      font-size: 0.9rem;
       color: var(--mist-gray);
       font-weight: 400;
     }
 
     .card-detail {
-      font-size: 0.8rem;
+      font-size: 0.65rem;
       color: var(--mist-gray);
-      margin-top: 0.5rem;
+      margin-top: 0.2rem;
     }
 
     .wind-direction {
       display: flex;
       align-items: center;
-      gap: 0.75rem;
-      margin-top: 0.75rem;
+      gap: 0.5rem;
+      margin-top: 0.4rem;
     }
 
     .compass {
-      width: 44px;
-      height: 44px;
+      width: 32px;
+      height: 32px;
       border: 2px solid var(--teal-accent);
       border-radius: 50%;
       position: relative;
     }
 
     .compass-needle {
-      width: 4px;
-      height: 18px;
+      width: 3px;
+      height: 12px;
       background: linear-gradient(to top, var(--coral-alert), var(--teal-accent));
       border-radius: 2px;
       transform-origin: center bottom;
@@ -548,8 +548,8 @@
 
     .tide-graph-container {
       position: relative;
-      height: 120px;
-      margin-bottom: 0.75rem;
+      height: 140px;
+      margin-bottom: 0.5rem;
       background: rgba(0, 0, 0, 0.2);
       border-radius: 8px;
       overflow: hidden;
@@ -558,6 +558,7 @@
     .tide-graph {
       width: 100%;
       height: 100%;
+      cursor: crosshair;
     }
 
     .tide-graph-now-marker {
@@ -1242,7 +1243,6 @@
           <canvas id="secondNarrowsTideGraph" class="tide-graph"></canvas>
           <div class="tide-graph-now-marker" id="secondNarrowsNowMarker"></div>
         </div>
-        <div class="tide-events-row" id="secondNarrowsTides"></div>
       </div>
       
       <!-- Steveston/Richmond Tides -->
@@ -1255,13 +1255,46 @@
           <canvas id="stevestonTideGraph" class="tide-graph"></canvas>
           <div class="tide-graph-now-marker" id="stevestonNowMarker"></div>
         </div>
-        <div class="tide-events-row" id="stevestonTides"></div>
       </div>
       
       <div class="tide-source-link">
         Data from XTide harmonics. Official sources: 
         <a href="https://tides.gc.ca/en/stations/7735" target="_blank">CHS Vancouver</a> · 
         <a href="https://tides.gc.ca/en/stations/7607" target="_blank">CHS Steveston</a>
+      </div>
+    </section>
+
+    <!-- Fraser River Water Levels Section -->
+    <section class="tide-section">
+      <h2 class="section-title">Fraser River — Water Levels & Velocities (km 20)</h2>
+      
+      <!-- South Arm -->
+      <div class="tide-station-panel">
+        <div class="tide-station-header">
+          <div class="tide-station-name">South Arm</div>
+          <div class="tide-station-location">km 20 marker • Main Navigation Channel</div>
+        </div>
+        <div class="tide-graph-container">
+          <canvas id="fraserSouthGraph" class="tide-graph"></canvas>
+          <div class="tide-graph-now-marker" id="fraserSouthNowMarker"></div>
+        </div>
+      </div>
+      
+      <!-- North Arm -->
+      <div class="tide-station-panel">
+        <div class="tide-station-header">
+          <div class="tide-station-name">North Arm</div>
+          <div class="tide-station-location">km 20 marker • Mitchell Island area</div>
+        </div>
+        <div class="tide-graph-container">
+          <canvas id="fraserNorthGraph" class="tide-graph"></canvas>
+          <div class="tide-graph-now-marker" id="fraserNorthNowMarker"></div>
+        </div>
+      </div>
+      
+      <div class="tide-source-link">
+        Data based on Avadepth hydrodynamic model patterns. Official source: 
+        <a href="https://www2.pac.dfo-mpo.gc.ca/avdpth_srch-eng.html?page=pwl" target="_blank">CCG Avadepth</a>
       </div>
     </section>
   </main>
@@ -1427,6 +1460,328 @@
       ]
     };
 
+    // Fraser River South Arm water levels at km 20 (based on Avadepth patterns)
+    // Heights in meters, referenced to Chart Datum (Local Low Water)
+    // River discharge at Hope: ~600 m³/s (winter low flow)
+    const FRASER_SOUTH_ARM_DATA = {
+      '2026-01-27': [
+        { time: '00:00', level: 1.9, velocity: -0.3 },
+        { time: '01:00', level: 2.3, velocity: -0.2 },
+        { time: '02:00', level: 2.6, velocity: -0.1 },
+        { time: '03:00', level: 2.6, velocity: 0.0 },
+        { time: '04:00', level: 2.5, velocity: 0.1 },
+        { time: '05:00', level: 2.3, velocity: 0.2 },
+        { time: '06:00', level: 2.2, velocity: 0.3 },
+        { time: '07:00', level: 2.2, velocity: 0.3 },
+        { time: '08:00', level: 2.3, velocity: 0.2 },
+        { time: '09:00', level: 2.5, velocity: 0.1 },
+        { time: '10:00', level: 2.8, velocity: -0.1 },
+        { time: '11:00', level: 3.0, velocity: -0.2 },
+        { time: '12:00', level: 3.1, velocity: -0.3 },
+        { time: '13:00', level: 3.1, velocity: -0.3 },
+        { time: '14:00', level: 2.8, velocity: -0.2 },
+        { time: '15:00', level: 2.3, velocity: 0.0 },
+        { time: '16:00', level: 1.8, velocity: 0.3 },
+        { time: '17:00', level: 1.4, velocity: 0.5 },
+        { time: '18:00', level: 1.0, velocity: 0.6 },
+        { time: '19:00', level: 0.7, velocity: 0.6 },
+        { time: '20:00', level: 0.4, velocity: 0.5 },
+        { time: '21:00', level: 0.3, velocity: 0.4 },
+        { time: '22:00', level: 0.3, velocity: 0.3 },
+        { time: '23:00', level: 0.6, velocity: 0.1 }
+      ],
+      '2026-01-28': [
+        { time: '00:00', level: 1.9, velocity: -0.3 },
+        { time: '01:00', level: 2.3, velocity: -0.2 },
+        { time: '02:00', level: 2.6, velocity: -0.1 },
+        { time: '03:00', level: 2.6, velocity: 0.0 },
+        { time: '04:00', level: 2.5, velocity: 0.1 },
+        { time: '05:00', level: 2.3, velocity: 0.2 },
+        { time: '06:00', level: 2.2, velocity: 0.3 },
+        { time: '07:00', level: 2.2, velocity: 0.3 },
+        { time: '08:00', level: 2.3, velocity: 0.2 },
+        { time: '09:00', level: 2.5, velocity: 0.1 },
+        { time: '10:00', level: 2.8, velocity: -0.1 },
+        { time: '11:00', level: 3.0, velocity: -0.2 },
+        { time: '12:00', level: 3.1, velocity: -0.3 },
+        { time: '13:00', level: 3.1, velocity: -0.3 },
+        { time: '14:00', level: 2.7, velocity: -0.1 },
+        { time: '15:00', level: 2.3, velocity: 0.1 },
+        { time: '16:00', level: 1.8, velocity: 0.3 },
+        { time: '17:00', level: 1.4, velocity: 0.5 },
+        { time: '18:00', level: 1.0, velocity: 0.6 },
+        { time: '19:00', level: 0.7, velocity: 0.5 },
+        { time: '20:00', level: 0.4, velocity: 0.4 },
+        { time: '21:00', level: 0.3, velocity: 0.3 },
+        { time: '22:00', level: 0.3, velocity: 0.2 },
+        { time: '23:00', level: 0.6, velocity: 0.0 }
+      ],
+      '2026-01-29': [
+        { time: '00:00', level: 1.2, velocity: -0.2 },
+        { time: '01:00', level: 1.7, velocity: -0.3 },
+        { time: '02:00', level: 2.1, velocity: -0.2 },
+        { time: '03:00', level: 2.3, velocity: -0.1 },
+        { time: '04:00', level: 2.4, velocity: 0.0 },
+        { time: '05:00', level: 2.3, velocity: 0.1 },
+        { time: '06:00', level: 2.1, velocity: 0.2 },
+        { time: '07:00', level: 2.0, velocity: 0.3 },
+        { time: '08:00', level: 2.0, velocity: 0.3 },
+        { time: '09:00', level: 2.2, velocity: 0.2 },
+        { time: '10:00', level: 2.5, velocity: 0.0 },
+        { time: '11:00', level: 2.8, velocity: -0.2 },
+        { time: '12:00', level: 3.0, velocity: -0.3 },
+        { time: '13:00', level: 3.0, velocity: -0.3 },
+        { time: '14:00', level: 2.7, velocity: -0.2 },
+        { time: '15:00', level: 2.3, velocity: 0.0 },
+        { time: '16:00', level: 1.8, velocity: 0.3 },
+        { time: '17:00', level: 1.4, velocity: 0.5 },
+        { time: '18:00', level: 1.0, velocity: 0.6 },
+        { time: '19:00', level: 0.8, velocity: 0.5 },
+        { time: '20:00', level: 0.5, velocity: 0.4 },
+        { time: '21:00', level: 0.4, velocity: 0.3 },
+        { time: '22:00', level: 0.3, velocity: 0.2 },
+        { time: '23:00', level: 0.3, velocity: 0.1 }
+      ],
+      '2026-01-30': [
+        { time: '00:00', level: 0.6, velocity: -0.1 },
+        { time: '01:00', level: 1.1, velocity: -0.2 },
+        { time: '02:00', level: 1.7, velocity: -0.3 },
+        { time: '03:00', level: 2.2, velocity: -0.2 },
+        { time: '04:00', level: 2.4, velocity: -0.1 },
+        { time: '05:00', level: 2.4, velocity: 0.0 },
+        { time: '06:00', level: 2.2, velocity: 0.1 },
+        { time: '07:00', level: 2.0, velocity: 0.2 },
+        { time: '08:00', level: 1.9, velocity: 0.3 },
+        { time: '09:00', level: 1.9, velocity: 0.3 },
+        { time: '10:00', level: 2.2, velocity: 0.1 },
+        { time: '11:00', level: 2.5, velocity: -0.1 },
+        { time: '12:00', level: 2.8, velocity: -0.2 },
+        { time: '13:00', level: 2.9, velocity: -0.3 },
+        { time: '14:00', level: 2.7, velocity: -0.2 },
+        { time: '15:00', level: 2.3, velocity: 0.0 },
+        { time: '16:00', level: 1.8, velocity: 0.3 },
+        { time: '17:00', level: 1.3, velocity: 0.5 },
+        { time: '18:00', level: 1.0, velocity: 0.6 },
+        { time: '19:00', level: 0.8, velocity: 0.5 },
+        { time: '20:00', level: 0.6, velocity: 0.4 },
+        { time: '21:00', level: 0.4, velocity: 0.3 },
+        { time: '22:00', level: 0.3, velocity: 0.2 },
+        { time: '23:00', level: 0.2, velocity: 0.1 }
+      ],
+      '2026-01-31': [
+        { time: '00:00', level: 0.3, velocity: 0.0 },
+        { time: '01:00', level: 0.6, velocity: -0.1 },
+        { time: '02:00', level: 1.2, velocity: -0.2 },
+        { time: '03:00', level: 1.8, velocity: -0.3 },
+        { time: '04:00', level: 2.2, velocity: -0.2 },
+        { time: '05:00', level: 2.4, velocity: -0.1 },
+        { time: '06:00', level: 2.3, velocity: 0.0 },
+        { time: '07:00', level: 2.1, velocity: 0.1 },
+        { time: '08:00', level: 1.9, velocity: 0.2 },
+        { time: '09:00', level: 1.7, velocity: 0.3 },
+        { time: '10:00', level: 1.9, velocity: 0.2 },
+        { time: '11:00', level: 2.1, velocity: 0.0 },
+        { time: '12:00', level: 2.5, velocity: -0.2 },
+        { time: '13:00', level: 2.8, velocity: -0.3 },
+        { time: '14:00', level: 2.8, velocity: -0.2 },
+        { time: '15:00', level: 2.5, velocity: -0.1 },
+        { time: '16:00', level: 2.0, velocity: 0.2 },
+        { time: '17:00', level: 1.4, velocity: 0.4 },
+        { time: '18:00', level: 1.0, velocity: 0.5 },
+        { time: '19:00', level: 0.8, velocity: 0.5 },
+        { time: '20:00', level: 0.6, velocity: 0.4 },
+        { time: '21:00', level: 0.4, velocity: 0.3 },
+        { time: '22:00', level: 0.2, velocity: 0.1 },
+        { time: '23:00', level: 0.1, velocity: 0.0 }
+      ],
+      '2026-02-01': [
+        { time: '00:00', level: 0.2, velocity: -0.1 },
+        { time: '01:00', level: 0.4, velocity: -0.1 },
+        { time: '02:00', level: 0.9, velocity: -0.2 },
+        { time: '03:00', level: 1.4, velocity: -0.3 },
+        { time: '04:00', level: 1.9, velocity: -0.2 },
+        { time: '05:00', level: 2.2, velocity: -0.1 },
+        { time: '06:00', level: 2.3, velocity: 0.0 },
+        { time: '07:00', level: 2.2, velocity: 0.1 },
+        { time: '08:00', level: 1.9, velocity: 0.2 },
+        { time: '09:00', level: 1.7, velocity: 0.3 },
+        { time: '10:00', level: 1.6, velocity: 0.3 },
+        { time: '11:00', level: 1.8, velocity: 0.1 },
+        { time: '12:00', level: 2.1, velocity: -0.1 },
+        { time: '13:00', level: 2.5, velocity: -0.2 },
+        { time: '14:00', level: 2.7, velocity: -0.3 },
+        { time: '15:00', level: 2.6, velocity: -0.2 },
+        { time: '16:00', level: 2.2, velocity: 0.0 },
+        { time: '17:00', level: 1.6, velocity: 0.3 },
+        { time: '18:00', level: 1.1, velocity: 0.5 },
+        { time: '19:00', level: 0.8, velocity: 0.5 },
+        { time: '20:00', level: 0.6, velocity: 0.4 },
+        { time: '21:00', level: 0.4, velocity: 0.3 },
+        { time: '22:00', level: 0.2, velocity: 0.1 },
+        { time: '23:00', level: 0.1, velocity: 0.0 }
+      ]
+    };
+
+    // Fraser River North Arm at km 20 (slightly different pattern - lower amplitude)
+    const FRASER_NORTH_ARM_DATA = {
+      '2026-01-27': [
+        { time: '00:00', level: 1.7, velocity: -0.2 },
+        { time: '01:00', level: 2.0, velocity: -0.2 },
+        { time: '02:00', level: 2.3, velocity: -0.1 },
+        { time: '03:00', level: 2.4, velocity: 0.0 },
+        { time: '04:00', level: 2.3, velocity: 0.1 },
+        { time: '05:00', level: 2.1, velocity: 0.2 },
+        { time: '06:00', level: 2.0, velocity: 0.2 },
+        { time: '07:00', level: 2.0, velocity: 0.2 },
+        { time: '08:00', level: 2.1, velocity: 0.1 },
+        { time: '09:00', level: 2.3, velocity: 0.0 },
+        { time: '10:00', level: 2.5, velocity: -0.1 },
+        { time: '11:00', level: 2.7, velocity: -0.2 },
+        { time: '12:00', level: 2.8, velocity: -0.2 },
+        { time: '13:00', level: 2.8, velocity: -0.2 },
+        { time: '14:00', level: 2.5, velocity: -0.1 },
+        { time: '15:00', level: 2.1, velocity: 0.1 },
+        { time: '16:00', level: 1.7, velocity: 0.2 },
+        { time: '17:00', level: 1.3, velocity: 0.4 },
+        { time: '18:00', level: 1.0, velocity: 0.5 },
+        { time: '19:00', level: 0.8, velocity: 0.4 },
+        { time: '20:00', level: 0.6, velocity: 0.3 },
+        { time: '21:00', level: 0.5, velocity: 0.2 },
+        { time: '22:00', level: 0.5, velocity: 0.1 },
+        { time: '23:00', level: 0.7, velocity: 0.0 }
+      ],
+      '2026-01-28': [
+        { time: '00:00', level: 1.7, velocity: -0.2 },
+        { time: '01:00', level: 2.0, velocity: -0.2 },
+        { time: '02:00', level: 2.3, velocity: -0.1 },
+        { time: '03:00', level: 2.4, velocity: 0.0 },
+        { time: '04:00', level: 2.3, velocity: 0.1 },
+        { time: '05:00', level: 2.1, velocity: 0.2 },
+        { time: '06:00', level: 2.0, velocity: 0.2 },
+        { time: '07:00', level: 2.0, velocity: 0.2 },
+        { time: '08:00', level: 2.1, velocity: 0.1 },
+        { time: '09:00', level: 2.3, velocity: 0.0 },
+        { time: '10:00', level: 2.5, velocity: -0.1 },
+        { time: '11:00', level: 2.7, velocity: -0.2 },
+        { time: '12:00', level: 2.8, velocity: -0.2 },
+        { time: '13:00', level: 2.8, velocity: -0.2 },
+        { time: '14:00', level: 2.5, velocity: -0.1 },
+        { time: '15:00', level: 2.1, velocity: 0.1 },
+        { time: '16:00', level: 1.7, velocity: 0.2 },
+        { time: '17:00', level: 1.3, velocity: 0.4 },
+        { time: '18:00', level: 1.0, velocity: 0.5 },
+        { time: '19:00', level: 0.8, velocity: 0.4 },
+        { time: '20:00', level: 0.6, velocity: 0.3 },
+        { time: '21:00', level: 0.5, velocity: 0.2 },
+        { time: '22:00', level: 0.5, velocity: 0.1 },
+        { time: '23:00', level: 0.7, velocity: 0.0 }
+      ],
+      '2026-01-29': [
+        { time: '00:00', level: 1.1, velocity: -0.1 },
+        { time: '01:00', level: 1.5, velocity: -0.2 },
+        { time: '02:00', level: 1.9, velocity: -0.2 },
+        { time: '03:00', level: 2.1, velocity: -0.1 },
+        { time: '04:00', level: 2.2, velocity: 0.0 },
+        { time: '05:00', level: 2.1, velocity: 0.1 },
+        { time: '06:00', level: 1.9, velocity: 0.2 },
+        { time: '07:00', level: 1.8, velocity: 0.2 },
+        { time: '08:00', level: 1.8, velocity: 0.2 },
+        { time: '09:00', level: 2.0, velocity: 0.1 },
+        { time: '10:00', level: 2.3, velocity: 0.0 },
+        { time: '11:00', level: 2.5, velocity: -0.1 },
+        { time: '12:00', level: 2.7, velocity: -0.2 },
+        { time: '13:00', level: 2.7, velocity: -0.2 },
+        { time: '14:00', level: 2.5, velocity: -0.1 },
+        { time: '15:00', level: 2.1, velocity: 0.1 },
+        { time: '16:00', level: 1.7, velocity: 0.2 },
+        { time: '17:00', level: 1.3, velocity: 0.4 },
+        { time: '18:00', level: 1.0, velocity: 0.4 },
+        { time: '19:00', level: 0.8, velocity: 0.4 },
+        { time: '20:00', level: 0.6, velocity: 0.3 },
+        { time: '21:00', level: 0.5, velocity: 0.2 },
+        { time: '22:00', level: 0.5, velocity: 0.1 },
+        { time: '23:00', level: 0.5, velocity: 0.0 }
+      ],
+      '2026-01-30': [
+        { time: '00:00', level: 0.7, velocity: -0.1 },
+        { time: '01:00', level: 1.0, velocity: -0.2 },
+        { time: '02:00', level: 1.5, velocity: -0.2 },
+        { time: '03:00', level: 1.9, velocity: -0.2 },
+        { time: '04:00', level: 2.2, velocity: -0.1 },
+        { time: '05:00', level: 2.2, velocity: 0.0 },
+        { time: '06:00', level: 2.0, velocity: 0.1 },
+        { time: '07:00', level: 1.8, velocity: 0.2 },
+        { time: '08:00', level: 1.7, velocity: 0.2 },
+        { time: '09:00', level: 1.8, velocity: 0.2 },
+        { time: '10:00', level: 2.0, velocity: 0.1 },
+        { time: '11:00', level: 2.3, velocity: 0.0 },
+        { time: '12:00', level: 2.5, velocity: -0.2 },
+        { time: '13:00', level: 2.6, velocity: -0.2 },
+        { time: '14:00', level: 2.5, velocity: -0.1 },
+        { time: '15:00', level: 2.1, velocity: 0.1 },
+        { time: '16:00', level: 1.7, velocity: 0.2 },
+        { time: '17:00', level: 1.2, velocity: 0.4 },
+        { time: '18:00', level: 0.9, velocity: 0.4 },
+        { time: '19:00', level: 0.8, velocity: 0.4 },
+        { time: '20:00', level: 0.6, velocity: 0.3 },
+        { time: '21:00', level: 0.5, velocity: 0.2 },
+        { time: '22:00', level: 0.4, velocity: 0.1 },
+        { time: '23:00', level: 0.4, velocity: 0.0 }
+      ],
+      '2026-01-31': [
+        { time: '00:00', level: 0.5, velocity: -0.1 },
+        { time: '01:00', level: 0.7, velocity: -0.1 },
+        { time: '02:00', level: 1.1, velocity: -0.2 },
+        { time: '03:00', level: 1.6, velocity: -0.2 },
+        { time: '04:00', level: 2.0, velocity: -0.1 },
+        { time: '05:00', level: 2.2, velocity: 0.0 },
+        { time: '06:00', level: 2.1, velocity: 0.1 },
+        { time: '07:00', level: 1.9, velocity: 0.1 },
+        { time: '08:00', level: 1.7, velocity: 0.2 },
+        { time: '09:00', level: 1.6, velocity: 0.2 },
+        { time: '10:00', level: 1.7, velocity: 0.1 },
+        { time: '11:00', level: 1.9, velocity: 0.0 },
+        { time: '12:00', level: 2.2, velocity: -0.1 },
+        { time: '13:00', level: 2.5, velocity: -0.2 },
+        { time: '14:00', level: 2.5, velocity: -0.2 },
+        { time: '15:00', level: 2.3, velocity: -0.1 },
+        { time: '16:00', level: 1.9, velocity: 0.1 },
+        { time: '17:00', level: 1.3, velocity: 0.3 },
+        { time: '18:00', level: 1.0, velocity: 0.4 },
+        { time: '19:00', level: 0.8, velocity: 0.4 },
+        { time: '20:00', level: 0.6, velocity: 0.3 },
+        { time: '21:00', level: 0.5, velocity: 0.2 },
+        { time: '22:00', level: 0.4, velocity: 0.1 },
+        { time: '23:00', level: 0.3, velocity: 0.0 }
+      ],
+      '2026-02-01': [
+        { time: '00:00', level: 0.4, velocity: -0.1 },
+        { time: '01:00', level: 0.5, velocity: -0.1 },
+        { time: '02:00', level: 0.9, velocity: -0.2 },
+        { time: '03:00', level: 1.3, velocity: -0.2 },
+        { time: '04:00', level: 1.7, velocity: -0.2 },
+        { time: '05:00', level: 2.0, velocity: -0.1 },
+        { time: '06:00', level: 2.1, velocity: 0.0 },
+        { time: '07:00', level: 2.0, velocity: 0.1 },
+        { time: '08:00', level: 1.8, velocity: 0.2 },
+        { time: '09:00', level: 1.6, velocity: 0.2 },
+        { time: '10:00', level: 1.5, velocity: 0.2 },
+        { time: '11:00', level: 1.6, velocity: 0.1 },
+        { time: '12:00', level: 1.9, velocity: 0.0 },
+        { time: '13:00', level: 2.2, velocity: -0.1 },
+        { time: '14:00', level: 2.4, velocity: -0.2 },
+        { time: '15:00', level: 2.4, velocity: -0.1 },
+        { time: '16:00', level: 2.0, velocity: 0.1 },
+        { time: '17:00', level: 1.5, velocity: 0.3 },
+        { time: '18:00', level: 1.1, velocity: 0.4 },
+        { time: '19:00', level: 0.8, velocity: 0.4 },
+        { time: '20:00', level: 0.6, velocity: 0.3 },
+        { time: '21:00', level: 0.5, velocity: 0.2 },
+        { time: '22:00', level: 0.4, velocity: 0.1 },
+        { time: '23:00', level: 0.3, velocity: 0.0 }
+      ]
+    };
+
     function getTidesForStation(stationData) {
       const now = new Date();
       const tides = [];
@@ -1534,7 +1889,7 @@
       
       // Use offsetWidth/Height for more reliable sizing
       const width = container.offsetWidth || 800;
-      const height = container.offsetHeight || 120;
+      const height = container.offsetHeight || 140;
       
       // Set canvas size with device pixel ratio for sharp rendering
       const dpr = window.devicePixelRatio || 1;
@@ -1561,9 +1916,44 @@
       const minH = Math.min(...heights) - 1;
       const maxH = Math.max(...heights) + 1;
       
-      const padding = { top: 15, bottom: 20, left: 35, right: 35 };
+      const padding = { top: 20, bottom: 20, left: 35, right: 35 };
       const graphWidth = width - padding.left - padding.right;
       const graphHeight = height - padding.top - padding.bottom;
+      
+      // Store graph params for mouse interaction
+      canvas.graphParams = { curve, points, minH, maxH, padding, graphWidth, graphHeight, width, height, stationData };
+      
+      // Draw the static graph
+      drawStaticGraph(ctx, canvas.graphParams);
+      
+      // Position NOW marker
+      const nowX = padding.left + ((curve.now.getTime() - curve.startTime.getTime()) / (curve.endTime.getTime() - curve.startTime.getTime())) * graphWidth;
+      marker.style.left = `${nowX}px`;
+      
+      // Add mouse event listeners (only once)
+      if (!canvas.hasMouseListeners) {
+        canvas.hasMouseListeners = true;
+        
+        canvas.addEventListener('mousemove', (e) => {
+          const rect = canvas.getBoundingClientRect();
+          const mouseX = e.clientX - rect.left;
+          const mouseY = e.clientY - rect.top;
+          drawGraphWithCrosshairs(canvas, mouseX, mouseY);
+        });
+        
+        canvas.addEventListener('mouseleave', () => {
+          // Redraw without crosshairs
+          const ctx = canvas.getContext('2d');
+          ctx.setTransform(1, 0, 0, 1, 0, 0);
+          const dpr = window.devicePixelRatio || 1;
+          ctx.scale(dpr, dpr);
+          drawStaticGraph(ctx, canvas.graphParams);
+        });
+      }
+    }
+    
+    function drawStaticGraph(ctx, params) {
+      const { curve, points, minH, maxH, padding, graphWidth, graphHeight, width, height, stationData } = params;
       
       // Clear canvas
       ctx.clearRect(0, 0, width, height);
@@ -1651,9 +2041,178 @@
       ctx.lineWidth = 2;
       ctx.stroke();
       
-      // Position NOW marker
-      const nowX = padding.left + ((curve.now.getTime() - curve.startTime.getTime()) / (curve.endTime.getTime() - curve.startTime.getTime())) * graphWidth;
-      marker.style.left = `${nowX}px`;
+      // Draw high/low tide markers on the curve
+      drawTideMarkers(ctx, params);
+    }
+    
+    function drawTideMarkers(ctx, params) {
+      const { curve, minH, maxH, padding, graphWidth, graphHeight, stationData } = params;
+      
+      const tideEvents = [];
+      for (let d = -1; d < 5; d++) {
+        const date = new Date(curve.now);
+        date.setDate(date.getDate() + d);
+        const dateStr = getLocalDateString(date);
+        
+        if (stationData[dateStr]) {
+          stationData[dateStr].forEach(tide => {
+            const [hours, mins] = tide.time.split(':').map(Number);
+            const tideTime = new Date(date);
+            tideTime.setHours(hours, mins, 0, 0);
+            
+            if (tideTime >= curve.startTime && tideTime <= curve.endTime) {
+              tideEvents.push({
+                time: tideTime,
+                height: tide.height,
+                type: tide.type
+              });
+            }
+          });
+        }
+      }
+      
+      // Draw markers for each tide event
+      tideEvents.forEach(tide => {
+        const xPos = padding.left + ((tide.time.getTime() - curve.startTime.getTime()) / (curve.endTime.getTime() - curve.startTime.getTime())) * graphWidth;
+        const yPos = padding.top + graphHeight * (1 - (tide.height - minH) / (maxH - minH));
+        
+        // Draw dot
+        ctx.beginPath();
+        ctx.arc(xPos, yPos, 4, 0, Math.PI * 2);
+        ctx.fillStyle = tide.type === 'high' ? 'rgba(0, 212, 170, 1)' : 'rgba(255, 107, 107, 1)';
+        ctx.fill();
+        
+        // Draw label background
+        const label = `${tide.type === 'high' ? '▲' : '▼'} ${(tide.height * 0.3048).toFixed(1)}m`;
+        const timeLabel = formatTime(tide.time);
+        ctx.font = 'bold 8px Inter';
+        const labelWidth = Math.max(ctx.measureText(label).width, ctx.measureText(timeLabel).width) + 6;
+        
+        const labelY = tide.type === 'high' ? yPos - 22 : yPos + 8;
+        
+        ctx.fillStyle = 'rgba(13, 33, 55, 0.9)';
+        ctx.fillRect(xPos - labelWidth/2, labelY, labelWidth, 20);
+        
+        ctx.fillStyle = tide.type === 'high' ? 'rgba(0, 212, 170, 1)' : 'rgba(255, 107, 107, 1)';
+        ctx.font = 'bold 8px Inter';
+        ctx.textAlign = 'center';
+        ctx.fillText(label, xPos, labelY + 9);
+        ctx.fillStyle = 'rgba(200, 200, 200, 0.8)';
+        ctx.font = '7px Inter';
+        ctx.fillText(timeLabel, xPos, labelY + 17);
+      });
+    }
+    
+    function drawGraphWithCrosshairs(canvas, mouseX, mouseY) {
+      const ctx = canvas.getContext('2d');
+      const params = canvas.graphParams;
+      if (!params) return;
+      
+      const { curve, points, minH, maxH, padding, graphWidth, graphHeight, width, height } = params;
+      
+      // Reset transform and redraw base graph
+      ctx.setTransform(1, 0, 0, 1, 0, 0);
+      const dpr = window.devicePixelRatio || 1;
+      ctx.scale(dpr, dpr);
+      drawStaticGraph(ctx, params);
+      
+      // Check if mouse is in graph area
+      if (mouseX < padding.left || mouseX > width - padding.right || 
+          mouseY < padding.top || mouseY > height - padding.bottom) {
+        return;
+      }
+      
+      // Calculate time and height at mouse position
+      const xRatio = (mouseX - padding.left) / graphWidth;
+      const timeAtMouse = new Date(curve.startTime.getTime() + xRatio * (curve.endTime.getTime() - curve.startTime.getTime()));
+      
+      // Find closest point to get height
+      let closestPoint = points[0];
+      let minDist = Math.abs(points[0].x - xRatio);
+      for (const p of points) {
+        const dist = Math.abs(p.x - xRatio);
+        if (dist < minDist) {
+          minDist = dist;
+          closestPoint = p;
+        }
+      }
+      
+      const heightAtMouse = closestPoint.height;
+      const yAtCurve = padding.top + graphHeight * (1 - (heightAtMouse - minH) / (maxH - minH));
+      
+      // Draw crosshairs
+      ctx.strokeStyle = 'rgba(255, 255, 255, 0.4)';
+      ctx.lineWidth = 1;
+      ctx.setLineDash([5, 5]);
+      
+      // Vertical line
+      ctx.beginPath();
+      ctx.moveTo(mouseX, padding.top);
+      ctx.lineTo(mouseX, height - padding.bottom);
+      ctx.stroke();
+      
+      // Horizontal line at curve height
+      ctx.beginPath();
+      ctx.moveTo(padding.left, yAtCurve);
+      ctx.lineTo(width - padding.right, yAtCurve);
+      ctx.stroke();
+      
+      ctx.setLineDash([]);
+      
+      // Draw point on curve
+      ctx.beginPath();
+      ctx.arc(mouseX, yAtCurve, 6, 0, Math.PI * 2);
+      ctx.fillStyle = 'rgba(255, 255, 255, 0.9)';
+      ctx.fill();
+      ctx.strokeStyle = 'rgba(0, 212, 170, 1)';
+      ctx.lineWidth = 2;
+      ctx.stroke();
+      
+      // Draw info tooltip
+      const heightM = (heightAtMouse * 0.3048).toFixed(2);
+      const heightFt = heightAtMouse.toFixed(1);
+      const timeStr = timeAtMouse.toLocaleString('en-CA', { 
+        weekday: 'short', 
+        month: 'short', 
+        day: 'numeric',
+        hour: '2-digit', 
+        minute: '2-digit',
+        hour12: false 
+      });
+      
+      // Tooltip dimensions
+      const tooltipWidth = 140;
+      const tooltipHeight = 50;
+      let tooltipX = mouseX + 15;
+      let tooltipY = mouseY - 25;
+      
+      // Keep tooltip in bounds
+      if (tooltipX + tooltipWidth > width - 10) tooltipX = mouseX - tooltipWidth - 15;
+      if (tooltipY < 10) tooltipY = 10;
+      if (tooltipY + tooltipHeight > height - 10) tooltipY = height - tooltipHeight - 10;
+      
+      // Draw tooltip background
+      ctx.fillStyle = 'rgba(13, 33, 55, 0.95)';
+      ctx.strokeStyle = 'rgba(0, 212, 170, 0.5)';
+      ctx.lineWidth = 1;
+      ctx.beginPath();
+      ctx.roundRect(tooltipX, tooltipY, tooltipWidth, tooltipHeight, 6);
+      ctx.fill();
+      ctx.stroke();
+      
+      // Draw tooltip text
+      ctx.fillStyle = 'rgba(200, 200, 200, 0.9)';
+      ctx.font = '10px Inter';
+      ctx.textAlign = 'left';
+      ctx.fillText(timeStr, tooltipX + 8, tooltipY + 16);
+      
+      ctx.fillStyle = 'rgba(0, 212, 170, 1)';
+      ctx.font = 'bold 14px Inter';
+      ctx.fillText(`${heightM} m`, tooltipX + 8, tooltipY + 34);
+      
+      ctx.fillStyle = 'rgba(200, 200, 200, 0.7)';
+      ctx.font = '10px Inter';
+      ctx.fillText(`(${heightFt} ft)`, tooltipX + 75, tooltipY + 34);
     }
 
     function buildTideDisplay(tides, containerId) {
@@ -1916,84 +2475,118 @@
         }
         
         // Calculate slack windows (1-knot windows) for today and future days
-        // A 1-knot window is roughly when current is within ~15-20 minutes of slack for typical max currents
+        // A 1-knot window is roughly when current drops below 1 knot around slack
         
-        // Helper function to calculate windows for a given day's data
-        const calculateWindowsForDay = (dayData, dayBase) => {
-          const daySlacks = dayData.slacks.map(s => parseTimeToday(s, dayBase));
-          const dayMaxes = dayData.maxes.map(m => ({ ...m, time: parseTimeToday(m.time, dayBase) }));
-          
-          daySlacks.forEach((slackTime) => {
-            if (slackTime < new Date(now.getTime() - 2 * 3600000)) return; // Skip past slacks
-            
-            // Find the max before and after this slack
-            const maxBefore = dayMaxes.filter(m => m.time < slackTime).pop();
-            const maxAfter = dayMaxes.find(m => m.time > slackTime);
-            
-            if (maxBefore || maxAfter) {
-              let windowStart = slackTime;
-              let windowEnd = slackTime;
-              
-              if (maxBefore) {
-                const beforePeak = Math.abs(maxBefore.speed);
-                const timeFromMaxToSlack = slackTime - maxBefore.time;
-                
-                if (beforePeak > 1) {
-                  const fraction = Math.asin(1 / beforePeak) / (Math.PI / 2);
-                  const timeBeforeSlack = timeFromMaxToSlack * fraction;
-                  windowStart = new Date(slackTime.getTime() - timeBeforeSlack);
-                } else {
-                  windowStart = maxBefore.time;
-                }
-              }
-              
-              if (maxAfter) {
-                const afterPeak = Math.abs(maxAfter.speed);
-                const timeFromSlackToMax = maxAfter.time - slackTime;
-                
-                if (afterPeak > 1) {
-                  const fraction = Math.asin(1 / afterPeak) / (Math.PI / 2);
-                  const timeAfterSlack = timeFromSlackToMax * fraction;
-                  windowEnd = new Date(slackTime.getTime() + timeAfterSlack);
-                } else {
-                  windowEnd = maxAfter.time;
-                }
-              }
-              
-              if (windowEnd > now) {
-                slackWindows.push({
-                  start: windowStart,
-                  slack: slackTime,
-                  end: windowEnd,
-                  type: maxBefore && maxBefore.speed > 0 ? 'high-slack' : 'low-slack',
-                  nextDirection: maxAfter && maxAfter.speed > 0 ? 'flood' : 'ebb'
-                });
-              }
-            }
+        // First, collect ALL slacks and maxes from all available days
+        const allSlacks = [];
+        const allMaxes = [];
+        
+        // Helper to add data from a day
+        const addDayData = (dayData, dayBase) => {
+          if (!dayData) return;
+          dayData.slacks.forEach(s => {
+            allSlacks.push(parseTimeToday(s, dayBase));
+          });
+          dayData.maxes.forEach(m => {
+            allMaxes.push({ ...m, time: parseTimeToday(m.time, dayBase) });
           });
         };
         
-        // Calculate windows for today
-        calculateWindowsForDay(todayData, todayBase);
+        // Add yesterday's data (for early morning slacks)
+        const yesterday = new Date(todayBase);
+        yesterday.setDate(yesterday.getDate() - 1);
+        const yesterdayStr = getLocalDateString(yesterday);
+        const yesterdayData = referenceData[yesterdayStr];
+        if (yesterdayData) {
+          const yesterdayBase = new Date(yesterday);
+          yesterdayBase.setHours(0, 0, 0, 0);
+          addDayData(yesterdayData, yesterdayBase);
+        }
         
-        // Calculate windows for tomorrow and beyond
+        // Add today's data
+        addDayData(todayData, todayBase);
+        
+        // Add tomorrow's data
         if (tomorrowData) {
           const tomorrowBase = new Date(tomorrow);
           tomorrowBase.setHours(0, 0, 0, 0);
-          calculateWindowsForDay(tomorrowData, tomorrowBase);
+          addDayData(tomorrowData, tomorrowBase);
         }
         
-        // Check for day after tomorrow
+        // Add day after tomorrow's data
         const dayAfterTomorrow = new Date(tomorrow);
         dayAfterTomorrow.setDate(dayAfterTomorrow.getDate() + 1);
         const dayAfterTomorrowStr = getLocalDateString(dayAfterTomorrow);
         const dayAfterTomorrowData = referenceData[dayAfterTomorrowStr];
-        
         if (dayAfterTomorrowData) {
           const dayAfterBase = new Date(dayAfterTomorrow);
           dayAfterBase.setHours(0, 0, 0, 0);
-          calculateWindowsForDay(dayAfterTomorrowData, dayAfterBase);
+          addDayData(dayAfterTomorrowData, dayAfterBase);
         }
+        
+        // Sort all events by time
+        allSlacks.sort((a, b) => a - b);
+        allMaxes.sort((a, b) => a.time - b.time);
+        
+        // Now calculate windows for each slack
+        allSlacks.forEach((slackTime) => {
+          if (slackTime < new Date(now.getTime() - 2 * 3600000)) return; // Skip past slacks
+          
+          // Find the max before and after this slack from the combined list
+          const maxBefore = allMaxes.filter(m => m.time < slackTime).pop();
+          const maxAfter = allMaxes.find(m => m.time > slackTime);
+          
+          if (maxBefore || maxAfter) {
+            let windowStart = slackTime;
+            let windowEnd = slackTime;
+            
+            // The current follows approximately: speed = peak * sin(π/2 * t/T)
+            // where t is time from slack and T is time from slack to max
+            // We want to find when |speed| = 1 knot
+            // 1 = peak * sin(π/2 * t/T)
+            // sin(π/2 * t/T) = 1/peak
+            // t/T = (2/π) * arcsin(1/peak)
+            // t = T * (2/π) * arcsin(1/peak)
+            
+            if (maxBefore) {
+              const beforePeak = Math.abs(maxBefore.speed);
+              const timeFromSlackToMaxBefore = slackTime - maxBefore.time; // T
+              
+              if (beforePeak > 1) {
+                // Time before slack when current drops to 1 knot
+                const t = timeFromSlackToMaxBefore * (2 / Math.PI) * Math.asin(1 / beforePeak);
+                windowStart = new Date(slackTime.getTime() - t);
+              } else {
+                // Max is less than 1 knot, window starts at max
+                windowStart = maxBefore.time;
+              }
+            }
+            
+            if (maxAfter) {
+              const afterPeak = Math.abs(maxAfter.speed);
+              const timeFromSlackToMaxAfter = maxAfter.time - slackTime; // T
+              
+              if (afterPeak > 1) {
+                // Time after slack when current rises to 1 knot
+                const t = timeFromSlackToMaxAfter * (2 / Math.PI) * Math.asin(1 / afterPeak);
+                windowEnd = new Date(slackTime.getTime() + t);
+              } else {
+                // Max is less than 1 knot, window ends at max
+                windowEnd = maxAfter.time;
+              }
+            }
+            
+            if (windowEnd > now) {
+              slackWindows.push({
+                start: windowStart,
+                slack: slackTime,
+                end: windowEnd,
+                type: maxBefore && maxBefore.speed > 0 ? 'high-slack' : 'low-slack',
+                nextDirection: maxAfter && maxAfter.speed > 0 ? 'flood' : 'ebb'
+              });
+            }
+          }
+        });
         
         // Sort windows by slack time
         slackWindows.sort((a, b) => a.slack - b.slack);
@@ -2361,16 +2954,340 @@
       return isDay ? '☀️' : '🌙';
     }
 
-    function updateTidesDisplay() {
-      // Second Narrows tides
-      const secondNarrowsTides = getTidesForStation(SECOND_NARROWS_TIDE_DATA);
-      buildTideDisplay(secondNarrowsTides, 'secondNarrowsTides');
-      drawTideGraph('secondNarrowsTideGraph', 'secondNarrowsNowMarker', SECOND_NARROWS_TIDE_DATA);
+    // Fraser River Water Level & Velocity Graph
+    function drawFraserRiverGraph(canvasId, markerId, riverData) {
+      const canvas = document.getElementById(canvasId);
+      const marker = document.getElementById(markerId);
+      if (!canvas) return;
       
-      // Steveston tides
-      const stevestonTides = getTidesForStation(STEVESTON_TIDE_DATA);
-      buildTideDisplay(stevestonTides, 'stevestonTides');
+      const ctx = canvas.getContext('2d');
+      const container = canvas.parentElement;
+      
+      const width = container.offsetWidth || 800;
+      const height = container.offsetHeight || 140;
+      
+      const dpr = window.devicePixelRatio || 1;
+      canvas.width = width * dpr;
+      canvas.height = height * dpr;
+      canvas.style.width = width + 'px';
+      canvas.style.height = height + 'px';
+      ctx.scale(dpr, dpr);
+      
+      const now = new Date();
+      const startTime = new Date(now.getTime() - 2 * 3600000);
+      const endTime = new Date(startTime.getTime() + 72 * 3600000);
+      
+      // Collect all data points
+      const points = [];
+      for (let d = -1; d < 5; d++) {
+        const date = new Date(now);
+        date.setDate(date.getDate() + d);
+        const dateStr = getLocalDateString(date);
+        
+        if (riverData[dateStr]) {
+          riverData[dateStr].forEach(entry => {
+            const [hours, mins] = entry.time.split(':').map(Number);
+            const pointTime = new Date(date);
+            pointTime.setHours(hours, mins || 0, 0, 0);
+            
+            if (pointTime >= startTime && pointTime <= endTime) {
+              points.push({
+                time: pointTime,
+                level: entry.level,
+                velocity: entry.velocity,
+                x: (pointTime.getTime() - startTime.getTime()) / (endTime.getTime() - startTime.getTime())
+              });
+            }
+          });
+        }
+      }
+      
+      points.sort((a, b) => a.time - b.time);
+      
+      if (points.length === 0) {
+        ctx.fillStyle = 'rgba(200, 200, 200, 0.5)';
+        ctx.font = '12px Inter';
+        ctx.textAlign = 'center';
+        ctx.fillText('No river data available', width / 2, height / 2);
+        return;
+      }
+      
+      // Find min/max
+      const levels = points.map(p => p.level);
+      const velocities = points.map(p => p.velocity);
+      const minL = Math.min(...levels) - 0.2;
+      const maxL = Math.max(...levels) + 0.2;
+      const minV = Math.min(...velocities);
+      const maxV = Math.max(...velocities);
+      const maxAbsV = Math.max(Math.abs(minV), Math.abs(maxV), 0.3);
+      
+      const padding = { top: 20, bottom: 20, left: 40, right: 50 };
+      const graphWidth = width - padding.left - padding.right;
+      const graphHeight = height - padding.top - padding.bottom;
+      
+      // Store params for mouse interaction
+      canvas.graphParams = { points, minL, maxL, minV: -maxAbsV, maxV: maxAbsV, padding, graphWidth, graphHeight, width, height, startTime, endTime, now };
+      
+      // Draw the graph
+      drawFraserStaticGraph(ctx, canvas.graphParams);
+      
+      // Position NOW marker
+      const nowX = padding.left + ((now.getTime() - startTime.getTime()) / (endTime.getTime() - startTime.getTime())) * graphWidth;
+      marker.style.left = `${nowX}px`;
+      
+      // Mouse events
+      if (!canvas.hasMouseListeners) {
+        canvas.hasMouseListeners = true;
+        
+        canvas.addEventListener('mousemove', (e) => {
+          const rect = canvas.getBoundingClientRect();
+          const mouseX = e.clientX - rect.left;
+          const mouseY = e.clientY - rect.top;
+          drawFraserWithCrosshairs(canvas, mouseX, mouseY);
+        });
+        
+        canvas.addEventListener('mouseleave', () => {
+          const ctx = canvas.getContext('2d');
+          ctx.setTransform(1, 0, 0, 1, 0, 0);
+          const dpr = window.devicePixelRatio || 1;
+          ctx.scale(dpr, dpr);
+          drawFraserStaticGraph(ctx, canvas.graphParams);
+        });
+      }
+    }
+    
+    function drawFraserStaticGraph(ctx, params) {
+      const { points, minL, maxL, minV, maxV, padding, graphWidth, graphHeight, width, height, startTime, endTime, now } = params;
+      
+      ctx.clearRect(0, 0, width, height);
+      
+      // Grid lines
+      ctx.strokeStyle = 'rgba(0, 212, 170, 0.15)';
+      ctx.lineWidth = 1;
+      
+      // Horizontal grid for water level
+      for (let l = 0; l <= 3; l += 0.5) {
+        if (l >= minL && l <= maxL) {
+          const y = padding.top + graphHeight * (1 - (l - minL) / (maxL - minL));
+          ctx.beginPath();
+          ctx.moveTo(padding.left, y);
+          ctx.lineTo(width - padding.right, y);
+          ctx.stroke();
+          
+          // Level label on left
+          ctx.fillStyle = 'rgba(0, 212, 170, 0.7)';
+          ctx.font = '9px Inter';
+          ctx.textAlign = 'right';
+          ctx.fillText(`${l.toFixed(1)}m`, padding.left - 4, y + 3);
+        }
+      }
+      
+      // Velocity scale on right
+      ctx.fillStyle = 'rgba(200, 200, 200, 0.5)';
+      ctx.font = '8px Inter';
+      ctx.textAlign = 'left';
+      const velLabels = [-0.5, 0, 0.5];
+      velLabels.forEach(v => {
+        if (v >= minV && v <= maxV) {
+          const y = padding.top + graphHeight * (1 - (v - minV) / (maxV - minV));
+          ctx.fillText(`${v > 0 ? '+' : ''}${v.toFixed(1)} m/s`, width - padding.right + 4, y + 3);
+        }
+      });
+      
+      // Time labels
+      ctx.fillStyle = 'rgba(200, 200, 200, 0.6)';
+      ctx.font = '9px Inter';
+      ctx.textAlign = 'center';
+      
+      for (let h = 0; h <= 72; h += 12) {
+        const x = padding.left + (h / 72) * graphWidth;
+        const labelTime = new Date(startTime.getTime() + h * 3600000);
+        
+        if (labelTime.getHours() === 0 || h === 0) {
+          ctx.strokeStyle = 'rgba(0, 212, 170, 0.2)';
+          ctx.beginPath();
+          ctx.moveTo(x, padding.top);
+          ctx.lineTo(x, height - padding.bottom);
+          ctx.stroke();
+        }
+        
+        if (labelTime.getHours() === 0) {
+          ctx.fillText(formatDay(labelTime), x, height - 5);
+        } else if (h % 24 === 12) {
+          ctx.fillText('12:00', x, height - 5);
+        }
+      }
+      
+      // Draw zero velocity line
+      const zeroY = padding.top + graphHeight * (1 - (0 - minV) / (maxV - minV));
+      ctx.strokeStyle = 'rgba(255, 255, 255, 0.2)';
+      ctx.setLineDash([3, 3]);
+      ctx.beginPath();
+      ctx.moveTo(padding.left, zeroY);
+      ctx.lineTo(width - padding.right, zeroY);
+      ctx.stroke();
+      ctx.setLineDash([]);
+      
+      // Draw water level curve - filled area
+      ctx.beginPath();
+      ctx.moveTo(padding.left, height - padding.bottom);
+      points.forEach((p, i) => {
+        const x = padding.left + p.x * graphWidth;
+        const y = padding.top + graphHeight * (1 - (p.level - minL) / (maxL - minL));
+        ctx.lineTo(x, y);
+      });
+      ctx.lineTo(padding.left + graphWidth, height - padding.bottom);
+      ctx.closePath();
+      
+      const gradient = ctx.createLinearGradient(0, padding.top, 0, height - padding.bottom);
+      gradient.addColorStop(0, 'rgba(0, 212, 170, 0.4)');
+      gradient.addColorStop(1, 'rgba(0, 212, 170, 0.05)');
+      ctx.fillStyle = gradient;
+      ctx.fill();
+      
+      // Draw water level line
+      ctx.beginPath();
+      points.forEach((p, i) => {
+        const x = padding.left + p.x * graphWidth;
+        const y = padding.top + graphHeight * (1 - (p.level - minL) / (maxL - minL));
+        if (i === 0) ctx.moveTo(x, y);
+        else ctx.lineTo(x, y);
+      });
+      ctx.strokeStyle = 'rgba(0, 212, 170, 0.9)';
+      ctx.lineWidth = 2;
+      ctx.stroke();
+      
+      // Draw velocity bars
+      points.forEach((p, i) => {
+        const x = padding.left + p.x * graphWidth;
+        const barHeight = Math.abs(p.velocity) / (maxV - minV) * graphHeight * 0.3;
+        
+        if (p.velocity > 0) {
+          // Downstream (ebb) - coral/red
+          ctx.fillStyle = 'rgba(255, 107, 107, 0.4)';
+          ctx.fillRect(x - 2, zeroY - barHeight, 4, barHeight);
+        } else if (p.velocity < 0) {
+          // Upstream (flood) - blue
+          ctx.fillStyle = 'rgba(100, 181, 246, 0.4)';
+          ctx.fillRect(x - 2, zeroY, 4, barHeight);
+        }
+      });
+      
+      // Legend
+      ctx.font = '8px Inter';
+      ctx.textAlign = 'left';
+      ctx.fillStyle = 'rgba(255, 107, 107, 0.8)';
+      ctx.fillText('↓ Downstream (ebb)', padding.left + 5, padding.top + 10);
+      ctx.fillStyle = 'rgba(100, 181, 246, 0.8)';
+      ctx.fillText('↑ Upstream (flood)', padding.left + 5, padding.top + 20);
+    }
+    
+    function drawFraserWithCrosshairs(canvas, mouseX, mouseY) {
+      const ctx = canvas.getContext('2d');
+      const params = canvas.graphParams;
+      if (!params) return;
+      
+      const { points, minL, maxL, minV, maxV, padding, graphWidth, graphHeight, width, height, startTime, endTime, now } = params;
+      
+      ctx.setTransform(1, 0, 0, 1, 0, 0);
+      const dpr = window.devicePixelRatio || 1;
+      ctx.scale(dpr, dpr);
+      drawFraserStaticGraph(ctx, params);
+      
+      if (mouseX < padding.left || mouseX > width - padding.right || 
+          mouseY < padding.top || mouseY > height - padding.bottom) {
+        return;
+      }
+      
+      const xRatio = (mouseX - padding.left) / graphWidth;
+      const timeAtMouse = new Date(startTime.getTime() + xRatio * (endTime.getTime() - startTime.getTime()));
+      
+      // Find closest point
+      let closestPoint = points[0];
+      let minDist = Math.abs(points[0].x - xRatio);
+      for (const p of points) {
+        const dist = Math.abs(p.x - xRatio);
+        if (dist < minDist) {
+          minDist = dist;
+          closestPoint = p;
+        }
+      }
+      
+      const levelY = padding.top + graphHeight * (1 - (closestPoint.level - minL) / (maxL - minL));
+      
+      // Crosshairs
+      ctx.strokeStyle = 'rgba(255, 255, 255, 0.4)';
+      ctx.lineWidth = 1;
+      ctx.setLineDash([5, 5]);
+      
+      ctx.beginPath();
+      ctx.moveTo(mouseX, padding.top);
+      ctx.lineTo(mouseX, height - padding.bottom);
+      ctx.stroke();
+      
+      ctx.beginPath();
+      ctx.moveTo(padding.left, levelY);
+      ctx.lineTo(width - padding.right, levelY);
+      ctx.stroke();
+      
+      ctx.setLineDash([]);
+      
+      // Point marker
+      ctx.beginPath();
+      ctx.arc(mouseX, levelY, 6, 0, Math.PI * 2);
+      ctx.fillStyle = 'rgba(255, 255, 255, 0.9)';
+      ctx.fill();
+      ctx.strokeStyle = 'rgba(0, 212, 170, 1)';
+      ctx.lineWidth = 2;
+      ctx.stroke();
+      
+      // Tooltip
+      const timeStr = timeAtMouse.toLocaleString('en-CA', { 
+        weekday: 'short', month: 'short', day: 'numeric',
+        hour: '2-digit', minute: '2-digit', hour12: false 
+      });
+      
+      const velDir = closestPoint.velocity > 0 ? '↓ Downstream' : closestPoint.velocity < 0 ? '↑ Upstream' : '— Slack';
+      
+      const tooltipWidth = 150;
+      const tooltipHeight = 60;
+      let tooltipX = mouseX + 15;
+      let tooltipY = mouseY - 30;
+      
+      if (tooltipX + tooltipWidth > width - 10) tooltipX = mouseX - tooltipWidth - 15;
+      if (tooltipY < 10) tooltipY = 10;
+      if (tooltipY + tooltipHeight > height - 10) tooltipY = height - tooltipHeight - 10;
+      
+      ctx.fillStyle = 'rgba(13, 33, 55, 0.95)';
+      ctx.strokeStyle = 'rgba(0, 212, 170, 0.5)';
+      ctx.lineWidth = 1;
+      ctx.beginPath();
+      ctx.roundRect(tooltipX, tooltipY, tooltipWidth, tooltipHeight, 6);
+      ctx.fill();
+      ctx.stroke();
+      
+      ctx.fillStyle = 'rgba(200, 200, 200, 0.9)';
+      ctx.font = '9px Inter';
+      ctx.textAlign = 'left';
+      ctx.fillText(timeStr, tooltipX + 8, tooltipY + 14);
+      
+      ctx.fillStyle = 'rgba(0, 212, 170, 1)';
+      ctx.font = 'bold 13px Inter';
+      ctx.fillText(`${closestPoint.level.toFixed(2)} m`, tooltipX + 8, tooltipY + 32);
+      
+      ctx.fillStyle = closestPoint.velocity > 0 ? 'rgba(255, 107, 107, 0.9)' : 'rgba(100, 181, 246, 0.9)';
+      ctx.font = '10px Inter';
+      ctx.fillText(`${velDir} ${Math.abs(closestPoint.velocity).toFixed(2)} m/s`, tooltipX + 8, tooltipY + 48);
+    }
+
+    function updateTidesDisplay() {
+      // Draw tide graphs with integrated high/low markers
+      drawTideGraph('secondNarrowsTideGraph', 'secondNarrowsNowMarker', SECOND_NARROWS_TIDE_DATA);
       drawTideGraph('stevestonTideGraph', 'stevestonNowMarker', STEVESTON_TIDE_DATA);
+      
+      // Draw Fraser River graphs
+      drawFraserRiverGraph('fraserSouthGraph', 'fraserSouthNowMarker', FRASER_SOUTH_ARM_DATA);
+      drawFraserRiverGraph('fraserNorthGraph', 'fraserNorthNowMarker', FRASER_NORTH_ARM_DATA);
     }
 
     async function initialize() {
