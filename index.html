@@ -1526,6 +1526,14 @@
         </div>`;
     }
 
+    // CORS Proxy for government APIs that don't support CORS
+    // Using corsproxy.io - a free, reliable CORS proxy
+    const CORS_PROXY = 'https://corsproxy.io/?';
+    
+    function withCorsProxy(url) {
+      return CORS_PROXY + encodeURIComponent(url);
+    }
+
     // Environment Canada Marine Forecast RSS Feed
     // Strait of Georgia - covers both north (14301) and south (14305) of Nanaimo
     const EC_MARINE_RSS = 'https://weather.gc.ca/rss/marine/14300_e.xml';
@@ -1535,8 +1543,8 @@
       const issuedEl = document.getElementById('ecForecastIssued');
       
       try {
-        // Use a CORS proxy or direct fetch
-        const res = await fetch(EC_MARINE_RSS);
+        // Use CORS proxy for Environment Canada (they don't allow cross-origin requests)
+        const res = await fetch(withCorsProxy(EC_MARINE_RSS));
         if (!res.ok) throw new Error(`RSS fetch failed: ${res.status}`);
         
         const text = await res.text();
@@ -1647,7 +1655,8 @@
       const swobUrl = `https://api.weather.gc.ca/collections/swob-realtime/items?f=json&limit=1&sortby=-date_tm-value&url=${EC_STATION}`;
       
       try {
-        const res = await fetch(swobUrl);
+        // Use CORS proxy for Environment Canada API
+        const res = await fetch(withCorsProxy(swobUrl));
         if (!res.ok) throw new Error(`EC API returned ${res.status}`);
         const data = await res.json();
         
