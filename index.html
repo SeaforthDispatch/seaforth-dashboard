@@ -178,7 +178,7 @@
     }
 
     .main-content {
-      padding: 2rem 3rem;
+      padding: 1.25rem 2.5rem;
       max-width: 1800px;
       margin: 0 auto;
       display: none;
@@ -187,17 +187,215 @@
     .main-content.loaded { display: block; }
 
     .current-hero {
-      display: grid;
-      grid-template-columns: 1fr 1fr 1fr;
-      gap: 1rem;
-      margin-bottom: 1.5rem;
+      display: none; /* Hide old layout */
+    }
+
+    /* New unified status bar */
+    .unified-status-bar {
+      display: flex;
+      gap: 0.5rem;
+      margin-bottom: 1rem;
+      align-items: stretch;
+    }
+
+    .status-card {
+      background: linear-gradient(135deg, rgba(20, 54, 84, 0.6), rgba(13, 33, 55, 0.8));
+      border: 1px solid rgba(0, 212, 170, 0.15);
+      border-radius: 8px;
+      padding: 0.5rem 0.75rem;
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+
+    .status-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 2px;
+      background: linear-gradient(90deg, transparent, var(--teal-accent), transparent);
+    }
+
+    .status-card.wind-status { flex: 0 0 auto; min-width: 100px; }
+    .status-card.temp-status { flex: 0 0 auto; min-width: 80px; }
+    .status-card.temp-status::before { background: linear-gradient(90deg, transparent, var(--amber-warning), transparent); }
+    .status-card.conditions-status { flex: 0 0 auto; min-width: 110px; }
+    .status-card.conditions-status::before { background: linear-gradient(90deg, transparent, var(--foam-white), transparent); }
+    .status-card.forecast-status { 
+      flex: 1; 
+      border-left-color: var(--teal-accent);
+    }
+    .status-card.forecast-status::before { background: linear-gradient(90deg, transparent, rgba(0, 212, 170, 0.5), transparent); }
+
+    .status-label {
+      font-size: 0.5rem;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--mist-gray);
+      margin-bottom: 0.15rem;
+    }
+
+    .status-value {
+      font-family: 'Archivo Black', sans-serif;
+      font-size: 1.4rem;
+      line-height: 1;
+      color: var(--teal-accent);
+    }
+
+    .status-value.temp { color: var(--amber-warning); }
+    .status-value.conditions { 
+      font-size: 0.9rem; 
+      color: var(--foam-white); 
+      font-family: 'Source Serif 4', serif;
+      font-weight: 600;
+    }
+
+    .status-unit {
+      font-size: 0.7rem;
+      color: var(--mist-gray);
+      font-weight: 400;
+    }
+
+    .status-detail {
+      font-size: 0.55rem;
+      color: var(--mist-gray);
+      margin-top: 0.1rem;
+    }
+
+    .status-wind-dir {
+      display: flex;
+      align-items: center;
+      gap: 0.3rem;
+      font-size: 0.6rem;
+      color: var(--mist-gray);
+      margin-top: 0.15rem;
+    }
+
+    .status-wind-dir .mini-compass {
+      width: 14px;
+      height: 14px;
+      border: 1px solid rgba(0, 212, 170, 0.4);
+      border-radius: 50%;
+      position: relative;
+    }
+
+    .status-wind-dir .mini-needle {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 2px;
+      height: 6px;
+      background: var(--teal-accent);
+      transform-origin: center bottom;
+      margin-left: -1px;
+      margin-top: -6px;
+    }
+
+    /* Forecast inside status bar */
+    .inline-forecast {
+      display: flex;
+      gap: 0.5rem;
+      align-items: stretch;
+      height: 100%;
+    }
+
+    .inline-forecast-main {
+      flex: 0 0 auto;
+      min-width: 200px;
+      border-left: 2px solid var(--teal-accent);
+      padding-left: 0.5rem;
+    }
+
+    .inline-forecast-title {
+      font-size: 0.5rem;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--teal-accent);
+      margin-bottom: 0.15rem;
+      font-weight: 600;
+    }
+
+    .inline-forecast-text {
+      font-size: 0.7rem;
+      color: rgba(255, 255, 255, 0.9);
+      line-height: 1.3;
+    }
+
+    .inline-forecast-extended {
+      display: flex;
+      gap: 0.4rem;
+      flex: 1;
+    }
+
+    .inline-ext-day {
+      background: rgba(0, 0, 0, 0.2);
+      border-radius: 4px;
+      padding: 0.35rem 0.5rem;
+      flex: 1;
+      min-width: 0;
+    }
+
+    .inline-ext-name {
+      font-size: 0.5rem;
+      font-weight: 600;
+      color: var(--teal-accent);
+      margin-bottom: 0.1rem;
+    }
+
+    .inline-ext-text {
+      font-size: 0.6rem;
+      color: rgba(200, 200, 200, 0.8);
+      line-height: 1.25;
+      overflow: hidden;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+    }
+
+    .inline-forecast-meta {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: flex-end;
+      font-size: 0.5rem;
+      color: var(--mist-gray);
+      min-width: 80px;
+    }
+
+    .inline-forecast-meta a {
+      color: var(--teal-accent);
+      text-decoration: none;
+      font-size: 0.55rem;
+    }
+
+    .inline-forecast-meta a:hover {
+      text-decoration: underline;
+    }
+
+    /* Hide old elements */
+    .weather-source-info, .forecast-section .marine-alert, .ec-marine-forecast-section {
+      display: none;
+    }
+
+    /* Responsive: stack on smaller screens */
+    @media (max-width: 1100px) {
+      .unified-status-bar {
+        flex-wrap: wrap;
+      }
+      .status-card.forecast-status {
+        flex: 1 1 100%;
+        order: 10;
+      }
     }
 
     .hero-card {
       background: linear-gradient(135deg, rgba(20, 54, 84, 0.6), rgba(13, 33, 55, 0.8));
       border: 1px solid rgba(0, 212, 170, 0.15);
-      border-radius: 12px;
-      padding: 1rem 1.25rem;
+      border-radius: 10px;
+      padding: 0.75rem 1rem;
       position: relative;
       overflow: hidden;
     }
@@ -225,9 +423,9 @@
 
     .card-value {
       font-family: 'Archivo Black', sans-serif;
-      font-size: 2.2rem;
+      font-size: 1.9rem;
       line-height: 1;
-      margin-bottom: 0.25rem;
+      margin-bottom: 0.2rem;
     }
 
     .wind-card .card-value { color: var(--teal-accent); }
@@ -316,50 +514,51 @@
 
     .section-title {
       font-family: 'Archivo Black', sans-serif;
-      font-size: 0.9rem;
+      font-size: 0.8rem;
       letter-spacing: 0.15em;
       text-transform: uppercase;
       color: var(--mist-gray);
-      margin-bottom: 1rem;
-      padding-bottom: 0.5rem;
+      margin-bottom: 0.6rem;
+      padding-bottom: 0.35rem;
       border-bottom: 1px solid rgba(0, 212, 170, 0.2);
     }
 
-    .forecast-section { margin-bottom: 2rem; }
+    .forecast-section { margin-bottom: 1.5rem; }
 
     /* EC Official Marine Forecast Section */
     .ec-marine-forecast-section {
-      margin-bottom: 2rem;
+      margin-bottom: 1.25rem;
     }
     
     .ec-marine-forecast-container {
       background: linear-gradient(135deg, rgba(13, 33, 55, 0.9) 0%, rgba(20, 45, 70, 0.8) 100%);
       border: 1px solid rgba(0, 212, 170, 0.2);
-      border-radius: 12px;
+      border-radius: 10px;
       overflow: hidden;
     }
     
     .ec-forecast-panel {
-      padding: 1.25rem;
+      padding: 0.75rem 1rem;
     }
     
     .ec-forecast-loading {
       text-align: center;
       color: var(--mist-gray);
-      padding: 2rem;
+      padding: 1rem;
     }
     
     .ec-forecast-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-      gap: 1rem;
+      display: flex;
+      gap: 0.75rem;
+      align-items: stretch;
     }
     
     .ec-forecast-card {
       background: rgba(0, 0, 0, 0.2);
-      border-radius: 8px;
-      padding: 1rem;
+      border-radius: 6px;
+      padding: 0.6rem 0.75rem;
       border-left: 3px solid var(--teal-accent);
+      flex: 1;
     }
     
     .ec-forecast-card.warning {
@@ -373,11 +572,11 @@
     
     .ec-forecast-card-title {
       font-family: 'Archivo Black', sans-serif;
-      font-size: 0.75rem;
+      font-size: 0.65rem;
       text-transform: uppercase;
       letter-spacing: 0.1em;
       color: var(--teal-accent);
-      margin-bottom: 0.5rem;
+      margin-bottom: 0.3rem;
     }
     
     .ec-forecast-card.warning .ec-forecast-card-title {
@@ -385,27 +584,27 @@
     }
     
     .ec-forecast-card-content {
-      font-size: 0.85rem;
-      line-height: 1.5;
+      font-size: 0.8rem;
+      line-height: 1.4;
       color: rgba(255, 255, 255, 0.9);
     }
     
     .ec-forecast-wind {
-      margin-bottom: 0.5rem;
+      margin-bottom: 0.25rem;
     }
     
     .ec-forecast-weather {
       color: rgba(200, 200, 200, 0.8);
-      font-size: 0.8rem;
+      font-size: 0.75rem;
     }
     
     .ec-forecast-meta {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      padding: 0.75rem 1.25rem;
+      padding: 0.5rem 1rem;
       background: rgba(0, 0, 0, 0.3);
-      font-size: 0.7rem;
+      font-size: 0.65rem;
       color: var(--mist-gray);
     }
     
@@ -419,31 +618,31 @@
     }
     
     .ec-extended-forecasts {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-      gap: 0.75rem;
-      margin-top: 1rem;
-      padding-top: 1rem;
+      display: flex;
+      gap: 0.5rem;
+      margin-top: 0.5rem;
+      padding-top: 0.5rem;
       border-top: 1px solid rgba(0, 212, 170, 0.1);
     }
     
     .ec-extended-day {
       background: rgba(0, 0, 0, 0.15);
-      border-radius: 6px;
-      padding: 0.75rem;
+      border-radius: 5px;
+      padding: 0.5rem 0.6rem;
+      flex: 1;
     }
     
     .ec-extended-day-name {
       font-weight: 600;
-      font-size: 0.75rem;
+      font-size: 0.65rem;
       color: var(--teal-accent);
-      margin-bottom: 0.25rem;
+      margin-bottom: 0.15rem;
     }
     
     .ec-extended-day-forecast {
-      font-size: 0.75rem;
+      font-size: 0.7rem;
       color: rgba(200, 200, 200, 0.8);
-      line-height: 1.4;
+      line-height: 1.3;
     }
 
     /* Main 3-Column Dashboard Grid */
@@ -524,10 +723,10 @@
 
     .marine-alert {
       background: linear-gradient(90deg, rgba(0, 212, 170, 0.1), transparent);
-      border-left: 4px solid var(--teal-accent);
-      padding: 1rem 1.5rem;
-      margin-bottom: 1.5rem;
-      border-radius: 0 8px 8px 0;
+      border-left: 3px solid var(--teal-accent);
+      padding: 0.6rem 1rem;
+      margin-bottom: 1rem;
+      border-radius: 0 6px 6px 0;
     }
 
     .marine-alert a { color: var(--teal-accent); text-decoration: none; }
@@ -536,17 +735,17 @@
     .alert-title {
       font-weight: 600;
       color: var(--teal-accent);
-      font-size: 0.85rem;
-      margin-bottom: 0.5rem;
+      font-size: 0.7rem;
+      margin-bottom: 0.25rem;
       text-transform: uppercase;
       letter-spacing: 0.1em;
     }
 
     .alert-text {
       font-family: 'Source Serif 4', serif;
-      font-size: 0.95rem;
+      font-size: 0.85rem;
       color: var(--foam-white);
-      line-height: 1.6;
+      line-height: 1.5;
     }
 
     /* 3-Day Marine Forecast Styles */
@@ -1250,6 +1449,45 @@
   </header>
 
   <main class="main-content" id="mainContent">
+    <!-- New Unified Status Bar - Everything in 1 row -->
+    <section class="unified-status-bar">
+      <div class="status-card wind-status">
+        <div class="status-label">Wind</div>
+        <div class="status-value"><span id="currentWind2">—</span> <span class="status-unit">kts</span></div>
+        <div class="status-wind-dir">
+          <div class="mini-compass"><div class="mini-needle" id="miniNeedle"></div></div>
+          <span id="windDirText2">—</span>
+        </div>
+        <div class="status-detail">Gusts <span id="currentGust2">—</span> kts</div>
+      </div>
+      <div class="status-card temp-status">
+        <div class="status-label">Temp</div>
+        <div class="status-value temp"><span id="currentTemp2">—</span><span class="status-unit">°C</span></div>
+        <div class="status-detail"><span id="currentHumidity2">—</span>% · <span id="feelsLike2">—</span>°C</div>
+      </div>
+      <div class="status-card conditions-status">
+        <div class="status-label">Conditions</div>
+        <div class="status-value conditions" id="currentConditions2">—</div>
+        <div class="status-detail"><span id="cloudCover2">—</span>% · <span id="pressure2">—</span> hPa</div>
+      </div>
+      <div class="status-card forecast-status">
+        <div class="inline-forecast" id="inlineForecast">
+          <div class="inline-forecast-main">
+            <div class="inline-forecast-title">EC Marine Forecast</div>
+            <div class="inline-forecast-text" id="inlineForecastText">Loading...</div>
+          </div>
+          <div class="inline-forecast-extended" id="inlineForecastExtended">
+            <!-- Populated by JS -->
+          </div>
+          <div class="inline-forecast-meta">
+            <span id="inlineForecastIssued">—</span>
+            <a href="https://weather.gc.ca/marine/forecast_e.html?mapID=02&siteID=14305" target="_blank">Full Forecast →</a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Old sections hidden by CSS -->
     <section class="current-hero">
       <div class="hero-card wind-card">
         <div class="card-label">Current Wind</div>
@@ -1542,6 +1780,11 @@
       const container = document.getElementById('ecMarineForecast');
       const issuedEl = document.getElementById('ecForecastIssued');
       
+      // NEW: Inline elements
+      const inlineText = document.getElementById('inlineForecastText');
+      const inlineExtended = document.getElementById('inlineForecastExtended');
+      const inlineIssued = document.getElementById('inlineForecastIssued');
+      
       try {
         // Use CORS proxy for Environment Canada (they don't allow cross-origin requests)
         const res = await fetch(withCorsProxy(EC_MARINE_RSS));
@@ -1557,6 +1800,7 @@
         let html = '<div class="ec-forecast-grid">';
         let extendedForecasts = [];
         let issuedTime = '';
+        let mainForecastText = '';
         
         entries.forEach((entry, idx) => {
           const title = entry.querySelector('title')?.textContent || '';
@@ -1595,6 +1839,8 @@
               const windLines = lines.filter(l => l.toLowerCase().includes('wind'));
               const weatherLines = lines.filter(l => !l.toLowerCase().includes('wind') && l.trim());
               
+              mainForecastText = windLines.join(' ') + (weatherLines.length > 0 ? ' ' + weatherLines.join(' ') : '');
+              
               html += `
                 <div class="ec-forecast-card">
                   <div class="ec-forecast-card-title">Current Forecast</div>
@@ -1627,6 +1873,19 @@
         container.innerHTML = html;
         issuedEl.textContent = issuedTime ? `Issued: ${issuedTime}` : '';
         
+        // NEW: Update inline status bar
+        inlineText.textContent = mainForecastText || 'Forecast unavailable';
+        inlineIssued.textContent = issuedTime ? issuedTime : '';
+        
+        // Populate inline extended forecasts (first 3)
+        const extSlice = extendedForecasts.slice(0, 3);
+        inlineExtended.innerHTML = extSlice.map(ef => `
+          <div class="inline-ext-day">
+            <div class="inline-ext-name">${ef.day}</div>
+            <div class="inline-ext-text">${ef.forecast}</div>
+          </div>
+        `).join('');
+        
       } catch (e) {
         console.warn('EC Marine RSS fetch failed:', e);
         // Fallback to showing a link
@@ -1642,6 +1901,11 @@
           </div>
         `;
         issuedEl.textContent = '';
+        
+        // NEW: Inline fallback
+        inlineText.textContent = 'Unable to load forecast';
+        inlineIssued.textContent = '';
+        inlineExtended.innerHTML = '';
       }
     }
 
@@ -3207,6 +3471,7 @@
       const c = d.current;
       const wKts = msToKnots(c.wind_speed_10m), gKts = msToKnots(c.wind_gusts_10m), wDir = c.wind_direction_10m;
       
+      // Old elements (hidden but keep for compatibility)
       document.getElementById('currentWind').textContent = wKts;
       document.getElementById('currentGust').textContent = gKts;
       document.getElementById('windDirText').textContent = `${getWindDirection(wDir)} (${Math.round(wDir)}°)`;
@@ -3223,6 +3488,18 @@
       document.getElementById('weatherStation').textContent = d.station || 'Model Data';
       document.getElementById('weatherSource').textContent = d.source || 'Open-Meteo';
       document.getElementById('alertSourceName').textContent = d.source || 'Open-Meteo';
+      
+      // NEW: Update unified status bar
+      document.getElementById('currentWind2').textContent = wKts;
+      document.getElementById('currentGust2').textContent = gKts;
+      document.getElementById('windDirText2').textContent = `${getWindDirection(wDir)} (${Math.round(wDir)}°)`;
+      document.getElementById('miniNeedle').style.transform = `rotate(${wDir}deg)`;
+      document.getElementById('currentTemp2').textContent = Math.round(c.temperature_2m);
+      document.getElementById('currentHumidity2').textContent = c.relative_humidity_2m || '—';
+      document.getElementById('feelsLike2').textContent = c.apparent_temperature ? Math.round(c.apparent_temperature) : '—';
+      document.getElementById('currentConditions2').textContent = weatherCodes[c.weather_code] || 'Unknown';
+      document.getElementById('cloudCover2').textContent = c.cloud_cover || '—';
+      document.getElementById('pressure2').textContent = c.pressure_msl ? Math.round(c.pressure_msl) : '—';
     }
 
     function build3DayForecast(d) {
