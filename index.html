@@ -290,6 +290,30 @@
       color: var(--mist-gray);
     }
 
+    .weather-source-info {
+      text-align: center;
+      font-size: 0.7rem;
+      color: var(--mist-gray);
+      margin-bottom: 1.5rem;
+      padding: 0.5rem;
+      background: rgba(0, 212, 170, 0.05);
+      border-radius: 6px;
+      border: 1px solid rgba(0, 212, 170, 0.1);
+    }
+    
+    .weather-source-info .source-label {
+      color: rgba(200, 200, 200, 0.6);
+    }
+    
+    .weather-source-info .source-separator {
+      margin: 0 0.75rem;
+      color: rgba(0, 212, 170, 0.3);
+    }
+    
+    #weatherStation, #weatherSource {
+      color: var(--teal-accent);
+    }
+
     .section-title {
       font-family: 'Archivo Black', sans-serif;
       font-size: 0.9rem;
@@ -302,6 +326,125 @@
     }
 
     .forecast-section { margin-bottom: 2rem; }
+
+    /* EC Official Marine Forecast Section */
+    .ec-marine-forecast-section {
+      margin-bottom: 2rem;
+    }
+    
+    .ec-marine-forecast-container {
+      background: linear-gradient(135deg, rgba(13, 33, 55, 0.9) 0%, rgba(20, 45, 70, 0.8) 100%);
+      border: 1px solid rgba(0, 212, 170, 0.2);
+      border-radius: 12px;
+      overflow: hidden;
+    }
+    
+    .ec-forecast-panel {
+      padding: 1.25rem;
+    }
+    
+    .ec-forecast-loading {
+      text-align: center;
+      color: var(--mist-gray);
+      padding: 2rem;
+    }
+    
+    .ec-forecast-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 1rem;
+    }
+    
+    .ec-forecast-card {
+      background: rgba(0, 0, 0, 0.2);
+      border-radius: 8px;
+      padding: 1rem;
+      border-left: 3px solid var(--teal-accent);
+    }
+    
+    .ec-forecast-card.warning {
+      border-left-color: #ff6b6b;
+      background: rgba(255, 107, 107, 0.1);
+    }
+    
+    .ec-forecast-card.extended {
+      border-left-color: rgba(0, 212, 170, 0.5);
+    }
+    
+    .ec-forecast-card-title {
+      font-family: 'Archivo Black', sans-serif;
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--teal-accent);
+      margin-bottom: 0.5rem;
+    }
+    
+    .ec-forecast-card.warning .ec-forecast-card-title {
+      color: #ff6b6b;
+    }
+    
+    .ec-forecast-card-content {
+      font-size: 0.85rem;
+      line-height: 1.5;
+      color: rgba(255, 255, 255, 0.9);
+    }
+    
+    .ec-forecast-wind {
+      margin-bottom: 0.5rem;
+    }
+    
+    .ec-forecast-weather {
+      color: rgba(200, 200, 200, 0.8);
+      font-size: 0.8rem;
+    }
+    
+    .ec-forecast-meta {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0.75rem 1.25rem;
+      background: rgba(0, 0, 0, 0.3);
+      font-size: 0.7rem;
+      color: var(--mist-gray);
+    }
+    
+    .ec-forecast-link {
+      color: var(--teal-accent);
+      text-decoration: none;
+    }
+    
+    .ec-forecast-link:hover {
+      text-decoration: underline;
+    }
+    
+    .ec-extended-forecasts {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 0.75rem;
+      margin-top: 1rem;
+      padding-top: 1rem;
+      border-top: 1px solid rgba(0, 212, 170, 0.1);
+    }
+    
+    .ec-extended-day {
+      background: rgba(0, 0, 0, 0.15);
+      border-radius: 6px;
+      padding: 0.75rem;
+    }
+    
+    .ec-extended-day-name {
+      font-weight: 600;
+      font-size: 0.75rem;
+      color: var(--teal-accent);
+      margin-bottom: 0.25rem;
+    }
+    
+    .ec-extended-day-forecast {
+      font-size: 0.75rem;
+      color: rgba(200, 200, 200, 0.8);
+      line-height: 1.4;
+    }
 
     /* Main 3-Column Dashboard Grid */
     .main-dashboard-grid {
@@ -1130,13 +1273,33 @@
         <div class="card-detail">Barometer: <span id="pressure">—</span> hPa</div>
       </div>
     </section>
+    
+    <div class="weather-source-info">
+      <span class="source-label">📍 Station:</span> <span id="weatherStation">—</span>
+      <span class="source-separator">·</span>
+      <span class="source-label">📡 Source:</span> <span id="weatherSource">—</span>
+    </div>
 
     <section class="forecast-section">
       <div class="marine-alert">
         <div class="alert-title">📡 Live Data Feed</div>
         <div class="alert-text">
-          Weather data from Open-Meteo (GFS/ICON models), updated hourly. 
+          Current conditions from <span id="alertSourceName">Environment Canada</span> weather station. Forecasts from Open-Meteo (GFS/ICON models).
           For official marine warnings: <a href="https://weather.gc.ca/marine/forecast_e.html?mapID=02&siteID=14305" target="_blank">Environment Canada Marine Forecasts</a>
+        </div>
+      </div>
+    </section>
+    
+    <!-- EC Official Marine Forecast -->
+    <section class="ec-marine-forecast-section">
+      <h2 class="section-title">Environment Canada Marine Forecast — Strait of Georgia (South)</h2>
+      <div class="ec-marine-forecast-container">
+        <div class="ec-forecast-panel" id="ecMarineForecast">
+          <div class="ec-forecast-loading">Loading official marine forecast...</div>
+        </div>
+        <div class="ec-forecast-meta">
+          <span id="ecForecastIssued">—</span>
+          <a href="https://weather.gc.ca/marine/forecast_e.html?mapID=02&siteID=14305" target="_blank" class="ec-forecast-link">View Full Forecast →</a>
         </div>
       </div>
     </section>
@@ -1145,7 +1308,7 @@
     <section class="main-dashboard-grid">
       <!-- Left Column: 3-Day Marine Forecast -->
       <div class="dashboard-column forecast-column">
-        <h2 class="section-title">3-Day Marine Forecast</h2>
+        <h2 class="section-title">Hourly Conditions (72h)</h2>
         <div class="marine-forecast-container" id="marineForecastContainer">
           <!-- Populated by JavaScript -->
         </div>
@@ -1301,9 +1464,10 @@
 
   <footer class="footer">
     <div class="data-sources">
-      <div class="data-source"><span class="source-dot"></span><span>Open-Meteo API</span></div>
-      <div class="data-source"><span class="source-dot"></span><span>GFS / ICON Models</span></div>
+      <div class="data-source"><span class="source-dot"></span><span>Environment Canada SWOB</span></div>
+      <div class="data-source"><span class="source-dot"></span><span>Open-Meteo Forecasts</span></div>
       <div class="data-source"><span class="source-dot"></span><span>XTide Harmonics</span></div>
+      <div class="data-source"><span class="source-dot"></span><span>CCG Avadepth</span></div>
     </div>
     <div>
       <div>Seaforth Environmental Dispatch Dashboard © 2026</div>
@@ -1362,11 +1526,205 @@
         </div>`;
     }
 
-    async function fetchWeatherData() {
+    // Environment Canada Marine Forecast RSS Feed
+    // Strait of Georgia - covers both north (14301) and south (14305) of Nanaimo
+    const EC_MARINE_RSS = 'https://weather.gc.ca/rss/marine/14300_e.xml';
+    
+    async function fetchECMarineForecast() {
+      const container = document.getElementById('ecMarineForecast');
+      const issuedEl = document.getElementById('ecForecastIssued');
+      
+      try {
+        // Use a CORS proxy or direct fetch
+        const res = await fetch(EC_MARINE_RSS);
+        if (!res.ok) throw new Error(`RSS fetch failed: ${res.status}`);
+        
+        const text = await res.text();
+        const parser = new DOMParser();
+        const xml = parser.parseFromString(text, 'text/xml');
+        
+        const entries = xml.querySelectorAll('entry');
+        if (entries.length === 0) throw new Error('No forecast entries found');
+        
+        let html = '<div class="ec-forecast-grid">';
+        let extendedForecasts = [];
+        let issuedTime = '';
+        
+        entries.forEach((entry, idx) => {
+          const title = entry.querySelector('title')?.textContent || '';
+          const summary = entry.querySelector('summary')?.textContent || '';
+          const updated = entry.querySelector('updated')?.textContent || '';
+          
+          // Extract issued time from summary
+          const issuedMatch = summary.match(/Issued\s+(\d{1,2}:\d{2}\s+[AP]M\s+\w+\s+\d+\s+\w+\s+\d{4})/i);
+          if (issuedMatch && !issuedTime) {
+            issuedTime = issuedMatch[1];
+          }
+          
+          // Check if this is for our area (14305 = south of Nanaimo)
+          const id = entry.querySelector('id')?.textContent || '';
+          const isSouthArea = id.includes('14305');
+          
+          if (isSouthArea) {
+            // Parse the forecast content
+            const cleanSummary = summary.replace(/<br\/?>/gi, '\n').replace(/Issued.*/i, '').trim();
+            
+            if (title.toLowerCase().includes('extended')) {
+              // Extended forecast - parse individual days
+              const days = cleanSummary.split('\n').filter(d => d.trim());
+              days.forEach(day => {
+                const dayMatch = day.match(/^(\w+):\s*(.+)$/);
+                if (dayMatch) {
+                  extendedForecasts.push({
+                    day: dayMatch[1],
+                    forecast: dayMatch[2]
+                  });
+                }
+              });
+            } else if (title.toLowerCase().includes('forecast for')) {
+              // Main forecast
+              const lines = cleanSummary.split('\n').filter(l => l.trim());
+              const windLines = lines.filter(l => l.toLowerCase().includes('wind'));
+              const weatherLines = lines.filter(l => !l.toLowerCase().includes('wind') && l.trim());
+              
+              html += `
+                <div class="ec-forecast-card">
+                  <div class="ec-forecast-card-title">Current Forecast</div>
+                  <div class="ec-forecast-card-content">
+                    <div class="ec-forecast-wind">${windLines.join(' ')}</div>
+                    ${weatherLines.length > 0 ? `<div class="ec-forecast-weather">${weatherLines.join(' ')}</div>` : ''}
+                  </div>
+                </div>
+              `;
+            }
+          }
+        });
+        
+        html += '</div>';
+        
+        // Add extended forecasts
+        if (extendedForecasts.length > 0) {
+          html += '<div class="ec-extended-forecasts">';
+          extendedForecasts.forEach(ef => {
+            html += `
+              <div class="ec-extended-day">
+                <div class="ec-extended-day-name">${ef.day}</div>
+                <div class="ec-extended-day-forecast">${ef.forecast}</div>
+              </div>
+            `;
+          });
+          html += '</div>';
+        }
+        
+        container.innerHTML = html;
+        issuedEl.textContent = issuedTime ? `Issued: ${issuedTime}` : '';
+        
+      } catch (e) {
+        console.warn('EC Marine RSS fetch failed:', e);
+        // Fallback to showing a link
+        container.innerHTML = `
+          <div class="ec-forecast-grid">
+            <div class="ec-forecast-card">
+              <div class="ec-forecast-card-title">Strait of Georgia — South of Nanaimo</div>
+              <div class="ec-forecast-card-content">
+                <p style="margin-bottom: 0.75rem;">Unable to load live forecast. This may be due to CORS restrictions.</p>
+                <p><a href="https://weather.gc.ca/marine/forecast_e.html?mapID=02&siteID=14305" target="_blank" style="color: var(--teal-accent);">View Official EC Marine Forecast →</a></p>
+              </div>
+            </div>
+          </div>
+        `;
+        issuedEl.textContent = '';
+      }
+    }
+
+    // Environment Canada SWOB (Surface Weather Observation) API for real station data
+    // Using Vancouver Int'l Airport (CYVR) - the most complete local weather station
+    const EC_STATION = 'CYVR';
+    const EC_STATION_NAME = "Vancouver Int'l Airport (YVR)";
+    
+    async function fetchECWeatherData() {
+      // Fetch current conditions from Environment Canada SWOB API
+      const swobUrl = `https://api.weather.gc.ca/collections/swob-realtime/items?f=json&limit=1&sortby=-date_tm-value&url=${EC_STATION}`;
+      
+      try {
+        const res = await fetch(swobUrl);
+        if (!res.ok) throw new Error(`EC API returned ${res.status}`);
+        const data = await res.json();
+        
+        if (data.features && data.features.length > 0) {
+          const props = data.features[0].properties;
+          return {
+            source: 'Environment Canada',
+            station: EC_STATION_NAME,
+            stationId: EC_STATION,
+            current: {
+              temperature_2m: parseFloat(props['air_temp-value']) || null,
+              relative_humidity_2m: parseFloat(props['rel_hum-value']) || null,
+              wind_speed_10m: parseFloat(props['avg_wnd_spd_10m_pst10mts-value']) || parseFloat(props['avg_wnd_spd_10m_mt58-pst10mts-value']) || null, // m/s
+              wind_direction_10m: parseFloat(props['avg_wnd_dir_10m_pst10mts-value']) || parseFloat(props['avg_wnd_dir_10m_mt58-pst10mts-value']) || null,
+              wind_gusts_10m: parseFloat(props['max_wnd_spd_10m_pst10mts-value']) || null, // m/s
+              pressure_msl: parseFloat(props['mslp-value']) / 10 || null, // Convert to hPa
+              visibility: parseFloat(props['vis-value']) || null,
+              weather_code: 0, // EC doesn't use WMO codes directly
+              cloud_cover: null,
+              apparent_temperature: null,
+              observation_time: props['date_tm-value']
+            }
+          };
+        }
+        throw new Error('No data in EC response');
+      } catch (e) {
+        console.warn('EC API failed, falling back to Open-Meteo:', e);
+        return null;
+      }
+    }
+    
+    async function fetchOpenMeteoData() {
       const url = `https://api.open-meteo.com/v1/forecast?latitude=${CONFIG.lat}&longitude=${CONFIG.lon}&current=temperature_2m,relative_humidity_2m,apparent_temperature,weather_code,cloud_cover,pressure_msl,wind_speed_10m,wind_direction_10m,wind_gusts_10m&hourly=temperature_2m,weather_code,wind_speed_10m,wind_direction_10m,wind_gusts_10m,precipitation&daily=weather_code,temperature_2m_max,temperature_2m_min,wind_speed_10m_max,wind_gusts_10m_max,precipitation_sum&timezone=America/Vancouver&forecast_days=7`;
       const res = await fetch(url);
-      if (!res.ok) throw new Error(`API returned ${res.status}`);
-      return res.json();
+      if (!res.ok) throw new Error(`Open-Meteo API returned ${res.status}`);
+      const data = await res.json();
+      return {
+        source: 'Open-Meteo',
+        station: 'Model Data (49.30°N, 123.11°W)',
+        ...data
+      };
+    }
+    
+    async function fetchWeatherData() {
+      // Try Environment Canada first for current conditions, then Open-Meteo for forecasts
+      const [ecData, omData] = await Promise.all([
+        fetchECWeatherData().catch(() => null),
+        fetchOpenMeteoData()
+      ]);
+      
+      // Combine: EC for current if available, Open-Meteo for forecasts
+      if (ecData && ecData.current && ecData.current.temperature_2m !== null) {
+        return {
+          source: 'Environment Canada',
+          station: ecData.station,
+          current: {
+            ...omData.current,
+            ...ecData.current,
+            // Keep wind in m/s for conversion (EC already provides m/s)
+            wind_speed_10m: ecData.current.wind_speed_10m || omData.current.wind_speed_10m,
+            wind_gusts_10m: ecData.current.wind_gusts_10m || omData.current.wind_gusts_10m,
+            wind_direction_10m: ecData.current.wind_direction_10m || omData.current.wind_direction_10m,
+            temperature_2m: ecData.current.temperature_2m,
+            relative_humidity_2m: ecData.current.relative_humidity_2m || omData.current.relative_humidity_2m,
+            pressure_msl: ecData.current.pressure_msl || omData.current.pressure_msl,
+            weather_code: omData.current.weather_code, // Use Open-Meteo for conditions text
+            cloud_cover: omData.current.cloud_cover,
+            apparent_temperature: omData.current.apparent_temperature
+          },
+          hourly: omData.hourly,
+          daily: omData.daily,
+          hourly_units: omData.hourly_units
+        };
+      }
+      
+      // Fallback to Open-Meteo only
+      return omData;
     }
 
     // XTide reference data for Second Narrows (Vancouver) tides - January 2026
@@ -2845,12 +3203,17 @@
       document.getElementById('windDirText').textContent = `${getWindDirection(wDir)} (${Math.round(wDir)}°)`;
       document.getElementById('compassNeedle').style.transform = `rotate(${wDir}deg)`;
       document.getElementById('currentTemp').textContent = Math.round(c.temperature_2m);
-      document.getElementById('currentHumidity').textContent = c.relative_humidity_2m;
-      document.getElementById('feelsLike').textContent = Math.round(c.apparent_temperature);
+      document.getElementById('currentHumidity').textContent = c.relative_humidity_2m || '—';
+      document.getElementById('feelsLike').textContent = c.apparent_temperature ? Math.round(c.apparent_temperature) : '—';
       document.getElementById('currentConditions').textContent = weatherCodes[c.weather_code] || 'Unknown';
-      document.getElementById('cloudCover').textContent = c.cloud_cover;
-      document.getElementById('pressure').textContent = Math.round(c.pressure_msl);
+      document.getElementById('cloudCover').textContent = c.cloud_cover || '—';
+      document.getElementById('pressure').textContent = c.pressure_msl ? Math.round(c.pressure_msl) : '—';
       document.getElementById('updateTime').textContent = formatDateTime(new Date());
+      
+      // Update source info
+      document.getElementById('weatherStation').textContent = d.station || 'Model Data';
+      document.getElementById('weatherSource').textContent = d.source || 'Open-Meteo';
+      document.getElementById('alertSourceName').textContent = d.source || 'Open-Meteo';
     }
 
     function build3DayForecast(d) {
@@ -3307,6 +3670,9 @@
         requestAnimationFrame(() => {
           updateTidesDisplay();
         });
+        
+        // Fetch EC marine forecast (non-blocking)
+        fetchECMarineForecast().catch(e => console.warn('EC Marine forecast error:', e));
       } catch (e) {
         console.error('Error:', e);
         showError(e.message);
