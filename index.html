@@ -1557,13 +1557,14 @@
       firstProgress.style.width = `${first.progressPercent}%`;
       document.getElementById('firstNarrowsMarker').style.left = `${first.progressPercent}%`;
       
-      // First Narrows Events
+      // First Narrows Events - only show max flood and max ebb
       const firstEventsEl = document.getElementById('firstNarrowsEvents');
-      firstEventsEl.innerHTML = first.events.slice(0, 4).map(e => `
+      const firstMaxEvents = first.events.filter(e => e.type === 'max-flood' || e.type === 'max-ebb').slice(0, 4);
+      firstEventsEl.innerHTML = firstMaxEvents.map(e => `
         <div class="current-event">
           <div class="event-time">${formatTime(e.time)}</div>
-          <div class="event-type ${e.type}">${e.type === 'high-slack' ? '⊙ High Slack' : e.type === 'low-slack' ? '⊙ Low Slack' : e.type === 'max-flood' ? '▲ Max Flood' : '▼ Max Ebb'}</div>
-          ${e.speed > 0 ? `<div class="event-speed">${e.speed} kts</div>` : ''}
+          <div class="event-type ${e.type}">${e.type === 'max-flood' ? '▲ Max Flood' : '▼ Max Ebb'}</div>
+          <div class="event-speed">${e.speed} kts</div>
         </div>
       `).join('');
       
@@ -1605,13 +1606,14 @@
       secondProgress.style.width = `${second.progressPercent}%`;
       document.getElementById('secondNarrowsMarker').style.left = `${second.progressPercent}%`;
       
-      // Second Narrows Events
+      // Second Narrows Events - only show max flood and max ebb
       const secondEventsEl = document.getElementById('secondNarrowsEvents');
-      secondEventsEl.innerHTML = second.events.slice(0, 4).map(e => `
+      const secondMaxEvents = second.events.filter(e => e.type === 'max-flood' || e.type === 'max-ebb').slice(0, 4);
+      secondEventsEl.innerHTML = secondMaxEvents.map(e => `
         <div class="current-event">
           <div class="event-time">${formatTime(e.time)}</div>
-          <div class="event-type ${e.type}">${e.type === 'high-slack' ? '⊙ High Slack' : e.type === 'low-slack' ? '⊙ Low Slack' : e.type === 'max-flood' ? '▲ Max Flood' : '▼ Max Ebb'}</div>
-          ${e.speed > 0 ? `<div class="event-speed">${e.speed} kts</div>` : ''}
+          <div class="event-type ${e.type}">${e.type === 'max-flood' ? '▲ Max Flood' : '▼ Max Ebb'}</div>
+          <div class="event-speed">${e.speed} kts</div>
         </div>
       `).join('');
       
