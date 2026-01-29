@@ -673,6 +673,22 @@
       flex: 1;
     }
 
+    .current-data-source {
+      text-align: center;
+      font-size: 0.6rem;
+      padding: 0.4rem 0.6rem;
+      margin-top: 0.5rem;
+      background: rgba(0, 0, 0, 0.2);
+      border-radius: 4px;
+      color: var(--teal-accent);
+      cursor: help;
+      transition: all 0.3s ease;
+    }
+    
+    .current-data-source:hover {
+      background: rgba(0, 212, 170, 0.1);
+    }
+
     .narrows-source-link {
       text-align: center;
       margin-top: 0.75rem;
@@ -854,6 +870,181 @@
 
     .hour-cell-rain.none {
       color: var(--ocean-mid);
+    }
+
+    /* PPA Marine Traffic Section */
+    .ppa-traffic-section {
+      margin-bottom: 2.5rem;
+    }
+
+    .ppa-traffic-container {
+      background: linear-gradient(135deg, rgba(20, 54, 84, 0.5), rgba(13, 33, 55, 0.7));
+      border-radius: 12px;
+      padding: 1.25rem;
+      border: 1px solid rgba(0, 212, 170, 0.15);
+    }
+
+    .ppa-quick-access {
+      display: flex;
+      align-items: center;
+      gap: 1.25rem;
+    }
+
+    .ppa-icon {
+      font-size: 2.5rem;
+      background: rgba(0, 212, 170, 0.1);
+      padding: 1rem;
+      border-radius: 12px;
+      line-height: 1;
+    }
+
+    .ppa-access-content {
+      flex: 1;
+    }
+
+    .ppa-description {
+      color: var(--mist-gray);
+      font-size: 0.85rem;
+      margin-bottom: 0.75rem;
+      line-height: 1.4;
+    }
+
+    .ppa-external-link {
+      display: inline-block;
+      padding: 0.6rem 1.25rem;
+      background: linear-gradient(135deg, var(--teal-accent), var(--ocean-mid));
+      color: var(--deep-navy);
+      text-decoration: none;
+      border-radius: 8px;
+      font-weight: 600;
+      font-size: 0.85rem;
+      transition: all 0.2s ease;
+    }
+
+    .ppa-external-link:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 15px rgba(0, 212, 170, 0.3);
+    }
+
+    @media (max-width: 768px) {
+      .ppa-quick-access {
+        flex-direction: column;
+        text-align: center;
+      }
+    }
+
+    /* Vessel Traffic Map Section */
+    .vessel-traffic-section {
+      margin-bottom: 2.5rem;
+    }
+
+    .vessel-map-container {
+      background: linear-gradient(135deg, rgba(20, 54, 84, 0.5), rgba(13, 33, 55, 0.7));
+      border-radius: 12px;
+      padding: 1rem;
+      border: 1px solid rgba(0, 212, 170, 0.15);
+    }
+
+    .vessel-map-wrapper {
+      width: 100%;
+      height: 400px;
+      border-radius: 8px;
+      overflow: hidden;
+      background: #0a1929;
+    }
+
+    .vessel-map-wrapper iframe {
+      width: 100%;
+      height: 100%;
+      border: none;
+    }
+
+    .vessel-map-legend {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1rem;
+      padding: 0.75rem 0;
+      margin-top: 0.75rem;
+      border-top: 1px solid rgba(0, 212, 170, 0.1);
+      justify-content: center;
+    }
+
+    .legend-item {
+      display: flex;
+      align-items: center;
+      gap: 0.35rem;
+      font-size: 0.7rem;
+      color: var(--mist-gray);
+    }
+
+    .legend-color {
+      width: 12px;
+      height: 12px;
+      border-radius: 2px;
+    }
+
+    .legend-color.cargo { background: #76a82f; }
+    .legend-color.tanker { background: #d32f2f; }
+    .legend-color.passenger { background: #1976d2; }
+    .legend-color.tug { background: #00bcd4; }
+    .legend-color.fishing { background: #ff9800; }
+    .legend-color.pleasure { background: #9c27b0; }
+
+    .vessel-map-info {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      padding-top: 0.5rem;
+    }
+
+    .map-info-text {
+      font-size: 0.65rem;
+      color: var(--mist-gray);
+    }
+
+    .map-source-links {
+      font-size: 0.65rem;
+    }
+
+    .map-source-links a {
+      color: var(--teal-accent);
+      text-decoration: none;
+    }
+
+    .map-source-links a:hover {
+      text-decoration: underline;
+    }
+
+    .vessel-traffic-note {
+      margin-top: 0.75rem;
+      padding: 0.75rem 1rem;
+      background: rgba(0, 212, 170, 0.05);
+      border-left: 3px solid var(--teal-accent);
+      border-radius: 0 8px 8px 0;
+      font-size: 0.75rem;
+      color: var(--mist-gray);
+      line-height: 1.5;
+    }
+    
+    .vessel-traffic-note strong {
+      color: var(--seafoam);
+    }
+
+    @media (max-width: 768px) {
+      .vessel-map-wrapper {
+        height: 300px;
+      }
+      
+      .vessel-map-legend {
+        gap: 0.5rem;
+      }
+      
+      .vessel-map-info {
+        flex-direction: column;
+        align-items: flex-start;
+      }
     }
 
     .tide-section { margin-bottom: 2.5rem; }
@@ -1616,6 +1807,7 @@
           </div>
           <div class="current-events" id="firstNarrowsEvents"></div>
           <div class="slack-windows" id="firstNarrowsWindows"></div>
+          <div class="current-data-source" id="firstNarrowsDataSource" title="Data source for current predictions">● Loading...</div>
         </div>
         <div class="narrows-source-link">
           <a href="http://www.dairiki.org/tides/daily.php/fir" target="_blank">XTide Data</a> · 
@@ -1655,11 +1847,68 @@
           </div>
           <div class="current-events" id="secondNarrowsEvents"></div>
           <div class="slack-windows" id="secondNarrowsWindows"></div>
+          <div class="current-data-source" id="secondNarrowsDataSource" title="Data source for current predictions">● Loading...</div>
         </div>
         <div class="narrows-source-link">
           <a href="http://www.dairiki.org/tides/daily.php/sec" target="_blank">XTide Data</a> · 
           <a href="https://tides.gc.ca/en/current-predictions-station" target="_blank">CHS Tables</a>
         </div>
+      </div>
+    </section>
+
+    <!-- PPA Marine Traffic Section -->
+    <section class="ppa-traffic-section">
+      <h2 class="section-title">PPA Scheduled Vessel Movements</h2>
+      <div class="ppa-traffic-container">
+        <div class="ppa-quick-access">
+          <div class="ppa-icon">🚢</div>
+          <div class="ppa-access-content">
+            <p class="ppa-description">View scheduled pilot assignments, vessel transits, and harbour movements</p>
+            <a href="https://ppaportal.portlink.co/mt-tm" target="_blank" class="ppa-external-link">
+              Open PPA Marine Traffic →
+            </a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Vessel Traffic Map Section -->
+    <section class="vessel-traffic-section">
+      <h2 class="section-title">Live Vessel Traffic — Vancouver Harbour</h2>
+      <div class="vessel-map-container">
+        <div class="vessel-map-wrapper" id="vesselMapWrapper">
+          <!-- VesselFinder embed map -->
+          <script type="text/javascript">
+            var width="100%";
+            var height="400";
+            var latitude="49.31";
+            var longitude="-123.12";
+            var zoom="12";
+            var names=true;
+            var maptype=1;
+          </script>
+          <script type="text/javascript" src="https://www.vesselfinder.com/aismap.js"></script>
+        </div>
+        <div class="vessel-map-legend">
+          <div class="legend-item"><span class="legend-color cargo"></span> Cargo</div>
+          <div class="legend-item"><span class="legend-color tanker"></span> Tanker</div>
+          <div class="legend-item"><span class="legend-color passenger"></span> Passenger</div>
+          <div class="legend-item"><span class="legend-color tug"></span> Tug/Special</div>
+          <div class="legend-item"><span class="legend-color fishing"></span> Fishing</div>
+          <div class="legend-item"><span class="legend-color pleasure"></span> Pleasure</div>
+        </div>
+        <div class="vessel-map-info">
+          <span class="map-info-text">Real-time AIS data • Click vessels for details • Drag to pan, scroll to zoom</span>
+          <div class="map-source-links">
+            <a href="https://www.vesselfinder.com/ports/CAVAN001" target="_blank">Port Arrivals</a> · 
+            <a href="https://www.marinetraffic.com/en/ais/details/ports/682" target="_blank">MarineTraffic</a> · 
+            <a href="https://www.portvancouver.com/port-operations/" target="_blank">Port Operations</a>
+          </div>
+        </div>
+      </div>
+      <div class="vessel-traffic-note">
+        <strong>Pilotage Zone:</strong> Vessels over 350 GT require a pilot through First Narrows (Lions Gate) and Second Narrows (Ironworkers). 
+        Large ships transit during tidal windows — watch for tankers, container ships, and bulk carriers navigating the narrows.
       </div>
     </section>
 
@@ -4299,7 +4548,10 @@
       ebbDir: 'NW out to Strait',
       floodDeg: 135,
       ebbDeg: 315,
-      phaseOffset: 1.5 * 3600000 // Current phase offset from Point Atkinson tide
+      phaseOffset: 1.5 * 3600000, // Current phase offset from Point Atkinson tide
+      // Tide-derived model parameters
+      slackLagAfterTide: 0.5 * 3600000, // Slack occurs ~30 min after high/low tide
+      maxCurrentLagAfterTide: 3.5 * 3600000 // Max current ~3.5 hours after tide extreme
     };
 
     const SECOND_NARROWS = {
@@ -4309,12 +4561,234 @@
       ebbDir: 'W out to Strait',
       floodDeg: 90,
       ebbDeg: 270,
-      phaseOffset: 2.5 * 3600000 // Second Narrows lags First Narrows by ~1 hour
+      phaseOffset: 2.5 * 3600000, // Second Narrows lags First Narrows by ~1 hour
+      // Tide-derived model parameters  
+      slackLagAfterTide: 1.0 * 3600000, // Second Narrows slack ~1 hour after tide
+      maxCurrentLagAfterTide: 4.0 * 3600000 // Max current ~4 hours after tide extreme
     };
+    
+    // =====================================================
+    // AUTOMATIC CURRENT CALCULATION FROM LIVE TIDE DATA
+    // =====================================================
+    // This calculates currents perpetually using CHS tide predictions
+    // No more hardcoded XTide data needed!
+    
+    /**
+     * Calculate currents from live CHS tide data (hi-lo predictions)
+     * 
+     * Physics model:
+     * - Current velocity follows sinusoidal pattern between slack waters
+     * - Slack water occurs shortly after high/low tide (with station-specific lag)
+     * - Maximum current occurs mid-way between slack waters
+     * - Ebb current (outward) occurs during falling tide
+     * - Flood current (inward) occurs during rising tide
+     * 
+     * @param {Object} stationConfig - Station parameters (maxFlood, maxEbb, etc.)
+     * @param {Object} tideData - Live tide data from CHS in format { 'YYYY-MM-DD': [{time, height, type}] }
+     * @returns {Object} - Current state in same format as calculateCurrents()
+     */
+    function calculateCurrentsFromLiveTide(stationConfig, tideData) {
+      const now = new Date();
+      const { maxFlood, maxEbb, floodDir, ebbDir, slackLagAfterTide, maxCurrentLagAfterTide } = stationConfig;
+      
+      // Collect all tide events from available data
+      const allTides = [];
+      Object.keys(tideData).forEach(dateStr => {
+        const dayTides = tideData[dateStr];
+        dayTides.forEach(tide => {
+          const [hours, mins] = tide.time.split(':').map(Number);
+          const tideTime = new Date(dateStr + 'T00:00:00');
+          tideTime.setHours(hours, mins, 0, 0);
+          allTides.push({
+            time: tideTime,
+            height: tide.height,
+            type: tide.type
+          });
+        });
+      });
+      
+      // Sort by time
+      allTides.sort((a, b) => a.time - b.time);
+      
+      if (allTides.length < 2) {
+        console.warn('Insufficient tide data for current calculation');
+        return calculateCurrentsFallback(stationConfig);
+      }
+      
+      // Generate derived current events (slacks and maxes) from tide events
+      const currentEvents = [];
+      
+      for (let i = 0; i < allTides.length; i++) {
+        const tide = allTides[i];
+        const nextTide = allTides[i + 1];
+        
+        // Slack occurs shortly after each high/low tide
+        const slackTime = new Date(tide.time.getTime() + slackLagAfterTide);
+        currentEvents.push({
+          time: slackTime,
+          type: 'slack',
+          speed: 0,
+          tideType: tide.type // 'high' or 'low'
+        });
+        
+        // Maximum current occurs between this tide and the next
+        if (nextTide) {
+          const maxTime = new Date(tide.time.getTime() + maxCurrentLagAfterTide);
+          
+          // Determine if flood or ebb based on tide transition
+          // After HIGH tide → falling water → EBB (outward)
+          // After LOW tide → rising water → FLOOD (inward)
+          const isEbbMax = tide.type === 'high';
+          const peakSpeed = isEbbMax ? -maxEbb : maxFlood;
+          
+          // Scale max speed by tidal range (bigger range = stronger current)
+          const tidalRange = Math.abs(nextTide.height - tide.height);
+          const avgRange = 12; // typical tidal range in feet for Vancouver
+          const rangeMultiplier = Math.min(1.3, Math.max(0.7, tidalRange / avgRange));
+          
+          currentEvents.push({
+            time: maxTime,
+            type: isEbbMax ? 'max-ebb' : 'max-flood',
+            speed: peakSpeed * rangeMultiplier
+          });
+        }
+      }
+      
+      // Sort all current events by time
+      currentEvents.sort((a, b) => a.time - b.time);
+      
+      // Find events surrounding now
+      let prevEvent = null;
+      let nextEvent = null;
+      
+      for (let i = 0; i < currentEvents.length; i++) {
+        if (currentEvents[i].time <= now) {
+          prevEvent = currentEvents[i];
+        } else {
+          nextEvent = currentEvents[i];
+          break;
+        }
+      }
+      
+      // Calculate current speed using sinusoidal interpolation
+      let currentSpeed = 0;
+      let progressPercent = 50;
+      
+      if (prevEvent && nextEvent) {
+        const totalTime = nextEvent.time - prevEvent.time;
+        const elapsed = now - prevEvent.time;
+        const progress = elapsed / totalTime;
+        progressPercent = Math.min(100, Math.max(0, progress * 100));
+        
+        if (prevEvent.type === 'slack' && nextEvent.type !== 'slack') {
+          // Going from slack to max: sine curve rising
+          currentSpeed = nextEvent.speed * Math.sin(progress * Math.PI / 2);
+        } else if (prevEvent.type !== 'slack' && nextEvent.type === 'slack') {
+          // Going from max to slack: cosine curve falling
+          currentSpeed = prevEvent.speed * Math.cos(progress * Math.PI / 2);
+        } else {
+          // Between two events of same type (shouldn't happen often)
+          currentSpeed = prevEvent.speed + (nextEvent.speed - prevEvent.speed) * progress;
+        }
+      } else if (prevEvent) {
+        currentSpeed = prevEvent.speed * 0.5;
+      }
+      
+      const isFlood = currentSpeed > 0.1;
+      const isEbb = currentSpeed < -0.1;
+      const inOneKnotWindow = Math.abs(currentSpeed) <= 1.0;
+      
+      // Build events list for display
+      const events = currentEvents
+        .filter(e => e.time > now && e.type !== 'slack')
+        .slice(0, 8)
+        .map(e => ({
+          time: e.time,
+          type: e.type,
+          speed: Math.abs(e.speed).toFixed(1)
+        }));
+      
+      // Calculate slack windows (1-knot windows)
+      const slackWindows = [];
+      const slackEvents = currentEvents.filter(e => e.type === 'slack' && e.time > new Date(now.getTime() - 2 * 3600000));
+      
+      slackEvents.forEach(slack => {
+        const maxBefore = currentEvents.filter(m => m.time < slack.time && m.type !== 'slack').pop();
+        const maxAfter = currentEvents.find(m => m.time > slack.time && m.type !== 'slack');
+        
+        if (maxBefore || maxAfter) {
+          let windowStart = slack.time;
+          let windowEnd = slack.time;
+          
+          if (maxBefore) {
+            const beforePeak = Math.abs(maxBefore.speed);
+            const timeFromSlackToMaxBefore = slack.time - maxBefore.time;
+            if (beforePeak > 1) {
+              const t = timeFromSlackToMaxBefore * (2 / Math.PI) * Math.asin(Math.min(1, 1 / beforePeak));
+              windowStart = new Date(slack.time.getTime() - t);
+            } else {
+              windowStart = maxBefore.time;
+            }
+          }
+          
+          if (maxAfter) {
+            const afterPeak = Math.abs(maxAfter.speed);
+            const timeFromSlackToMaxAfter = maxAfter.time - slack.time;
+            if (afterPeak > 1) {
+              const t = timeFromSlackToMaxAfter * (2 / Math.PI) * Math.asin(Math.min(1, 1 / afterPeak));
+              windowEnd = new Date(slack.time.getTime() + t);
+            } else {
+              windowEnd = maxAfter.time;
+            }
+          }
+          
+          if (windowEnd > now) {
+            slackWindows.push({
+              start: windowStart,
+              slack: slack.time,
+              end: windowEnd,
+              type: slack.tideType === 'high' ? 'high-slack' : 'low-slack',
+              nextDirection: maxAfter && maxAfter.speed > 0 ? 'flood' : 'ebb'
+            });
+          }
+        }
+      });
+      
+      slackWindows.sort((a, b) => a.slack - b.slack);
+      
+      return {
+        currentSpeed: Math.abs(currentSpeed).toFixed(1),
+        isFlood,
+        isEbb,
+        isSlack: !isFlood && !isEbb,
+        inOneKnotWindow,
+        direction: isFlood || (!isFlood && !isEbb && currentSpeed >= 0) ? floodDir : ebbDir,
+        directionDeg: isFlood || (!isFlood && !isEbb && currentSpeed >= 0) ? stationConfig.floodDeg : stationConfig.ebbDeg,
+        events: events.slice(0, 8),
+        slackWindows: slackWindows.filter(w => w.end > now).slice(0, 5),
+        progressPercent,
+        hasReferenceData: true,
+        dataSource: 'live-tide' // Mark that this came from live tide data
+      };
+    }
+    
+    // Global flag to track if we're using live or fallback current data
+    let currentDataSource = { first: 'fallback', second: 'fallback' };
 
     function updateCurrentsDisplay() {
+      // Try to use live tide data for automatic perpetual current predictions
+      const useLiveTide = liveTideData.pointAtkinson && Object.keys(liveTideData.pointAtkinson).length > 2;
+      
       // First Narrows
-      const first = calculateCurrents(FIRST_NARROWS, FIRST_NARROWS_DATA);
+      let first;
+      if (useLiveTide) {
+        first = calculateCurrentsFromLiveTide(FIRST_NARROWS, liveTideData.pointAtkinson);
+        currentDataSource.first = 'live-tide';
+        console.log('First Narrows: Using live CHS tide-derived currents');
+      } else {
+        first = calculateCurrents(FIRST_NARROWS, FIRST_NARROWS_DATA);
+        currentDataSource.first = first.hasReferenceData ? 'xtide-reference' : 'harmonic-fallback';
+      }
       document.getElementById('firstNarrowsSpeed').textContent = first.currentSpeed;
       
       const firstState = document.getElementById('firstNarrowsState');
@@ -4364,8 +4838,19 @@
       // First Narrows Slack Windows
       renderSlackWindows('firstNarrowsWindows', first.slackWindows, first.inOneKnotWindow);
       
+      // Update First Narrows data source indicator
+      updateCurrentDataSourceIndicator('firstNarrowsDataSource', currentDataSource.first);
+      
       // Second Narrows
-      const second = calculateCurrents(SECOND_NARROWS, SECOND_NARROWS_DATA);
+      let second;
+      if (useLiveTide) {
+        second = calculateCurrentsFromLiveTide(SECOND_NARROWS, liveTideData.pointAtkinson);
+        currentDataSource.second = 'live-tide';
+        console.log('Second Narrows: Using live CHS tide-derived currents');
+      } else {
+        second = calculateCurrents(SECOND_NARROWS, SECOND_NARROWS_DATA);
+        currentDataSource.second = second.hasReferenceData ? 'xtide-reference' : 'harmonic-fallback';
+      }
       document.getElementById('secondNarrowsSpeed').textContent = second.currentSpeed;
       
       const secondState = document.getElementById('secondNarrowsState');
@@ -4414,6 +4899,36 @@
       
       // Second Narrows Slack Windows
       renderSlackWindows('secondNarrowsWindows', second.slackWindows, second.inOneKnotWindow);
+      
+      // Update Second Narrows data source indicator
+      updateCurrentDataSourceIndicator('secondNarrowsDataSource', currentDataSource.second);
+    }
+    
+    // Update the data source indicator in the UI
+    function updateCurrentDataSourceIndicator(elementId, source) {
+      const el = document.getElementById(elementId);
+      if (!el) return;
+      
+      switch (source) {
+        case 'live-tide':
+          el.textContent = '● Live CHS Tide-Derived';
+          el.style.color = 'var(--teal-accent)';
+          el.title = 'Currents calculated automatically from live CHS tide predictions - perpetual & self-updating';
+          break;
+        case 'xtide-reference':
+          el.textContent = '○ XTide Reference';
+          el.style.color = 'var(--amber-warning)';
+          el.title = 'Using pre-computed XTide reference data - limited date range';
+          break;
+        case 'harmonic-fallback':
+          el.textContent = '◌ Harmonic Estimate';
+          el.style.color = 'var(--coral-alert)';
+          el.title = 'Using basic harmonic calculation - less accurate';
+          break;
+        default:
+          el.textContent = '? Unknown';
+          el.style.color = 'var(--mist-gray)';
+      }
     }
     
     // Render slack windows visual
@@ -4969,6 +5484,9 @@
       try {
         const tideData = await fetchLiveTideData();
         
+        // Update currents with new tide data
+        updateCurrentsDisplay();
+        
         // Point Atkinson / Second Narrows tide graph
         if (tideData.pointAtkinson && Object.keys(tideData.pointAtkinson).length > 0) {
           drawTideGraph('secondNarrowsTideGraph', 'secondNarrowsNowMarker', tideData.pointAtkinson);
@@ -5048,10 +5566,18 @@
       document.getElementById('mainContent').classList.remove('loaded');
       
       try {
-        const weather = await fetchWeatherData();
+        // Fetch weather and tide data in parallel
+        const [weather] = await Promise.all([
+          fetchWeatherData(),
+          fetchLiveTideData() // This populates liveTideData for current calculations
+        ]);
+        
         updateCurrent(weather);
         build3DayForecast(weather);
+        
+        // Now update currents - this will use live tide data if available
         updateCurrentsDisplay();
+        
         document.getElementById('loadingState').style.display = 'none';
         document.getElementById('mainContent').classList.add('loaded');
         
