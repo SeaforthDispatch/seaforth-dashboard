@@ -375,8 +375,60 @@
       text-decoration: underline;
     }
 
+    /* PPA Status Card in unified bar */
+    .status-card.ppa-status {
+      flex: 1;
+      min-width: 200px;
+    }
+
+    .status-card.ppa-status::before {
+      background: linear-gradient(90deg, transparent, #64b5f6, transparent);
+    }
+
+    .inline-ppa {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      height: 100%;
+    }
+
+    .ppa-status-icon {
+      font-size: 1.5rem;
+      line-height: 1;
+    }
+
+    .ppa-status-content {
+      flex: 1;
+    }
+
+    .ppa-status-title {
+      font-size: 0.55rem;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: #64b5f6;
+      margin-bottom: 0.15rem;
+      font-weight: 600;
+    }
+
+    .ppa-status-desc {
+      font-size: 0.6rem;
+      color: rgba(200, 200, 200, 0.8);
+      margin-bottom: 0.25rem;
+    }
+
+    .ppa-status-link {
+      font-size: 0.6rem;
+      color: var(--teal-accent);
+      text-decoration: none;
+      font-weight: 600;
+    }
+
+    .ppa-status-link:hover {
+      text-decoration: underline;
+    }
+
     /* Hide old elements */
-    .weather-source-info, .forecast-section .marine-alert, .ec-marine-forecast-section {
+    .weather-source-info, .forecast-section .marine-alert {
       display: none;
     }
 
@@ -385,7 +437,7 @@
       .unified-status-bar {
         flex-wrap: wrap;
       }
-      .status-card.forecast-status {
+      .status-card.ppa-status {
         flex: 1 1 100%;
         order: 10;
       }
@@ -652,6 +704,142 @@
       gap: 1.5rem;
       margin-bottom: 2.5rem;
     }
+    
+    /* Narrows-only grid (2 columns) */
+    .main-dashboard-grid.narrows-only-grid {
+      grid-template-columns: 1fr 1fr;
+    }
+
+    /* Hourly Conditions Section - Full Width */
+    .hourly-conditions-section {
+      margin-bottom: 1.5rem;
+    }
+
+    .hourly-conditions-container {
+      background: linear-gradient(135deg, rgba(20, 54, 84, 0.5), rgba(13, 33, 55, 0.7));
+      border-radius: 12px;
+      border: 1px solid rgba(0, 212, 170, 0.15);
+      padding: 0.5rem;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.25rem;
+    }
+
+    .hourly-cell {
+      flex: 1 1 calc(100% / 24 - 0.25rem);
+      min-width: 52px;
+      background: rgba(20, 54, 84, 0.4);
+      border-radius: 6px;
+      padding: 0.35rem 0.2rem;
+      text-align: center;
+      transition: all 0.2s ease;
+      border: 1px solid transparent;
+    }
+
+    .hourly-cell:hover {
+      background: rgba(20, 54, 84, 0.7);
+      border-color: rgba(0, 212, 170, 0.3);
+    }
+
+    .hourly-cell.current {
+      background: rgba(0, 212, 170, 0.15);
+      border-color: var(--teal-accent);
+    }
+
+    .hourly-cell-time {
+      font-size: 0.5rem;
+      font-weight: 600;
+      color: var(--mist-gray);
+      margin-bottom: 0.15rem;
+    }
+
+    .hourly-cell-day {
+      font-size: 0.45rem;
+      color: rgba(0, 212, 170, 0.7);
+      margin-bottom: 0.1rem;
+      font-weight: 600;
+    }
+
+    .hourly-cell-icon {
+      font-size: 1rem;
+      line-height: 1;
+      margin-bottom: 0.1rem;
+    }
+
+    .hourly-cell-temp {
+      font-size: 0.6rem;
+      font-weight: 600;
+      color: var(--amber-warning);
+      margin-bottom: 0.1rem;
+    }
+
+    .hourly-cell-wind {
+      font-size: 0.55rem;
+      font-weight: 600;
+      margin-bottom: 0.05rem;
+    }
+
+    .hourly-cell-wind.light { color: #64b5f6; }
+    .hourly-cell-wind.moderate { color: var(--teal-accent); }
+    .hourly-cell-wind.fresh { color: var(--amber-warning); }
+    .hourly-cell-wind.strong { color: var(--coral-alert); }
+
+    .hourly-cell-wind-dir {
+      font-size: 0.4rem;
+      color: var(--mist-gray);
+      margin-bottom: 0.1rem;
+    }
+
+    .hourly-cell-rain {
+      font-size: 0.45rem;
+      color: #64b5f6;
+    }
+
+    .hourly-cell-rain.none {
+      color: var(--ocean-mid);
+    }
+
+    /* Large screens: 24 per row */
+    @media (min-width: 1400px) {
+      .hourly-cell {
+        flex: 1 1 calc(100% / 24 - 0.25rem);
+      }
+    }
+
+    /* Medium-large screens: 16 per row */
+    @media (max-width: 1399px) and (min-width: 1100px) {
+      .hourly-cell {
+        flex: 1 1 calc(100% / 16 - 0.25rem);
+      }
+    }
+
+    /* Medium screens: 12 per row */
+    @media (max-width: 1099px) and (min-width: 800px) {
+      .hourly-cell {
+        flex: 1 1 calc(100% / 12 - 0.25rem);
+      }
+    }
+
+    /* Small screens: 8 per row */
+    @media (max-width: 799px) and (min-width: 550px) {
+      .hourly-cell {
+        flex: 1 1 calc(100% / 8 - 0.25rem);
+      }
+    }
+
+    /* Extra small screens: 6 per row */
+    @media (max-width: 549px) and (min-width: 400px) {
+      .hourly-cell {
+        flex: 1 1 calc(100% / 6 - 0.25rem);
+      }
+    }
+
+    /* Tiny screens: 4 per row */
+    @media (max-width: 399px) {
+      .hourly-cell {
+        flex: 1 1 calc(100% / 4 - 0.25rem);
+      }
+    }
 
     .dashboard-column {
       display: flex;
@@ -705,9 +893,212 @@
       text-decoration: underline;
     }
 
+    /* Full-Width Second Narrows Layout */
+    .second-narrows-section {
+      margin-bottom: 1.5rem;
+    }
+
+    .narrows-full-width {
+      background: linear-gradient(135deg, rgba(20, 54, 84, 0.6), rgba(13, 33, 55, 0.8));
+      border: 1px solid rgba(0, 212, 170, 0.2);
+      border-radius: 12px;
+      padding: 1rem 1.25rem;
+    }
+
+    .narrows-fw-top {
+      display: flex;
+      gap: 2rem;
+      align-items: center;
+      padding-bottom: 1rem;
+      border-bottom: 1px solid rgba(0, 212, 170, 0.15);
+      margin-bottom: 1rem;
+      flex-wrap: wrap;
+    }
+
+    .narrows-fw-status {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      min-width: 220px;
+    }
+
+    .fw-arrow-container {
+      width: 64px;
+      height: 64px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+    }
+
+    .fw-arrow-container .current-ring {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      border: 2px solid rgba(0, 212, 170, 0.3);
+      border-radius: 50%;
+    }
+
+    .fw-arrow-container .current-arrow {
+      width: 36px;
+      height: 36px;
+    }
+
+    .fw-state-info {
+      text-align: left;
+    }
+
+    .fw-state-info .current-state {
+      font-family: 'Archivo Black', sans-serif;
+      font-size: 1rem;
+      letter-spacing: 0.1em;
+      margin-bottom: 0.15rem;
+    }
+
+    .fw-speed {
+      font-family: 'Archivo Black', sans-serif;
+      font-size: 2rem;
+      color: var(--foam-white);
+      line-height: 1;
+      margin-bottom: 0.25rem;
+    }
+
+    .fw-speed .unit {
+      font-size: 0.9rem;
+      color: var(--mist-gray);
+      font-family: 'IBM Plex Mono', monospace;
+    }
+
+    .fw-direction {
+      font-size: 0.75rem;
+      color: var(--mist-gray);
+    }
+
+    .narrows-fw-timeline {
+      flex: 1;
+      min-width: 200px;
+    }
+
+    .narrows-fw-timeline .timeline-label {
+      font-size: 0.6rem;
+      color: var(--mist-gray);
+      margin-bottom: 0.4rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .narrows-fw-timeline .timeline-bar {
+      height: 10px;
+      background: rgba(0, 0, 0, 0.3);
+      border-radius: 5px;
+      position: relative;
+      overflow: hidden;
+      margin-bottom: 0.4rem;
+    }
+
+    .narrows-fw-timeline .timeline-progress {
+      height: 100%;
+      border-radius: 5px;
+      transition: width 0.5s ease;
+    }
+
+    .narrows-fw-timeline .timeline-marker {
+      position: absolute;
+      top: -3px;
+      width: 4px;
+      height: 16px;
+      background: var(--foam-white);
+      border-radius: 2px;
+      transform: translateX(-50%);
+      box-shadow: 0 0 6px rgba(255, 255, 255, 0.5);
+    }
+
+    .fw-data-source {
+      font-size: 0.6rem;
+      color: var(--teal-accent);
+    }
+
+    .narrows-fw-events {
+      min-width: 180px;
+    }
+
+    .fw-events-title {
+      font-size: 0.6rem;
+      color: var(--mist-gray);
+      margin-bottom: 0.4rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .narrows-fw-events .current-events {
+      display: flex;
+      flex-direction: column;
+      gap: 0.35rem;
+    }
+
+    .narrows-fw-events .current-event {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      background: rgba(0, 0, 0, 0.2);
+      border-radius: 4px;
+      padding: 0.35rem 0.5rem;
+      font-size: 0.7rem;
+    }
+
+    .narrows-fw-events .event-time {
+      color: var(--mist-gray);
+    }
+
+    .narrows-fw-events .event-type {
+      font-weight: 600;
+    }
+
+    .narrows-fw-events .event-type.max-flood { color: var(--teal-accent); }
+    .narrows-fw-events .event-type.max-ebb { color: var(--coral-alert); }
+
+    .narrows-fw-events .event-speed {
+      color: var(--foam-white);
+      margin-left: auto;
+    }
+
+    .narrows-fw-windows {
+      margin-top: 0;
+    }
+
+    .narrows-fw-windows .slack-windows {
+      margin-top: 0;
+    }
+
+    /* Responsive */
+    @media (max-width: 900px) {
+      .narrows-fw-top {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 1rem;
+      }
+
+      .narrows-fw-status {
+        justify-content: center;
+      }
+
+      .narrows-fw-events {
+        width: 100%;
+      }
+
+      .narrows-fw-events .current-events {
+        flex-direction: row;
+        flex-wrap: wrap;
+      }
+    }
+
     /* Tablet: 2 columns (forecast full width on top, narrows side by side below) */
     @media (max-width: 1200px) {
       .main-dashboard-grid {
+        grid-template-columns: 1fr 1fr;
+      }
+      
+      .main-dashboard-grid.narrows-only-grid {
         grid-template-columns: 1fr 1fr;
       }
       
@@ -719,6 +1110,10 @@
     /* Mobile: 1 column */
     @media (max-width: 768px) {
       .main-dashboard-grid {
+        grid-template-columns: 1fr;
+      }
+      
+      .main-dashboard-grid.narrows-only-grid {
         grid-template-columns: 1fr;
       }
       
@@ -1693,18 +2088,13 @@
         <div class="status-value conditions" id="currentConditions2">—</div>
         <div class="status-detail"><span id="cloudCover2">—</span>% · <span id="pressure2">—</span> hPa</div>
       </div>
-      <div class="status-card forecast-status">
-        <div class="inline-forecast" id="inlineForecast">
-          <div class="inline-forecast-main">
-            <div class="inline-forecast-title">EC Marine Forecast</div>
-            <div class="inline-forecast-text" id="inlineForecastText">Loading...</div>
-          </div>
-          <div class="inline-forecast-extended" id="inlineForecastExtended">
-            <!-- Populated by JS -->
-          </div>
-          <div class="inline-forecast-meta">
-            <span id="inlineForecastIssued">—</span>
-            <a href="https://weather.gc.ca/marine/forecast_e.html?mapID=02&siteID=14305" target="_blank">Full Forecast →</a>
+      <div class="status-card ppa-status">
+        <div class="inline-ppa">
+          <div class="ppa-status-icon">🚢</div>
+          <div class="ppa-status-content">
+            <div class="ppa-status-title">PPA Vessel Movements</div>
+            <div class="ppa-status-desc">Scheduled pilot assignments & harbour transits</div>
+            <a href="https://ppaportal.portlink.co/mt-tm" target="_blank" class="ppa-status-link">Open PPA Portal →</a>
           </div>
         </div>
       </div>
@@ -1751,124 +2141,72 @@
       </div>
     </section>
     
-    <!-- EC Official Marine Forecast -->
-    <section class="ec-marine-forecast-section">
-      <h2 class="section-title">Environment Canada Marine Forecast — Strait of Georgia (South)</h2>
-      <div class="ec-marine-forecast-container">
-        <div class="ec-forecast-panel" id="ecMarineForecast">
-          <div class="ec-forecast-loading">Loading official marine forecast...</div>
-        </div>
-        <div class="ec-forecast-meta">
-          <span id="ecForecastIssued">—</span>
-          <a href="https://weather.gc.ca/marine/forecast_e.html?mapID=02&siteID=14305" target="_blank" class="ec-forecast-link">View Full Forecast →</a>
-        </div>
+    <!-- Hourly Conditions - Full Width Above Narrows -->
+    <section class="hourly-conditions-section">
+      <h2 class="section-title">Hourly Conditions (48h)</h2>
+      <div class="hourly-conditions-container" id="marineForecastContainer">
+        <!-- Populated by JavaScript -->
       </div>
     </section>
 
-    <!-- Main 3-Column Layout: Marine Forecast + Currents -->
-    <section class="main-dashboard-grid">
-      <!-- Left Column: 3-Day Marine Forecast -->
-      <div class="dashboard-column forecast-column">
-        <h2 class="section-title">Hourly Conditions (72h)</h2>
-        <div class="marine-forecast-container" id="marineForecastContainer">
-          <!-- Populated by JavaScript -->
+    <!-- Tides — Second Narrows -->
+    <section class="tide-section">
+      <h2 class="section-title">Tides — Second Narrows</h2>
+      <div class="tide-station-panel">
+        <div class="tide-station-header">
+          <div class="tide-station-name">Second Narrows</div>
+          <div class="tide-station-location">Vancouver Harbour • Station 7735</div>
+        </div>
+        <div class="tide-graph-container">
+          <canvas id="secondNarrowsTideGraph" class="tide-graph"></canvas>
+          <div class="tide-graph-now-marker" id="secondNarrowsNowMarker"></div>
         </div>
       </div>
-
-      <!-- Middle Column: First Narrows -->
-      <div class="dashboard-column narrows-column">
-        <h2 class="section-title">First Narrows</h2>
-        <div class="narrows-panel" id="firstNarrowsPanel">
-          <div class="narrows-header">
-            <div>
-              <div class="narrows-name">Lions Gate Bridge</div>
-              <div class="narrows-location">Station 07721</div>
-            </div>
-          </div>
-          <div class="current-status">
-            <div class="current-arrow-container">
-              <div class="current-ring"></div>
-              <svg class="current-arrow flood" id="firstNarrowsArrow" viewBox="0 0 24 24" fill="currentColor">
-                <path d="M12 2L4 12h5v10h6V12h5L12 2z"/>
-              </svg>
-            </div>
-            <div class="current-info">
-              <div class="current-state flood" id="firstNarrowsState">FLOOD</div>
-              <div class="current-speed"><span id="firstNarrowsSpeed">2.4</span> <span class="unit">kts</span></div>
-              <div class="current-direction" id="firstNarrowsDir">Flowing SE (135°) into harbour</div>
-            </div>
-          </div>
-          <div class="current-timeline">
-            <div class="timeline-label">Current Cycle Progress</div>
-            <div class="timeline-bar">
-              <div class="timeline-progress flood" id="firstNarrowsProgress" style="width: 45%"></div>
-              <div class="timeline-marker" id="firstNarrowsMarker" style="left: 45%"></div>
-            </div>
-          </div>
-          <div class="current-events" id="firstNarrowsEvents"></div>
-          <div class="slack-windows" id="firstNarrowsWindows"></div>
-          <div class="current-data-source" id="firstNarrowsDataSource" title="Data source for current predictions">● Loading...</div>
-        </div>
-        <div class="narrows-source-link">
-          <a href="http://www.dairiki.org/tides/daily.php/fir" target="_blank">XTide Data</a> · 
-          <a href="https://tides.gc.ca/en/current-predictions-station" target="_blank">CHS Tables</a>
-        </div>
+      <div class="tide-source-link">
+        Data from CHS predictions. Official source: 
+        <a href="https://tides.gc.ca/en/stations/7735" target="_blank">CHS Vancouver Harbour</a>
       </div>
+    </section>
 
-      <!-- Right Column: Second Narrows -->
-      <div class="dashboard-column narrows-column">
-        <h2 class="section-title">Second Narrows</h2>
-        <div class="narrows-panel" id="secondNarrowsPanel">
-          <div class="narrows-header">
-            <div>
-              <div class="narrows-name">Ironworkers Bridge</div>
-              <div class="narrows-location">Station 07745</div>
-            </div>
-          </div>
-          <div class="current-status">
-            <div class="current-arrow-container">
+    <!-- Second Narrows Currents - Full Width -->
+    <section class="second-narrows-section">
+      <h2 class="section-title">Second Narrows Currents — Ironworkers Bridge</h2>
+      <div class="narrows-full-width" id="secondNarrowsPanel">
+        <div class="narrows-fw-top">
+          <div class="narrows-fw-status">
+            <div class="fw-arrow-container">
               <div class="current-ring"></div>
               <svg class="current-arrow flood" id="secondNarrowsArrow" viewBox="0 0 24 24" fill="currentColor">
                 <path d="M12 2L4 12h5v10h6V12h5L12 2z"/>
               </svg>
             </div>
-            <div class="current-info">
+            <div class="fw-state-info">
               <div class="current-state flood" id="secondNarrowsState">FLOOD</div>
-              <div class="current-speed"><span id="secondNarrowsSpeed">2.1</span> <span class="unit">kts</span></div>
-              <div class="current-direction" id="secondNarrowsDir">Flowing E (090°) into harbour</div>
+              <div class="fw-speed"><span id="secondNarrowsSpeed">2.1</span> <span class="unit">kts</span></div>
+              <div class="fw-direction" id="secondNarrowsDir">Flowing E (090°) into harbour</div>
             </div>
           </div>
-          <div class="current-timeline">
+          <div class="narrows-fw-timeline">
             <div class="timeline-label">Current Cycle Progress</div>
             <div class="timeline-bar">
               <div class="timeline-progress flood" id="secondNarrowsProgress" style="width: 45%"></div>
               <div class="timeline-marker" id="secondNarrowsMarker" style="left: 45%"></div>
             </div>
+            <div class="fw-data-source" id="secondNarrowsDataSource">● Loading...</div>
           </div>
-          <div class="current-events" id="secondNarrowsEvents"></div>
-          <div class="slack-windows" id="secondNarrowsWindows"></div>
-          <div class="current-data-source" id="secondNarrowsDataSource" title="Data source for current predictions">● Loading...</div>
+          <div class="narrows-fw-events">
+            <div class="fw-events-title">Upcoming</div>
+            <div class="current-events" id="secondNarrowsEvents"></div>
+          </div>
         </div>
-        <div class="narrows-source-link">
-          <a href="http://www.dairiki.org/tides/daily.php/sec" target="_blank">XTide Data</a> · 
-          <a href="https://tides.gc.ca/en/current-predictions-station" target="_blank">CHS Tables</a>
+        <div class="narrows-fw-windows">
+          <div class="slack-windows" id="secondNarrowsWindows"></div>
         </div>
       </div>
-    </section>
-
-    <!-- PPA Marine Traffic Section -->
-    <section class="ppa-traffic-section">
-      <h2 class="section-title">PPA Scheduled Vessel Movements</h2>
-      <div class="ppa-traffic-container">
-        <div class="ppa-quick-access">
-          <div class="ppa-icon">🚢</div>
-          <div class="ppa-access-content">
-            <p class="ppa-description">View scheduled pilot assignments, vessel transits, and harbour movements</p>
-            <a href="https://ppaportal.portlink.co/mt-tm" target="_blank" class="ppa-external-link">
-              Open PPA Marine Traffic →
-            </a>
-          </div>
-        </div>
+      <div class="narrows-source-link">
+        <a href="http://www.dairiki.org/tides/daily.php/sec" target="_blank">XTide Data</a> · 
+        <a href="https://tides.gc.ca/en/current-predictions-station" target="_blank">CHS Tables</a> ·
+        Station 07745
       </div>
     </section>
 
@@ -1906,26 +2244,10 @@
           </div>
         </div>
       </div>
-      <div class="vessel-traffic-note">
-        <strong>Pilotage Zone:</strong> Vessels over 350 GT require a pilot through First Narrows (Lions Gate) and Second Narrows (Ironworkers). 
-        Large ships transit during tidal windows — watch for tankers, container ships, and bulk carriers navigating the narrows.
-      </div>
     </section>
 
     <section class="tide-section">
-      <h2 class="section-title">Tides — Second Narrows & Steveston</h2>
-      
-      <!-- Second Narrows Tides -->
-      <div class="tide-station-panel">
-        <div class="tide-station-header">
-          <div class="tide-station-name">Second Narrows</div>
-          <div class="tide-station-location">Vancouver Harbour • Station 7735</div>
-        </div>
-        <div class="tide-graph-container">
-          <canvas id="secondNarrowsTideGraph" class="tide-graph"></canvas>
-          <div class="tide-graph-now-marker" id="secondNarrowsNowMarker"></div>
-        </div>
-      </div>
+      <h2 class="section-title">Tides — Steveston</h2>
       
       <!-- Steveston/Richmond Tides -->
       <div class="tide-station-panel">
@@ -1940,8 +2262,7 @@
       </div>
       
       <div class="tide-source-link">
-        Data from XTide harmonics. Official sources: 
-        <a href="https://tides.gc.ca/en/stations/7735" target="_blank">CHS Vancouver</a> · 
+        Data from CHS predictions. Official source: 
         <a href="https://tides.gc.ca/en/stations/7607" target="_blank">CHS Steveston</a>
       </div>
     </section>
@@ -4808,68 +5129,6 @@
       // Try to use live tide data for automatic perpetual current predictions
       const useLiveTide = liveTideData.pointAtkinson && Object.keys(liveTideData.pointAtkinson).length > 2;
       
-      // First Narrows
-      let first;
-      if (useLiveTide) {
-        first = calculateCurrentsFromLiveTide(FIRST_NARROWS, liveTideData.pointAtkinson);
-        currentDataSource.first = 'live-tide';
-        console.log('First Narrows: Using live CHS tide-derived currents');
-      } else {
-        first = calculateCurrents(FIRST_NARROWS, FIRST_NARROWS_DATA);
-        currentDataSource.first = first.hasReferenceData ? 'xtide-reference' : 'harmonic-fallback';
-      }
-      document.getElementById('firstNarrowsSpeed').textContent = first.currentSpeed;
-      
-      const firstState = document.getElementById('firstNarrowsState');
-      const firstArrow = document.getElementById('firstNarrowsArrow');
-      const firstProgress = document.getElementById('firstNarrowsProgress');
-      const firstDir = document.getElementById('firstNarrowsDir');
-      
-      if (first.isSlack) {
-        firstState.textContent = 'SLACK';
-        firstState.className = 'current-state slack';
-        firstArrow.className = 'current-arrow slack';
-        firstArrow.style.transform = 'rotate(0deg)';
-        firstProgress.className = 'timeline-progress flood';
-        firstDir.textContent = 'Minimal current — turning';
-      } else if (first.isFlood) {
-        firstState.textContent = 'FLOOD';
-        firstState.className = 'current-state flood';
-        firstArrow.className = 'current-arrow flood';
-        firstArrow.style.transform = `rotate(${FIRST_NARROWS.floodDeg}deg)`;
-        firstProgress.className = 'timeline-progress flood';
-        firstDir.textContent = `Flowing ${first.direction} (${first.directionDeg}°)`;
-      } else {
-        firstState.textContent = 'EBB';
-        firstState.className = 'current-state ebb';
-        firstArrow.className = 'current-arrow ebb';
-        firstArrow.style.transform = `rotate(${FIRST_NARROWS.ebbDeg}deg)`;
-        firstProgress.className = 'timeline-progress ebb';
-        firstDir.textContent = `Flowing ${first.direction} (${first.directionDeg}°)`;
-      }
-      
-      firstProgress.style.width = `${first.progressPercent}%`;
-      document.getElementById('firstNarrowsMarker').style.left = `${first.progressPercent}%`;
-      
-      // First Narrows Events
-      const firstEventsEl = document.getElementById('firstNarrowsEvents');
-      const firstNextFlood = first.events.find(e => e.type === 'max-flood');
-      const firstNextEbb = first.events.find(e => e.type === 'max-ebb');
-      const firstMaxEvents = [firstNextFlood, firstNextEbb].filter(Boolean);
-      firstEventsEl.innerHTML = firstMaxEvents.map(e => `
-        <div class="current-event">
-          <div class="event-time">${formatTime(e.time)}</div>
-          <div class="event-type ${e.type}">${e.type === 'max-flood' ? '▲ Max Flood' : '▼ Max Ebb'}</div>
-          <div class="event-speed">${e.speed} kts</div>
-        </div>
-      `).join('');
-      
-      // First Narrows Slack Windows
-      renderSlackWindows('firstNarrowsWindows', first.slackWindows, first.inOneKnotWindow);
-      
-      // Update First Narrows data source indicator
-      updateCurrentDataSourceIndicator('firstNarrowsDataSource', currentDataSource.first);
-      
       // Second Narrows
       let second;
       if (useLiveTide) {
@@ -5073,21 +5332,15 @@
       const h = d.hourly;
       const now = new Date();
       
-      // Group hours by day
-      const days = {};
+      // Find start index (current hour)
       let start = h.time.findIndex(t => new Date(t) >= now);
       if (start < 0) start = 0;
       
-      for (let i = start; i < Math.min(start + 72, h.time.length); i++) {
+      // Collect 48 hours of data and create cells directly in container
+      let lastDay = null;
+      for (let i = start; i < Math.min(start + 48, h.time.length); i++) {
         const t = new Date(h.time[i]);
-        const dayKey = t.toDateString();
-        if (!days[dayKey]) {
-          days[dayKey] = {
-            date: t,
-            hours: []
-          };
-        }
-        days[dayKey].hours.push({
+        const hour = {
           time: t,
           temp: Math.round(h.temperature_2m[i]),
           windSpeed: msToKnots(h.wind_speed_10m[i]),
@@ -5095,67 +5348,39 @@
           windDirDeg: h.wind_direction_10m[i],
           precipitation: h.precipitation[i],
           weatherCode: h.weather_code ? h.weather_code[i] : 0,
-          cloudCover: h.cloud_cover ? h.cloud_cover[i] : 0,
-          index: i
-        });
+          cloudCover: h.cloud_cover ? h.cloud_cover[i] : 0
+        };
+        
+        const isCurrent = i === start;
+        const cell = createHourlyCell(hour, isCurrent, lastDay);
+        lastDay = t.getDate();
+        container.appendChild(cell);
       }
+    }
+    
+    function createHourlyCell(hour, isCurrent, lastDay) {
+      const cell = document.createElement('div');
+      cell.className = `hourly-cell ${isCurrent ? 'current' : ''}`;
       
-      // Only show 3 days
-      const dayKeys = Object.keys(days).slice(0, 3);
+      // Get weather icon based on weather code
+      const icon = weatherIcons[hour.weatherCode] || getSimpleWeatherIcon(hour);
       
-      dayKeys.forEach((dayKey, dayIndex) => {
-        const day = days[dayKey];
-        const panel = document.createElement('div');
-        panel.className = 'forecast-day-panel';
-        
-        // Day header
-        const dayName = dayIndex === 0 ? 'Today' : 
-                       dayIndex === 1 ? 'Tomorrow' : 
-                       day.date.toLocaleDateString('en-CA', { weekday: 'long' });
-        
-        const dateStr = day.date.toLocaleDateString('en-CA', { month: 'short', day: 'numeric' });
-        
-        // Calculate day summary
-        const maxWind = Math.max(...day.hours.map(h => h.windSpeed));
-        const totalPrecip = day.hours.reduce((sum, h) => sum + h.precipitation, 0);
-        
-        let summaryParts = [`Max wind ${maxWind} kts`];
-        if (totalPrecip > 0.5) {
-          summaryParts.push(`${totalPrecip.toFixed(1)} mm precip`);
-        }
-        
-        panel.innerHTML = `
-          <div class="forecast-day-header">
-            <div class="forecast-day-name">${dayName} · ${dateStr}</div>
-            <div class="forecast-day-summary">${summaryParts.join(' · ')}</div>
-          </div>
-          <div class="forecast-hours-grid" id="forecastDay${dayIndex}"></div>
-        `;
-        
-        container.appendChild(panel);
-        
-        // Add hourly cells in 3 rows of 8
-        const grid = document.getElementById(`forecastDay${dayIndex}`);
-        day.hours.forEach((hour, hourIndex) => {
-          const isCurrent = dayIndex === 0 && hourIndex === 0;
-          const cell = document.createElement('div');
-          cell.className = `forecast-hour-cell ${isCurrent ? 'current' : ''}`;
-          
-          // Get weather icon based on weather code
-          const icon = weatherIcons[hour.weatherCode] || getSimpleWeatherIcon(hour);
-          
-          cell.innerHTML = `
-            <div class="hour-cell-time">${formatTime(hour.time)}</div>
-            <div class="hour-cell-icon">${icon}</div>
-            <div class="hour-cell-temp">${hour.temp}°C</div>
-            <div class="hour-cell-wind ${getWindClass(hour.windSpeed)}">${hour.windSpeed} kts</div>
-            <div class="hour-cell-wind-dir">${hour.windDir}</div>
-            <div class="hour-cell-rain ${hour.precipitation < 0.1 ? 'none' : ''}">${hour.precipitation >= 0.1 ? hour.precipitation.toFixed(1) + ' mm' : '—'}</div>
-          `;
-          
-          grid.appendChild(cell);
-        });
-      });
+      // Show day label at midnight or when day changes
+      const isNewDay = lastDay !== null && hour.time.getDate() !== lastDay;
+      const showDayLabel = hour.time.getHours() === 0 || isNewDay || lastDay === null;
+      const dayLabel = showDayLabel ? hour.time.toLocaleDateString('en-CA', { weekday: 'short' }) : '';
+      
+      cell.innerHTML = `
+        ${dayLabel ? `<div class="hourly-cell-day">${dayLabel}</div>` : ''}
+        <div class="hourly-cell-time">${formatTime(hour.time)}</div>
+        <div class="hourly-cell-icon">${icon}</div>
+        <div class="hourly-cell-temp">${hour.temp}°</div>
+        <div class="hourly-cell-wind ${getWindClass(hour.windSpeed)}">${hour.windSpeed}</div>
+        <div class="hourly-cell-wind-dir">${hour.windDir}</div>
+        <div class="hourly-cell-rain ${hour.precipitation < 0.1 ? 'none' : ''}">${hour.precipitation >= 0.1 ? hour.precipitation.toFixed(1) : '—'}</div>
+      `;
+      
+      return cell;
     }
     
     // Fallback simple weather icon based on conditions
