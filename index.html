@@ -2441,6 +2441,12 @@
       const inlineExtended = document.getElementById('inlineForecastExtended');
       const inlineIssued = document.getElementById('inlineForecastIssued');
       
+      // If container doesn't exist, skip this entirely
+      if (!container) {
+        console.log('EC Marine forecast section not found in page, skipping');
+        return;
+      }
+      
       try {
         // Use CORS proxy for Environment Canada (they don't allow cross-origin requests)
         const res = await fetchWithProxyFallback(EC_MARINE_RSS);
@@ -2544,24 +2550,26 @@
         
       } catch (e) {
         console.warn('EC Marine RSS fetch failed:', e);
-        // Fallback to showing a link
-        container.innerHTML = `
-          <div class="ec-forecast-grid">
-            <div class="ec-forecast-card">
-              <div class="ec-forecast-card-title">Strait of Georgia — South of Nanaimo</div>
-              <div class="ec-forecast-card-content">
-                <p style="margin-bottom: 0.75rem;">Unable to load live forecast. This may be due to CORS restrictions.</p>
-                <p><a href="https://weather.gc.ca/marine/forecast_e.html?mapID=02&siteID=14305" target="_blank" style="color: var(--teal-accent);">View Official EC Marine Forecast →</a></p>
+        // Fallback to showing a link - only if container exists
+        if (container) {
+          container.innerHTML = `
+            <div class="ec-forecast-grid">
+              <div class="ec-forecast-card">
+                <div class="ec-forecast-card-title">Strait of Georgia — South of Nanaimo</div>
+                <div class="ec-forecast-card-content">
+                  <p style="margin-bottom: 0.75rem;">Unable to load live forecast. This may be due to CORS restrictions.</p>
+                  <p><a href="https://weather.gc.ca/marine/forecast_e.html?mapID=02&siteID=14305" target="_blank" style="color: var(--teal-accent);">View Official EC Marine Forecast →</a></p>
+                </div>
               </div>
             </div>
-          </div>
-        `;
-        issuedEl.textContent = '';
+          `;
+        }
+        if (issuedEl) issuedEl.textContent = '';
         
         // NEW: Inline fallback
-        inlineText.textContent = 'Unable to load forecast';
-        inlineIssued.textContent = '';
-        inlineExtended.innerHTML = '';
+        if (inlineText) inlineText.textContent = 'Unable to load forecast';
+        if (inlineIssued) inlineIssued.textContent = '';
+        if (inlineExtended) inlineExtended.innerHTML = '';
       }
     }
 
@@ -2776,9 +2784,10 @@
     // Steveston tides - typically ~30 min later and slightly lower amplitude
     // CHS IWLS API for tide/water level data
     // Station IDs: Steveston = 07607, New Westminster = 07654
+    // Using hex IDs for API calls
     const CHS_API_BASE = 'https://api-iwls.dfo-mpo.gc.ca/api/v1';
-    const STATION_STEVESTON = '07607';
-    const STATION_NEW_WESTMINSTER = '07654';
+    const STATION_STEVESTON = '5cebf1e13d0f4a073c4bbf8c';      // Steveston (07607)
+    const STATION_NEW_WESTMINSTER = '5cebf1e13d0f4a073c4bbf93'; // New Westminster (07654)
     
     // Avadepth velocity model coefficients for km 20 South Arm
     // Based on Avadepth hydrodynamic model output for different discharge scenarios
@@ -2983,7 +2992,7 @@
       // Only refetch if data is stale (>30 min old)
       const now = Date.now();
       if (fraserDataLastFetch && (now - fraserDataLastFetch) < 30 * 60 * 1000) {
-        return { south: fraserSouthData, north: fraserNorthData, km20: avadepthVelocityData };
+        return { south: fraserSouthData, north: fraserNorthData, km20: fraserKm20Data };
       }
       
       // Fetch CHS water levels and Hope discharge in parallel
@@ -3003,11 +3012,11 @@
       
       // Use Avadepth-calibrated model for km 20 velocities
       if (southData) {
-        km20Data = calculateKm20FromCHS(southData);
+        fraserKm20Data = calculateKm20FromCHS(southData);
         console.log('Calculated km 20 data using Avadepth model');
       }
       
-      return { south: fraserSouthData, north: fraserNorthData, km20: km20Data };
+      return { south: fraserSouthData, north: fraserNorthData, km20: fraserKm20Data };
     }
     
     // Calculate km 20 data from CHS water levels using Avadepth-calibrated model
@@ -3172,10 +3181,239 @@
     let liveTideData = { pointAtkinson: null, steveston: null };
     let tideDataLastFetch = null;
     
-    // Station IDs for tide predictions
-    const STATION_POINT_ATKINSON = '07795'; // Point Atkinson tide station
-    const STATION_STEVESTON_TIDE = '07590'; // Steveston tide station
+    // Station IDs for tide predictions - use hex IDs for API calls
+    const STATION_POINT_ATKINSON = '5cebf1de3d0f4a073c4bb94c'; // Point Atkinson tide station (07795)
+    const STATION_STEVESTON_TIDE = '5cebf1de3d0f4a073c4bb935'; // Tsawwassen tide station (07590)
     
+    // Station IDs for current predictions - these are the MongoDB-style hex IDs from IWLS
+    // Found via station search: Second Narrows has wcs1, wcd1, wcsp1, wcdp1, wcp1-events
+    const STATION_SECOND_NARROWS_CURRENT = '5dd30650e0fdc4b9b4be6c2d'; // Second Narrows (07745)
+    const STATION_FIRST_NARROWS_CURRENT = '5dd30650e0fdc4b9b4be6d24';  // First Narrows (07721)
+    
+    // Time series code for current prediction events (slacks and maxes)
+    const CURRENT_EVENTS_CODE = 'wcp1-events';
+    
+    // Search for stations that have current data
+    async function findCurrentStations() {
+      // ... existing code kept for reference but not called
+    }
+    
+    // Find all station IDs we need for the dashboard
+    async function findAllStationIds() {
+      try {
+        // Station codes we need to look up
+        const neededCodes = ['07795', '07590', '07607', '07654', '07745', '07721'];
+        
+        console.log(`%c[Station ID Lookup] Finding hex IDs for station codes...`, 'color: #00d4aa; font-weight: bold');
+        
+        for (const code of neededCodes) {
+          const url = `${CHS_API_BASE}/stations?code=${code}`;
+          const response = await fetch(withCorsProxy(url));
+          
+          if (response.ok) {
+            const stations = await response.json();
+            if (stations.length > 0) {
+              const station = stations[0];
+              console.log(`[Station ID Lookup] ${code} (${station.officialName}): ${station.id}`);
+              if (station.timeSeries) {
+                console.log(`[Station ID Lookup]   Time series: ${station.timeSeries.map(ts => ts.code).join(', ')}`);
+              }
+            }
+          }
+        }
+      } catch (e) {
+        console.warn('[Station ID Lookup] Error:', e);
+      }
+    }
+    
+    // Discover what time series are available for a station
+    async function discoverStationTimeSeries(stationId, stationName) {
+      try {
+        // First, get station metadata to see available time series
+        const metaUrl = `${CHS_API_BASE}/stations/${stationId}/metadata`;
+        console.log(`[CHS Discovery] Checking metadata for ${stationName} (${stationId})...`);
+        
+        const response = await fetch(withCorsProxy(metaUrl));
+        if (response.ok) {
+          const meta = await response.json();
+          console.log(`%c[CHS Discovery] Station ${stationName} metadata:`, 'color: #00d4aa');
+          console.log(`[CHS Discovery] Time series available:`, meta.timeSeries);
+          if (meta.timeSeries) {
+            meta.timeSeries.forEach(ts => {
+              console.log(`[CHS Discovery]   - ${ts.code}: ${ts.nameEn || ts.nameFr}`);
+            });
+          }
+          return meta.timeSeries || [];
+        } else {
+          console.log(`[CHS Discovery] Metadata request failed with status ${response.status}`);
+          
+          // Also try the holdings endpoint
+          const holdingsUrl = `${CHS_API_BASE}/stations/${stationId}/holdings`;
+          const holdingsResponse = await fetch(withCorsProxy(holdingsUrl));
+          if (holdingsResponse.ok) {
+            const holdings = await holdingsResponse.json();
+            console.log(`[CHS Discovery] Station ${stationName} holdings:`, holdings);
+          }
+        }
+      } catch (e) {
+        console.log(`[CHS Discovery] Error checking station ${stationId}:`, e);
+      }
+      return [];
+    }
+    
+    // Cache for live current data
+    let liveCurrentData = { secondNarrows: null, firstNarrows: null };
+    let currentDataLastFetch = null;
+    
+    // Fetch current predictions from CHS API
+    async function fetchCHSCurrentPredictions(stationId, stationName) {
+      try {
+        // Discovery disabled - we know the correct station IDs and time series codes
+        // await discoverStationTimeSeries(stationId, stationName);
+        
+        const now = new Date();
+        const from = new Date(now.getTime() - 12 * 3600000); // 12 hours ago
+        const to = new Date(now.getTime() + 3 * 24 * 3600000); // 3 days ahead
+        
+        const fromStr = from.toISOString();
+        const toStr = to.toISOString();
+        
+        // Try to fetch current prediction events (wcp1-events = slack and max events)
+        const url = `${CHS_API_BASE}/stations/${stationId}/data?time-series-code=${CURRENT_EVENTS_CODE}&from=${fromStr}&to=${toStr}`;
+        
+        console.log(`%c[CHS Current API] Fetching for ${stationName}...`, 'color: #00d4aa; font-weight: bold');
+        console.log(`[CHS Current API] URL: ${url}`);
+        console.log(`[CHS Current API] Station ID: ${stationId}, Time series: ${CURRENT_EVENTS_CODE}`);
+        
+        const response = await fetch(withCorsProxy(url));
+        
+        console.log(`[CHS Current API] Response status: ${response.status}`);
+        
+        if (!response.ok) {
+          // Try to get the error message from the response body
+          let errorBody = '';
+          try {
+            errorBody = await response.text();
+            console.log(`[CHS Current API] Error response body:`, errorBody);
+          } catch (e) {
+            console.log(`[CHS Current API] Could not read error body`);
+          }
+          
+          console.warn(`%c[CHS Current API] Failed with status ${response.status} for ${stationName}`, 'color: #ff6b6b');
+          
+          // Try alternative time-series codes that might have current data
+          const altCodes = ['wcsp1', 'wcdp1', 'wcs1', 'wcd1'];
+          for (const code of altCodes) {
+            console.log(`[CHS Current API] Trying alternative code: ${code}`);
+            const altUrl = `${CHS_API_BASE}/stations/${stationId}/data?time-series-code=${code}&from=${fromStr}&to=${toStr}`;
+            const altResponse = await fetch(withCorsProxy(altUrl));
+            console.log(`[CHS Current API] Code '${code}' status: ${altResponse.status}`);
+            if (altResponse.ok) {
+              const altData = await altResponse.json();
+              console.log(`%c[CHS Current API] Alternative code '${code}' worked!`, 'color: #00d4aa');
+              console.log(`[CHS Current API] Sample data:`, altData.slice(0, 3));
+            }
+          }
+          
+          return null;
+        }
+        
+        const data = await response.json();
+        
+        console.log(`%c[CHS Current API] Received ${data.length} data points for ${stationName}`, 'color: #00d4aa');
+        
+        if (!data || data.length === 0) {
+          console.warn(`[CHS Current API] No data returned for ${stationName}`);
+          return null;
+        }
+        
+        // Log sample data to understand the format
+        console.log(`[CHS Current API] Sample data points:`, data.slice(0, 5));
+        console.log(`[CHS Current API] Data fields available:`, Object.keys(data[0]));
+        
+        // Check what qualifiers are present
+        const qualifiers = [...new Set(data.map(d => d.qualifier).filter(Boolean))];
+        console.log(`[CHS Current API] Qualifiers found:`, qualifiers);
+        
+        // Convert to our format: slacks and maxes grouped by date
+        const result = {};
+        
+        data.forEach(point => {
+          const time = new Date(point.eventDate);
+          const dateStr = getLocalDateString(time);
+          const timeStr = time.toLocaleTimeString('en-CA', { hour: '2-digit', minute: '2-digit', hour12: false });
+          
+          if (!result[dateStr]) {
+            result[dateStr] = { slacks: [], maxes: [] };
+          }
+          
+          // Current speed in knots (API returns m/s or knots depending on station)
+          const speed = point.value;
+          
+          // Check qualifier to determine event type
+          if (point.qualifier === 'SLACK') {
+            result[dateStr].slacks.push(timeStr);
+          } else if (point.qualifier === 'EXTREMA_FLOOD') {
+            result[dateStr].maxes.push({ time: timeStr, speed: Math.abs(speed) });
+          } else if (point.qualifier === 'EXTREMA_EBB') {
+            result[dateStr].maxes.push({ time: timeStr, speed: -Math.abs(speed) });
+          } else if (point.qualifier) {
+            // Log unexpected qualifiers
+            console.log(`[CHS Current API] Unexpected qualifier: ${point.qualifier} at ${timeStr}, value: ${speed}`);
+          }
+        });
+        
+        // Sort each day's events
+        Object.keys(result).forEach(dateStr => {
+          result[dateStr].slacks.sort();
+          result[dateStr].maxes.sort((a, b) => {
+            const [ah, am] = a.time.split(':').map(Number);
+            const [bh, bm] = b.time.split(':').map(Number);
+            return (ah * 60 + am) - (bh * 60 + bm);
+          });
+        });
+        
+        console.log(`%c[CHS Current API] Parsed data for ${stationName}:`, 'color: #00d4aa; font-weight: bold');
+        console.log(`[CHS Current API] Days available:`, Object.keys(result));
+        Object.keys(result).slice(0, 2).forEach(dateStr => {
+          console.log(`[CHS Current API] ${dateStr}: ${result[dateStr].slacks.length} slacks, ${result[dateStr].maxes.length} maxes`);
+          console.log(`[CHS Current API]   Slacks:`, result[dateStr].slacks);
+          console.log(`[CHS Current API]   Maxes:`, result[dateStr].maxes);
+        });
+        
+        return result;
+        
+      } catch (e) {
+        console.error(`%c[CHS Current API] Error for ${stationName}:`, 'color: #ff6b6b', e);
+        return null;
+      }
+    }
+    
+    // Fetch live current data
+    async function fetchLiveCurrentData() {
+      const now = Date.now();
+      // Only refetch if data is stale (>1 hour old)
+      if (currentDataLastFetch && (now - currentDataLastFetch) < 60 * 60 * 1000) {
+        return liveCurrentData;
+      }
+      
+      try {
+        const [secondNarrows, firstNarrows] = await Promise.all([
+          fetchCHSCurrentPredictions(STATION_SECOND_NARROWS_CURRENT, 'Second Narrows'),
+          fetchCHSCurrentPredictions(STATION_FIRST_NARROWS_CURRENT, 'First Narrows')
+        ]);
+        
+        if (secondNarrows) liveCurrentData.secondNarrows = secondNarrows;
+        if (firstNarrows) liveCurrentData.firstNarrows = firstNarrows;
+        currentDataLastFetch = now;
+        
+        return liveCurrentData;
+      } catch (e) {
+        console.warn('Failed to fetch live current data:', e);
+        return liveCurrentData;
+      }
+    }
+
     // Fetch live tide data from CHS
     async function fetchLiveTideData() {
       const now = Date.now();
@@ -5149,28 +5387,56 @@
     let currentDataSource = { first: 'fallback', second: 'fallback' };
 
     function updateCurrentsDisplay() {
-      // Check if we have XTide reference data for today first (most accurate)
       const today = getLocalDateString(new Date());
+      
+      console.log('%c[Currents] Updating display...', 'color: #ffaa00; font-weight: bold');
+      console.log(`[Currents] Today's date: ${today}`);
+      
+      // Priority order for current data:
+      // 1. Live CHS current predictions (most authoritative, perpetual)
+      // 2. XTide reference data (accurate but time-limited)
+      // 3. Tide-derived model (less accurate fallback)
+      
+      let second;
+      const hasLiveCurrentData = liveCurrentData.secondNarrows && liveCurrentData.secondNarrows[today];
       const hasSecondNarrowsRef = SECOND_NARROWS_DATA && SECOND_NARROWS_DATA[today];
       
-      // Second Narrows - prefer XTide reference data when available
-      let second;
-      if (hasSecondNarrowsRef) {
+      console.log(`[Currents] Data availability check:`);
+      console.log(`[Currents]   - Live CHS current data: ${hasLiveCurrentData ? 'YES' : 'NO'}`);
+      console.log(`[Currents]   - XTide reference data: ${hasSecondNarrowsRef ? 'YES' : 'NO'}`);
+      console.log(`[Currents]   - Live tide data: ${liveTideData.pointAtkinson ? Object.keys(liveTideData.pointAtkinson).length + ' days' : 'NO'}`);
+      
+      if (hasLiveCurrentData) {
+        console.log(`[Currents] Live CHS current data for today:`, liveCurrentData.secondNarrows[today]);
+      }
+      
+      if (hasLiveCurrentData) {
+        // Use live CHS current predictions - most accurate and perpetual
+        second = calculateCurrents(SECOND_NARROWS, liveCurrentData.secondNarrows);
+        currentDataSource.second = 'chs-current';
+        console.log('%c[Currents] ✓ Using live CHS current predictions (PERPETUAL)', 'color: #00d4aa; font-weight: bold');
+      } else if (hasSecondNarrowsRef) {
+        // Fall back to XTide reference data
         second = calculateCurrents(SECOND_NARROWS, SECOND_NARROWS_DATA);
         currentDataSource.second = 'xtide-reference';
-        console.log('Second Narrows: Using XTide reference data');
+        console.log('%c[Currents] ⚠ Using XTide reference data (LIMITED DATE RANGE)', 'color: #ffaa00; font-weight: bold');
       } else {
-        // Fall back to live tide-derived currents
+        // Fall back to tide-derived currents
         const useLiveTide = liveTideData.pointAtkinson && Object.keys(liveTideData.pointAtkinson).length > 2;
         if (useLiveTide) {
           second = calculateCurrentsFromLiveTide(SECOND_NARROWS, liveTideData.pointAtkinson);
           currentDataSource.second = 'live-tide';
-          console.log('Second Narrows: Using live CHS tide-derived currents');
+          console.log('%c[Currents] ◐ Using tide-derived currents (PERPETUAL but less accurate)', 'color: #64b5f6; font-weight: bold');
         } else {
           second = calculateCurrents(SECOND_NARROWS, SECOND_NARROWS_DATA);
           currentDataSource.second = second.hasReferenceData ? 'xtide-reference' : 'harmonic-fallback';
+          console.log('%c[Currents] ✗ Using fallback data', 'color: #ff6b6b; font-weight: bold');
         }
       }
+      
+      console.log(`[Currents] Calculated current: ${second.currentSpeed} kts, ${second.isFlood ? 'FLOOD' : second.isEbb ? 'EBB' : 'SLACK'}`);
+      console.log(`[Currents] Slack windows available: ${second.slackWindows.length}`);
+      
       document.getElementById('secondNarrowsSpeed').textContent = second.currentSpeed;
       
       const secondState = document.getElementById('secondNarrowsState');
@@ -5230,10 +5496,15 @@
       if (!el) return;
       
       switch (source) {
-        case 'live-tide':
-          el.textContent = '● Live CHS Tide-Derived';
+        case 'chs-current':
+          el.textContent = '● CHS Current Predictions';
           el.style.color = 'var(--teal-accent)';
-          el.title = 'Currents calculated automatically from live CHS tide predictions - perpetual & self-updating';
+          el.title = 'Official CHS current predictions - most accurate & perpetual';
+          break;
+        case 'live-tide':
+          el.textContent = '◐ Tide-Derived';
+          el.style.color = '#64b5f6';
+          el.title = 'Currents calculated from live CHS tide predictions - perpetual but less accurate';
           break;
         case 'xtide-reference':
           el.textContent = '○ XTide Reference';
@@ -5852,16 +6123,17 @@
       document.getElementById('mainContent').classList.remove('loaded');
       
       try {
-        // Fetch weather and tide data in parallel
+        // Fetch weather, tide data, and current data in parallel
         const [weather] = await Promise.all([
           fetchWeatherData(),
-          fetchLiveTideData() // This populates liveTideData for current calculations
+          fetchLiveTideData(),     // This populates liveTideData for tide graphs
+          fetchLiveCurrentData()   // This populates liveCurrentData for currents
         ]);
         
         updateCurrent(weather);
         build3DayForecast(weather);
         
-        // Now update currents - this will use live tide data if available
+        // Now update currents - will use live CHS current predictions if available
         updateCurrentsDisplay();
         
         document.getElementById('loadingState').style.display = 'none';
