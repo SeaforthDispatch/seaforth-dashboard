@@ -2143,7 +2143,7 @@
     
     <!-- Hourly Conditions - Full Width Above Narrows -->
     <section class="hourly-conditions-section">
-      <h2 class="section-title">Hourly Conditions (48h)</h2>
+      <h2 class="section-title">Hourly Conditions (24h)</h2>
       <div class="hourly-conditions-container" id="marineForecastContainer">
         <!-- Populated by JavaScript -->
       </div>
@@ -5336,9 +5336,9 @@
       let start = h.time.findIndex(t => new Date(t) >= now);
       if (start < 0) start = 0;
       
-      // Collect 48 hours of data and create cells directly in container
+      // Collect 24 hours of data and create cells directly in container
       let lastDay = null;
-      for (let i = start; i < Math.min(start + 48, h.time.length); i++) {
+      for (let i = start; i < Math.min(start + 24, h.time.length); i++) {
         const t = new Date(h.time[i]);
         const hour = {
           time: t,
