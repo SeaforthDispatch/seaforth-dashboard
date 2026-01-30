@@ -4610,8 +4610,31 @@
         const todayBase = new Date(now);
         todayBase.setHours(0, 0, 0, 0);
         
-        // Collect all slacks and maxes from today and tomorrow for interpolation
+        // Collect all slacks and maxes from yesterday, today, and tomorrow for interpolation
         const allEvents = [];
+        
+        // Add yesterday's late events (for early morning interpolation)
+        const yesterday = new Date(todayBase);
+        yesterday.setDate(yesterday.getDate() - 1);
+        const yesterdayStr = getLocalDateString(yesterday);
+        const yesterdayData = referenceData[yesterdayStr];
+        
+        if (yesterdayData) {
+          const yesterdayBase = new Date(yesterday);
+          yesterdayBase.setHours(0, 0, 0, 0);
+          
+          // Add yesterday's last few slacks (typically evening ones)
+          yesterdayData.slacks.slice(-2).forEach(timeStr => {
+            const slackTime = parseTimeToday(timeStr, yesterdayBase);
+            allEvents.push({ time: slackTime, type: 'slack', speed: 0 });
+          });
+          
+          // Add yesterday's last few maxes
+          yesterdayData.maxes.slice(-2).forEach(max => {
+            const maxTime = parseTimeToday(max.time, yesterdayBase);
+            allEvents.push({ time: maxTime, type: max.speed > 0 ? 'max-flood' : 'max-ebb', speed: max.speed });
+          });
+        }
         
         // Add today's slacks
         todayData.slacks.forEach(timeStr => {
@@ -4744,14 +4767,14 @@
         };
         
         // Add yesterday's data (for early morning slacks)
-        const yesterday = new Date(todayBase);
-        yesterday.setDate(yesterday.getDate() - 1);
-        const yesterdayStr = getLocalDateString(yesterday);
-        const yesterdayData = referenceData[yesterdayStr];
-        if (yesterdayData) {
-          const yesterdayBase = new Date(yesterday);
-          yesterdayBase.setHours(0, 0, 0, 0);
-          addDayData(yesterdayData, yesterdayBase);
+        const yesterdayForSlack = new Date(todayBase);
+        yesterdayForSlack.setDate(yesterdayForSlack.getDate() - 1);
+        const yesterdayStrForSlack = getLocalDateString(yesterdayForSlack);
+        const yesterdayDataForSlack = referenceData[yesterdayStrForSlack];
+        if (yesterdayDataForSlack) {
+          const yesterdayBaseForSlack = new Date(yesterdayForSlack);
+          yesterdayBaseForSlack.setHours(0, 0, 0, 0);
+          addDayData(yesterdayDataForSlack, yesterdayBaseForSlack);
         }
         
         // Add today's data
@@ -5126,18 +5149,27 @@
     let currentDataSource = { first: 'fallback', second: 'fallback' };
 
     function updateCurrentsDisplay() {
-      // Try to use live tide data for automatic perpetual current predictions
-      const useLiveTide = liveTideData.pointAtkinson && Object.keys(liveTideData.pointAtkinson).length > 2;
+      // Check if we have XTide reference data for today first (most accurate)
+      const today = getLocalDateString(new Date());
+      const hasSecondNarrowsRef = SECOND_NARROWS_DATA && SECOND_NARROWS_DATA[today];
       
-      // Second Narrows
+      // Second Narrows - prefer XTide reference data when available
       let second;
-      if (useLiveTide) {
-        second = calculateCurrentsFromLiveTide(SECOND_NARROWS, liveTideData.pointAtkinson);
-        currentDataSource.second = 'live-tide';
-        console.log('Second Narrows: Using live CHS tide-derived currents');
-      } else {
+      if (hasSecondNarrowsRef) {
         second = calculateCurrents(SECOND_NARROWS, SECOND_NARROWS_DATA);
-        currentDataSource.second = second.hasReferenceData ? 'xtide-reference' : 'harmonic-fallback';
+        currentDataSource.second = 'xtide-reference';
+        console.log('Second Narrows: Using XTide reference data');
+      } else {
+        // Fall back to live tide-derived currents
+        const useLiveTide = liveTideData.pointAtkinson && Object.keys(liveTideData.pointAtkinson).length > 2;
+        if (useLiveTide) {
+          second = calculateCurrentsFromLiveTide(SECOND_NARROWS, liveTideData.pointAtkinson);
+          currentDataSource.second = 'live-tide';
+          console.log('Second Narrows: Using live CHS tide-derived currents');
+        } else {
+          second = calculateCurrents(SECOND_NARROWS, SECOND_NARROWS_DATA);
+          currentDataSource.second = second.hasReferenceData ? 'xtide-reference' : 'harmonic-fallback';
+        }
       }
       document.getElementById('secondNarrowsSpeed').textContent = second.currentSpeed;
       
